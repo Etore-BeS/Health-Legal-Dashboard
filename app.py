@@ -29,14 +29,14 @@ def load_data():
 
 unimed_df, pmc_df = load_data()
 
-# Navigation
-st.sidebar.title('Navigation')
-panel = st.sidebar.radio('Go to', ['General Analysis', 'Financial Analysis'])
+# Navegação
+st.sidebar.title('Navegação')
+panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira'])
 
 
-if panel == 'General Analysis':
-    st.title('Healthcare Legal Cases Dashboard')
-    st.header('General Analysis')
+if panel == 'Análise Geral':
+    st.title('Painel de Casos Legais de Saúde')
+    st.header('Análise Geral')
 
     # Sidebar Filtros
     st.sidebar.title('Filtros')
@@ -67,14 +67,14 @@ if panel == 'General Analysis':
 
 
     with col1:
-        # 1. Top Causes of Legal Action (descritor)
-        st.subheader('1. Top Causes of Legal Action')
+        # 1. Principais Causas de Ação Legal (descritor)
+        st.subheader('1. Principais Causas de Ação Legal')
 
-        # Calculate top 10 causes
+        # Calcular as 10 principais causas
         top_causes = df_filtered['descritor'].value_counts().reset_index()
-        top_causes.columns = ['Descritor', 'Count']
+        top_causes.columns = ['Descritor', 'Contagem']
 
-        # Function to truncate labels
+        # Função para truncar rótulos
         def truncate_label(label, max_length=30):
             return (label[:max_length] + '...') if len(label) > max_length else label
 
@@ -83,168 +83,167 @@ if panel == 'General Analysis':
         fig1 = px.bar(
             top_causes.head(10),
             x='Descritor_Truncated',
-            y='Count',
-            hover_data=['Descritor'],  # Show full label on hover
-            title='Top 10 Causes of Legal Action'
+            y='Contagem',
+            hover_data=['Descritor'],  # Mostrar rótulo completo no hover
+            title='Top 10 Causas de Ação Legal'
         )
 
         fig1.update_layout(
             xaxis_title='Descritor',
-            yaxis_title='Count',
+            yaxis_title='Contagem',
             xaxis_tickangle=-45
         )
 
         st.plotly_chart(fig1, use_container_width=True)
 
 
-        # 2. Outcome Distribution (acao)
-        st.subheader('2. Outcome Distribution')
+        # 2. Distribuição de Resultados (ação)
+        st.subheader('2. Distribuição de Resultados')
         outcome_distribution = df_filtered['acao'].value_counts().reset_index()
-        outcome_distribution.columns = ['Outcome', 'Count']
-        fig2 = px.pie(outcome_distribution, names='Outcome', values='Count', title='Outcome Distribution')
+        outcome_distribution.columns = ['Resultado', 'Contagem']
+        fig2 = px.pie(outcome_distribution, names='Resultado', values='Contagem', title='Distribuição de Resultados')
         st.plotly_chart(fig2, use_container_width=True)
 
-        # 3. Temporal Trends (Number of Processes Over Time)
-        st.subheader('3. Temporal Trends')
-        temporal_trends = df_filtered.groupby('Year').size().reset_index(name='Number of Cases')
-        fig3 = px.line(temporal_trends, x='Year', y='Number of Cases', markers=True, title='Number of Cases Over Years')
+        # 3. Tendências Temporais (Número de Processos ao Longo do Tempo)
+        st.subheader('3. Tendências Temporais')
+        temporal_trends = df_filtered.groupby('Year').size().reset_index(name='Número de Casos')
+        fig3 = px.line(temporal_trends, x='Year', y='Número de Casos', markers=True, title='Número de Casos ao Longo dos Anos')
         st.plotly_chart(fig3, use_container_width=True)
 
-        # 4. Analysis of Tutela
-        st.subheader('4. Analysis of Tutela')
+        # 4. Análise de Tutela
+        st.subheader('4. Análise de Tutela')
         tutela_counts = df_filtered['tutela'].value_counts().reset_index()
-        tutela_counts.columns = ['Tutela Granted', 'Count']
-        fig4 = px.bar(tutela_counts, x='Tutela Granted', y='Count', title='Tutela Granted vs. Not Granted')
+        tutela_counts.columns = ['Tutela Concedida', 'Contagem']
+        fig4 = px.bar(tutela_counts, x='Tutela Concedida', y='Contagem', title='Tutela Concedida vs. Não Concedida')
         st.plotly_chart(fig4, use_container_width=True)
 
-        # 5. Correlation Between Case Duration and Outcome
-        st.subheader('5. Correlation Between Case Duration and Outcome')
+        # 5. Correlação Entre Duração do Caso e Resultado
+        st.subheader('5. Correlação Entre Duração do Caso e Resultado')
         fig5 = px.box(df_filtered, x='acao', y='tempo_processo_mes', points='all',
-                    labels={'acao': 'Outcome', 'tempo_processo_mes': 'Process Duration (Months)'},
-                    title='Process Duration by Outcome')
+                    labels={'acao': 'Resultado', 'tempo_processo_mes': 'Duração do Processo (Meses)'},
+                    title='Duração do Processo por Resultado')
         st.plotly_chart(fig5, use_container_width=True)
 
-        # 6. Monetary Analysis
-        st.subheader('6. Monetary Analysis')
+        # 6. Análise Monetária
+        st.subheader('6. Análise Monetária')
 
-        # Identify outliers using the IQR method
+        # Identificar outliers usando o método IQR
         Q1 = df_filtered['valor'].quantile(0.25)
         Q3 = df_filtered['valor'].quantile(0.75)
         IQR = Q3 - Q1
         upper_bound = Q3 + 1.5 * IQR
 
-        # Identify outliers
+        # Identificar outliers
         outliers_valor = df_filtered[df_filtered['valor'] > upper_bound]
 
-        # Count of outliers
+        # Contagem de outliers
         outlier_count_valor = outliers_valor.shape[0]
 
-        # Exclude outliers from the plot
+        # Excluir outliers do gráfico
         valor_filtered = df_filtered['valor'].copy()
         valor_filtered = valor_filtered[valor_filtered <= upper_bound]
 
-        # Plot histogram including 'valor' == 0 but excluding outliers
-        fig6 = px.histogram(valor_filtered, x='valor', nbins=50, title='Distribution of Case Values (Excluding Outliers)',
-                        labels={'valor': 'Case Value (R$)'}, 
+        # Plotar histograma incluindo 'valor' == 0 mas excluindo outliers
+        fig6 = px.histogram(valor_filtered, x='valor', nbins=50, title='Distribuição dos Valores dos Casos (Excluindo Outliers)',
+                        labels={'valor': 'Valor do Caso (R$)'}, 
                         range_x=(0, upper_bound))
         st.plotly_chart(fig6, use_container_width=True)
 
-        # Display count of outliers
-        st.markdown(f"**Note:** {outlier_count_valor} outlier(s) were excluded from the plot to ensure a clear visualization.")
+        # Exibir contagem de outliers
+        st.markdown(f"**Nota:** {outlier_count_valor} outlier(s) foram excluídos do gráfico para garantir uma visualização clara.")
 
-
-        # 7. Most Active Attorneys
-        st.subheader('7. Most Active Attorneys')
-        # Split and explode the 'adv' column
+        # 7. Advogados Mais Ativos
+        st.subheader('7. Advogados Mais Ativos')
+        # Dividir e explodir a coluna 'adv'
         df_attorneys = df_filtered.copy()
         df_attorneys['adv'] = df_attorneys['adv'].fillna('')
         df_attorneys['attorneys_list'] = df_attorneys['adv'].str.split(';')
         df_attorneys_exploded = df_attorneys.explode('attorneys_list')
         attorney_counts = df_attorneys_exploded['attorneys_list'].str.strip().value_counts().reset_index()
-        attorney_counts.columns = ['Attorney', 'Number of Cases']
-        fig7 = px.bar(attorney_counts.head(10), x='Attorney', y='Number of Cases', title='Top 10 Attorneys')
+        attorney_counts.columns = ['Advogado', 'Número de Casos']
+        fig7 = px.bar(attorney_counts.head(10), x='Advogado', y='Número de Casos', title='Top 10 Advogados')
         st.plotly_chart(fig7, use_container_width=True)
 
-        # 9. Analysis of Courts
-        st.subheader('9. Analysis of Courts')
+        # 9. Análise de Varas
+        st.subheader('9. Análise de Varas')
         court_counts = df_filtered['vara_nome'].value_counts().reset_index()
-        court_counts.columns = ['Court', 'Number of Cases']
-        fig9 = px.bar(court_counts.head(10), x='Court', y='Number of Cases', title='Top 10 Courts by Number of Cases')
+        court_counts.columns = ['Vara', 'Número de Casos']
+        fig9 = px.bar(court_counts.head(10), x='Vara', y='Número de Casos', title='Top 10 Varas por Número de Casos')
         st.plotly_chart(fig9, use_container_width=True)
 
 
     with col2:    
-        # 8. Monthly and Yearly Trends
-        st.subheader('8. Monthly and Yearly Trends')
-        monthly_trends = df_filtered.groupby(df_filtered['data_publicacao'].dt.to_period('M')).size().reset_index(name='Number of Cases')
-        monthly_trends['Month'] = monthly_trends['data_publicacao'].astype(str)
-        fig10 = px.line(monthly_trends, x='Month', y='Number of Cases', markers=True, title='Monthly Number of Cases')
+        # 8. Tendências Mensais e Anuais
+        st.subheader('8. Tendências Mensais e Anuais')
+        monthly_trends = df_filtered.groupby(df_filtered['data_publicacao'].dt.to_period('M')).size().reset_index(name='Número de Casos')
+        monthly_trends['Mês'] = monthly_trends['data_publicacao'].astype(str)
+        fig10 = px.line(monthly_trends, x='Mês', y='Número de Casos', markers=True, title='Número de Casos por Mês')
         st.plotly_chart(fig10, use_container_width=True)
 
-        # 9. Case Complexity Indicators
-        st.subheader('9. Case Complexity Indicators')
+        # 9. Indicadores de Complexidade dos Casos
+        st.subheader('9. Indicadores de Complexidade dos Casos')
 
-        # Exclude cases with tempo_processo_mes = 0
+        # Excluir casos com tempo_processo_mes = 0
         complexity_zero_count = df_filtered[df_filtered['tempo_processo_mes'] == 0].shape[0]
         df_complexity = df_filtered[df_filtered['tempo_processo_mes'] > 0]
 
-        # Calculate average duration by assunto_agravo
+        # Calcular duração média por assunto_agravo
         complexity = df_complexity.groupby('assunto_agravo')['tempo_processo_mes'].mean().reset_index()
-        complexity.columns = ['Assunto Agravo', 'Average Duration (Months)']
+        complexity.columns = ['Assunto Agravo', 'Duração Média (Meses)']
 
-        # Sort by average duration and select top 10 for better visualization
-        complexity = complexity.sort_values(by='Average Duration (Months)', ascending=False).head(20)
+        # Ordenar por duração média e selecionar os 20 principais para melhor visualização
+        complexity = complexity.sort_values(by='Duração Média (Meses)', ascending=False).head(20)
 
-        # Function to abbreviate 'Assunto Agravo' names
+        # Função para abreviar nomes de 'Assunto Agravo'
         def abbreviate_text(text, max_length=20):
             return text if len(text) <= max_length else text[:17] + '...'
 
-        complexity['Assunto Agravo Abbreviated'] = complexity['Assunto Agravo'].apply(lambda x: abbreviate_text(x, 20))
+        complexity['Assunto Agravo Abreviado'] = complexity['Assunto Agravo'].apply(lambda x: abbreviate_text(x, 20))
 
-        # Plot bar chart with abbreviated labels
+        # Plotar gráfico de barras com rótulos abreviados
         fig9 = px.bar(
             complexity,
-            x='Assunto Agravo Abbreviated',
-            y='Average Duration (Months)',
-            title='Average Case Duration by Assunto Agravo (Top 10)',
-            labels={'Assunto Agravo Abbreviated': 'Assunto Agravo', 'Average Duration (Months)': 'Average Duration (Months)'},
-            hover_data=['Assunto Agravo', 'Average Duration (Months)']
+            x='Assunto Agravo Abreviado',
+            y='Duração Média (Meses)',
+            title='Duração Média dos Casos por Assunto Agravo (Top 20)',
+            labels={'Assunto Agravo Abreviado': 'Assunto Agravo', 'Duração Média (Meses)': 'Duração Média (Meses)'},
+            hover_data=['Assunto Agravo', 'Duração Média (Meses)']
         )
 
         fig9.update_layout(
             xaxis_tickangle=-45,
-            yaxis_title='Average Duration (Months)',
+            yaxis_title='Duração Média (Meses)',
             xaxis_title='Assunto Agravo'
         )
 
         st.plotly_chart(fig9, use_container_width=True)
 
-        # Display the count of tempo_processo_mes = 0
-        st.markdown(f"**Number of cases with `tempo_processo_mes` = 0:** {complexity_zero_count}")
+        # Exibir a contagem de tempo_processo_mes = 0
+        st.markdown(f"**Número de casos com tempo_processo_mes = 0:** {complexity_zero_count}")
 
 
-        # 10. Success Rate of Injunctions
-        st.subheader('10. Success Rate of Injunctions')
-        injunctions = df_filtered.groupby(['tutela', 'acao']).size().reset_index(name='Number of Cases')
-        fig10 = px.bar(injunctions, x='acao', y='Number of Cases', color='tutela', barmode='group', title='Success Rate of Injunctions by Outcome')
+        # 10. Taxa de Sucesso das Tutelas
+        st.subheader('10. Taxa de Sucesso das Tutelas')
+        injunctions = df_filtered.groupby(['tutela', 'acao']).size().reset_index(name='Número de Casos')
+        fig10 = px.bar(injunctions, x='acao', y='Número de Casos', color='tutela', barmode='group', title='Taxa de Sucesso das Tutelas por Resultado')
         st.plotly_chart(fig10, use_container_width=True)
 
-        # 11. Analysis of Legal Fees
-        st.subheader('11. Analysis of Legal Fees')
+        # 11. Análise de Honorários Legais
+        st.subheader('11. Análise de Honorários Legais')
 
-        # Remove cases with valor = 0 and multa = 0 for meaningful analysis
+        # Remover casos com valor = 0 e multa = 0 para análise significativa
         df_fees = df_filtered[(df_filtered['valor'] > 0) & (df_filtered['multa'] > 0)]
 
-        # Identify outliers using the IQR method for 'valor'
+        # Identificar outliers usando o método IQR para 'valor'
         Q1_valor = df_fees['valor'].quantile(0.25)
         Q3_valor = df_fees['valor'].quantile(0.75)
         IQR_valor = Q3_valor - Q1_valor
         upper_bound_valor = Q3_valor + 1.5 * IQR_valor
 
-        # Identify outliers in 'valor'
+        # Identificar outliers em 'valor'
         outliers_valor = df_fees[df_fees['valor'] > upper_bound_valor]
 
-        # Filter out outliers for plotting
+        # Filtrar outliers para o gráfico
         df_fees_plot = df_fees[df_fees['valor'] <= upper_bound_valor]
 
         fig11 = px.scatter(
@@ -252,34 +251,34 @@ if panel == 'General Analysis':
             x='valor',
             y='multa',
             trendline='ols',
-            labels={'valor': 'Case Value (R$)', 'multa': 'Fine (R$)'},
-            title='Fine Amount vs. Case Value (Excluding Outliers)',
+            labels={'valor': 'Valor do Caso (R$)', 'multa': 'Multa (R$)'},
+            title='Valor da Multa vs. Valor do Caso (Excluindo Outliers)',
             hover_data=['processo', 'vara_nome', 'adv']
         )
 
-        # Add trendline details
+        # Adicionar detalhes da linha de tendência
         fig11.update_layout(
-            xaxis_title='Case Value (R$)',
-            yaxis_title='Fine (R$)',
-            xaxis=dict(range=[0, upper_bound_valor * 1.05]),  # Add some padding
+            xaxis_title='Valor do Caso (R$)',
+            yaxis_title='Multa (R$)',
+            xaxis=dict(range=[0, upper_bound_valor * 1.05]),  # Adicionar alguma margem
             yaxis=dict(range=[0, df_fees_plot['multa'].max() * 1.05])
         )
 
         st.plotly_chart(fig11, use_container_width=True)
 
-        # Display information about the outlier
+        # Exibir informações sobre o outlier
         if not outliers_valor.empty:
-            st.markdown(f"**Outliers Excluded from Plot:** {outliers_valor.shape[0]} cases with `valor` > {upper_bound_valor:.2f} R$")
-            st.markdown("These outliers are excluded to ensure the plot remains readable. They are still accounted for in other analyses.")
+            st.markdown(f"**Outliers Excluídos do Gráfico:** {outliers_valor.shape[0]} casos com valor > {upper_bound_valor:.2f} R$")
+            st.markdown("Esses outliers são excluídos para garantir que o gráfico permaneça legível. Eles ainda são considerados em outras análises.")
 
 
-        # 12. Assunto Agravo Distribution Over Time
-        st.subheader('12. Assunto Agravo Distribution Over Time')
+        # 12. Distribuição de Assunto Agravo ao Longo do Tempo
+        st.subheader('12. Distribuição de Assunto Agravo ao Longo do Tempo')
 
-        # Aggregate data
-        assunto_time = df_filtered.groupby(['Year', 'assunto_agravo']).size().reset_index(name='Number of Cases')
+        # Agregar dados
+        assunto_time = df_filtered.groupby(['Year', 'assunto_agravo']).size().reset_index(name='Número de Casos')
 
-        # Truncate 'assunto_agravo' labels for display
+        # Truncar rótulos de 'assunto_agravo' para exibição
         def truncate_label(label, max_length=20):
             return (label[:max_length] + '...') if len(label) > max_length else label
 
@@ -288,14 +287,14 @@ if panel == 'General Analysis':
         fig12 = px.line(
             assunto_time,
             x='Year',
-            y='Number of Cases',
+            y='Número de Casos',
             color='Assunto_Agravo_Truncated',
             hover_data=['assunto_agravo'],
-            title='Assunto Agravo Over Time',
+            title='Assunto Agravo ao Longo do Tempo',
             labels={'Assunto_Agravo_Truncated': 'Assunto Agravo'}
         )
 
-        # Move legend outside the plot
+        # Mover legenda para fora do gráfico
         fig12.update_layout(
             legend=dict(
                 title='Assunto Agravo',
@@ -305,22 +304,22 @@ if panel == 'General Analysis':
                 xanchor="right",
                 x=1
             ),
-            xaxis_title='Year',
-            yaxis_title='Number of Cases'
+            xaxis_title='Ano',
+            yaxis_title='Número de Casos'
         )
 
         st.plotly_chart(fig12, use_container_width=True)
 
-        # 13. Case Duration by Court
-        st.subheader('13. Case Duration by Court')
+        # 13. Duração do Caso por Vara
+        st.subheader('13. Duração do Caso por Vara')
         duration_court = df_filtered.groupby('vara_nome')['tempo_processo_mes'].mean().reset_index()
-        duration_court.columns = ['Court', 'Average Duration (Months)']
-        fig17 = px.bar(duration_court.sort_values(by='Average Duration (Months)', ascending=False).head(10),
-                    x='Court', y='Average Duration (Months)', title='Top 10 Courts by Average Case Duration')
+        duration_court.columns = ['Vara', 'Duração Média (Meses)']
+        fig17 = px.bar(duration_court.sort_values(by='Duração Média (Meses)', ascending=False).head(10),
+                    x='Vara', y='Duração Média (Meses)', title='Top 10 Varas por Duração Média do Caso')
         st.plotly_chart(fig17, use_container_width=True)
 
-        # 14. Comparative Analysis Between Years com Exclusão de Valores Extremos
-        st.subheader('14. Comparative Analysis Between Years')
+        # 14. Análise Comparativa Entre Anos com Exclusão de Valores Extremos
+        st.subheader('14. Análise Comparativa Entre Anos')
         
         # Passo 1: Identificar Outliers na Coluna 'valor'
         Q1_valor = df_filtered['valor'].quantile(0.25)
@@ -342,29 +341,29 @@ if panel == 'General Analysis':
             'tempo_processo_mes': 'mean',
             'processo': 'count'
         }).reset_index()
-        yearly_comparison.columns = ['Year', 'Average Case Value (R$)', 'Average Duration (Months)', 'Number of Cases']
+        yearly_comparison.columns = ['Ano', 'Valor Médio do Caso (R$)', 'Duração Média (Meses)', 'Número de Casos']
         
         # Passo 3: Visualizar os Dados Atualizados
         # Criar figura com eixo y secundário
         fig14 = make_subplots(specs=[[{"secondary_y": True}]])
         
-        # Adicionar barra para 'Number of Cases'
+        # Adicionar barra para 'Número de Casos'
         fig14.add_trace(
             go.Bar(
-                x=yearly_comparison['Year'],
-                y=yearly_comparison['Number of Cases'],
-                name='Number of Cases',
+                x=yearly_comparison['Ano'],
+                y=yearly_comparison['Número de Casos'],
+                name='Número de Casos',
                 marker_color='rgba(55, 128, 191, 0.7)'  # Azul
             ),
             secondary_y=False,
         )
         
-        # Adicionar linha para 'Average Duration (Months)'
+        # Adicionar linha para 'Duração Média (Meses)'
         fig14.add_trace(
             go.Scatter(
-                x=yearly_comparison['Year'],
-                y=yearly_comparison['Average Duration (Months)'],
-                name='Average Duration (Months)',
+                x=yearly_comparison['Ano'],
+                y=yearly_comparison['Duração Média (Meses)'],
+                name='Duração Média (Meses)',
                 mode='lines+markers',
                 marker=dict(color='firebrick'),
                 line=dict(color='firebrick', width=2)
@@ -374,19 +373,19 @@ if panel == 'General Analysis':
         
         # Atualizar layout para melhor estética
         fig14.update_layout(
-            title_text='Yearly Comparative Analysis',
+            title_text='Análise Comparativa Anual',
             legend=dict(x=0.01, y=0.99),
             barmode='group',
             height=600,
-            width=1200  # Ajuste conforme necessário
+            width=1200  # Ajustar conforme necessário
         )
         
         # Definir títulos dos eixos y
-        fig14.update_yaxes(title_text="Number of Cases", secondary_y=False)
-        fig14.update_yaxes(title_text="Average Duration (Months)", secondary_y=True)
+        fig14.update_yaxes(title_text="Número de Casos", secondary_y=False)
+        fig14.update_yaxes(title_text="Duração Média (Meses)", secondary_y=True)
         
         # Ajustar título do eixo x
-        fig14.update_xaxes(title_text="Year")
+        fig14.update_xaxes(title_text="Ano")
         
         # Exibir o plot
         st.plotly_chart(fig14, use_container_width=True)
@@ -397,30 +396,30 @@ if panel == 'General Analysis':
         if not outliers.empty:
             # Exibir os anos com outliers
             outlier_years = outliers['Year'].unique()
-            st.markdown(f"**Outlier Detected:** Alguns casos em **{', '.join(map(str, outlier_years))}** tiveram valores de **'valor'** extremamente altos que foram excluídos da análise.")
+            st.markdown(f"**Outliers Detectados:** Alguns casos em **{', '.join(map(str, outlier_years))}** tiveram valores de **'valor'** extremamente altos que foram excluídos da análise.")
             st.markdown("Os anos permaneceram na análise, mas os casos com valores extremos foram removidos para evitar distorções nas médias.")
 
-elif panel == 'Financial Analysis':
-    st.title('Financial Analysis of Medications')
-    st.header('Analysis Based on Historical Price Data')
+elif panel == 'Análise Financeira':
+    st.title('Análise Financeira de Medicamentos')
+    st.header('Análise com Base em Dados Históricos de Preços')
 
-    # Sidebar Filters for Financial Analysis
-    st.sidebar.title('Filters')
+    # Sidebar Filtros para Análise Financeira
+    st.sidebar.title('Filtros')
 
-    # Select Medications
+    # Selecionar Medicamentos
     medications = pmc_df['substancia'].unique()
-    medications_selected = st.sidebar.multiselect('Select Medications', options=medications, default=medications[:5])
+    medications_selected = st.sidebar.multiselect('Selecionar Medicamentos', options=medications, default=medications[:5])
 
-    # Select Laboratories
+    # Selecionar Laboratórios
     laboratories = pmc_df['laboratorio'].unique()
-    laboratories_selected = st.sidebar.multiselect('Select Laboratories', options=laboratories, default=laboratories[:5])
+    laboratories_selected = st.sidebar.multiselect('Selecionar Laboratórios', options=laboratories, default=laboratories[:5])
 
-    # Date Range Filter
+    # Filtro de Intervalo de Datas
     min_date = pmc_df['data'].min()
     max_date = pmc_df['data'].max()
-    date_range = st.sidebar.date_input('Date Range', [min_date, max_date], min_value=min_date, max_value=max_date)
+    date_range = st.sidebar.date_input('Intervalo de Datas', [min_date, max_date], min_value=min_date, max_value=max_date)
 
-    # Filter Data Based on Selections
+    # Filtrar Dados com Base nas Seleções
     df_filtered = pmc_df[
         (pmc_df['substancia'].isin(medications_selected)) &
         (pmc_df['laboratorio'].isin(laboratories_selected)) &
@@ -428,72 +427,89 @@ elif panel == 'Financial Analysis':
         (pmc_df['data'] <= pd.to_datetime(date_range[1]))
     ].copy()
 
-    # Check if data is available
+    # Verificar se há dados disponíveis
     if df_filtered.empty:
-        st.warning('No data available for the selected filters.')
+        st.warning('Nenhum dado disponível para os filtros selecionados.')
     else:
-        # Create columns for layout
+        # Criar colunas para layout
         col1, col2 = st.columns(2)
 
-        # 1. Price Evolution Over Time
+        # 1. Evolução de Preços ao Longo do Tempo
         with col1:
-            st.subheader('1. Price Evolution Over Time')
+            st.subheader('1. Evolução de Preços ao Longo do Tempo')
 
-            # Aggregate data
+            # Agregar dados
             price_trends = df_filtered.groupby(['substancia', 'data'])[['pf_0', 'pmc_0']].mean().reset_index()
 
-            # Plot the evolution of prices for each medication
+            # Plotar a evolução dos preços para cada medicamento
             fig = px.line(
                 price_trends,
                 x='data',
                 y=['pf_0', 'pmc_0'],
                 color='substancia',
-                labels={'value': 'Price (R$)', 'data': 'Date', 'variable': 'Price Type'},
-                title='Price Evolution Over Time',
+                labels={'value': 'Preço (R$)', 'data': 'Data', 'variable': 'Tipo de Preço'},
+                title='Evolução de Preços ao Longo do Tempo',
                 markers=True
             )
             fig.update_layout(
-                xaxis_title='Date',
-                yaxis_title='Price (R$)',
-                legend_title='Medication',
-                xaxis=dict(rangeslider=dict(visible=True), type='date')
+                xaxis_title='Data',
+                yaxis_title='Preço (R$)',
+                legend_title='Medicamento',
+                xaxis=dict(rangeslider=dict(visible=True), type='date'),
+                legend=dict(
+                    x=0,
+                    y=0,
+                    font=dict(
+                        size=8
+                    ),
+                    orientation='v'
+                )
+                
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # 2. Laboratory Price Margins
+        # 2. Evolução Média de Preços por Medicamento ao Longo dos Anos (Novo Plot)
         with col2:
-            st.subheader('2. Laboratory Price Margins')
+            st.subheader('2. Evolução Média de Preços por Medicamento ao Longo dos Anos')
 
-            # Calculate price margin (pmc_0 - pf_0)
-            df_filtered['price_margin'] = df_filtered['pmc_0'] - df_filtered['pf_0']
+            # Extrair o ano da coluna 'data'
+            df_filtered['Ano'] = df_filtered['data'].dt.year
 
-            # Aggregate data
-            lab_price_margins = df_filtered.groupby(['laboratorio', 'data'])['price_margin'].mean().reset_index()
+            # Calcular o preço médio por medicamento por ano
+            avg_price_per_year = df_filtered.groupby(['substancia', 'Ano'])['pmc_0'].mean().reset_index()
 
-            # Plot price margins over time
-            fig2 = px.line(
-                lab_price_margins,
-                x='data',
-                y='price_margin',
-                color='laboratorio',
-                labels={'price_margin': 'Price Margin (R$)', 'data': 'Date'},
-                title='Laboratory Price Margins Over Time',
+            # Plotar a evolução média de preços
+            fig_avg_price = px.line(
+                avg_price_per_year,
+                x='Ano',
+                y='pmc_0',
+                color='substancia',
+                labels={'pmc_0': 'Preço Médio (R$)', 'Ano': 'Ano', 'substancia': 'Medicamento'},
+                title='Evolução Média de Preços por Medicamento ao Longo dos Anos',
                 markers=True
             )
-            fig2.update_layout(
-                xaxis_title='Date',
-                yaxis_title='Price Margin (R$)',
-                legend_title='Laboratory',
-                xaxis=dict(rangeslider=dict(visible=True), type='date')
+            fig_avg_price.update_layout(
+                xaxis_title='Ano',
+                yaxis_title='Preço Médio (R$)',
+                legend_title='Medicamento',
+                xaxis=dict(dtick=1),  # Garante que cada ano seja mostrado no eixo x
+                legend=dict(
+                    x=0,
+                    y=1,
+                    font=dict(
+                        size=8
+                    ),
+                    orientation='v'
+                )
             )
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig_avg_price, use_container_width=True)
 
         st.markdown('---')
 
-        # 3. Price Comparison at Start and End of Legal Cases
-        st.subheader('3. Price Comparison at Start and End of Legal Cases')
+        # 3. Comparação de Preços no Início e no Fim de Casos Legais
+        st.subheader('3. Comparação de Preços no Início e no Fim de Casos Legais')
 
-        # Merge unimed_df and pmc_df on 'descritor' and 'substancia'
+        # Mesclar unimed_df e pmc_df com base em 'descritor' e 'substancia'
         merged_df = unimed_df.merge(
             pmc_df[['substancia', 'data', 'pf_0', 'pmc_0']],
             left_on='descritor',
@@ -502,67 +518,67 @@ elif panel == 'Financial Analysis':
             suffixes=('', '_pmc')
         )
 
-        # Ensure date columns are datetime
+        # Garantir que as colunas de data são datetime
         merged_df['data_publicacao'] = pd.to_datetime(merged_df['data_publicacao'])
         merged_df['data'] = pd.to_datetime(merged_df['data'])
 
-        # Create 'data_sentenca' as 'data_publicacao' + 'tempo_processo_mes'
+        # Criar 'data_sentenca' como 'data_publicacao' + 'tempo_processo_mes'
         merged_df['data_sentenca'] = merged_df['data_publicacao'] + pd.to_timedelta(merged_df['tempo_processo_mes'] * 30, unit='D')
 
-        # Function to get price closest to a given date
+        # Função para obter preço mais próximo de uma determinada data
         def get_closest_price(substancia, target_date):
             med_prices = pmc_df[pmc_df['substancia'] == substancia]
             if med_prices.empty:
                 return np.nan
-            med_prices = med_prices.copy()  # Avoid SettingWithCopyWarning
+            med_prices = med_prices.copy()  # Evitar SettingWithCopyWarning
             med_prices['date_diff'] = (med_prices['data'] - target_date).abs()
             closest_price = med_prices.loc[med_prices['date_diff'].idxmin()]
             return closest_price['pmc_0']
 
-        # Apply function to get prices at 'data_publicacao' and 'data_sentenca'
+        # Aplicar função para obter preços em 'data_publicacao' e 'data_sentenca'
         merged_df['pmc_inicio'] = merged_df.apply(lambda row: get_closest_price(row['descritor'], row['data_publicacao']), axis=1)
         merged_df['pmc_sentenca'] = merged_df.apply(lambda row: get_closest_price(row['descritor'], row['data_sentenca']), axis=1)
 
-        # Calculate price change
-        merged_df['price_change'] = merged_df['pmc_sentenca'] - merged_df['pmc_inicio']
-        merged_df['price_change_perc'] = (merged_df['price_change'] / merged_df['pmc_inicio']) * 100
+        # Calcular mudança de preço
+        merged_df['mudanca_preco'] = merged_df['pmc_sentenca'] - merged_df['pmc_inicio']
+        merged_df['mudanca_preco_perc'] = (merged_df['mudanca_preco'] / merged_df['pmc_inicio']) * 100
 
-        # Visualize price change distribution
+        # Visualizar distribuição da mudança de preço
         fig3 = px.histogram(
             merged_df,
-            x='price_change_perc',
+            x='mudanca_preco_perc',
             nbins=50,
-            title='Distribution of Price Change Percentage Between Start and End of Legal Cases',
-            labels={'price_change_perc': 'Price Change (%)'}
+            title='Distribuição da Mudança Percentual de Preço Entre Início e Fim de Casos Legais',
+            labels={'mudanca_preco_perc': 'Mudança de Preço (%)'}
         )
         st.plotly_chart(fig3, use_container_width=True)
 
-        # Display summary statistics
-        st.write('**Summary Statistics of Price Change (%):**')
-        st.write(merged_df['price_change_perc'].describe())
+        # Exibir estatísticas resumidas
+        st.write('**Estatísticas Resumidas da Mudança de Preço (%):**')
+        st.write(merged_df['mudanca_preco_perc'].describe())
         
         st.markdown('---')
 
-        # 4. Comparing Price at Sentence Date with Case Value
-        st.subheader('4. Comparing Price at Sentence Date with Case Value')
+        # 4. Comparando Preço na Data da Sentença com Valor do Caso
+        st.subheader('4. Comparando Preço na Data da Sentença com Valor do Caso')
 
-        # Ensure 'valor' is numeric
+        # Garantir que 'valor' é numérico
         merged_df['valor'] = pd.to_numeric(merged_df['valor'], errors='coerce')
 
-        # Remove rows with missing data
+        # Remover linhas com dados faltantes
         comparison_df = merged_df.dropna(subset=['valor', 'pmc_sentenca'])
 
-        # Calculate ratio of case value to medication price
-        comparison_df['value_to_price_ratio'] = comparison_df['valor'] / comparison_df['pmc_sentenca']
+        # Calcular razão de valor do caso para preço do medicamento
+        comparison_df['razao_valor_preco'] = comparison_df['valor'] / comparison_df['pmc_sentenca']
 
-        # Visualize the relationship
+        # Visualizar a relação
         fig4 = px.scatter(
             comparison_df,
             x='pmc_sentenca',
             y='valor',
             hover_data=['substancia', 'processo'],
-            labels={'pmc_sentenca': 'Medication Price at Sentence Date (R$)', 'valor': 'Case Value (R$)'},
-            title='Case Value vs. Medication Price at Sentence Date'
+            labels={'pmc_sentenca': 'Preço do Medicamento na Data da Sentença (R$)', 'valor': 'Valor do Caso (R$)'},
+            title='Valor do Caso vs. Preço do Medicamento na Data da Sentença'
         )
         fig4.add_shape(
             type='line',
@@ -575,13 +591,13 @@ elif panel == 'Financial Analysis':
         )
         st.plotly_chart(fig4, use_container_width=True)
 
-        # Display insights
+        # Exibir insights
         st.write('**Insights:**')
-        st.write('- Points above the red dashed line indicate cases where the case value is higher than the medication price.')
-        st.write('- Points below the line indicate cases where the case value is lower than the medication price.')
+        st.write('- Pontos acima da linha vermelha tracejada indicam casos onde o valor do caso é maior que o preço do medicamento.')
+        st.write('- Pontos abaixo da linha indicam casos onde o valor do caso é menor que o preço do medicamento.')
 
-        # Optionally, provide a table of cases with high ratios
-        high_ratio_cases = comparison_df[comparison_df['value_to_price_ratio'] > 10]
+        # Opcionalmente, fornecer uma tabela de casos com altas razões
+        high_ratio_cases = comparison_df[comparison_df['razao_valor_preco'] > 10]
         if not high_ratio_cases.empty:
-            st.write('**Cases with High Value to Price Ratio (>10):**')
-            st.dataframe(high_ratio_cases[['processo', 'substancia', 'valor', 'pmc_sentenca', 'value_to_price_ratio']])
+            st.write('**Casos com Alta Razão Valor para Preço (>10):**')
+            st.dataframe(high_ratio_cases[['processo', 'substancia', 'valor', 'pmc_sentenca', 'razao_valor_preco']])
