@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import re
 from collections import Counter
+from plotly.colors import n_colors
 
 st.set_page_config(layout="wide")
 
@@ -18,7 +19,7 @@ def load_data():
     unimed_df['mes'] = unimed_df['data_publicacao'].dt.month_name()
     unimed_df['Year'] = unimed_df['data_publicacao'].dt.year  # For consistency in plots
 
-    pmc_df = pd.read_csv('pmc_2015_2024.csv')
+    pmc_df = pd.read_csv('cmed_10anos_top30.csv')
     pmc_df['mes'] = pmc_df['mes'].astype(str).str.zfill(2)  # Ensure month is two digits
     pmc_df['data'] = pd.to_datetime(pmc_df['ano'].astype(str) + pmc_df['mes'], format='%Y%m')
     
@@ -399,205 +400,197 @@ if panel == 'Análise Geral':
             st.markdown(f"**Outliers Detectados:** Alguns casos em **{', '.join(map(str, outlier_years))}** tiveram valores de **'valor'** extremamente altos que foram excluídos da análise.")
             st.markdown("Os anos permaneceram na análise, mas os casos com valores extremos foram removidos para evitar distorções nas médias.")
 
-elif panel == 'Análise Financeira':
+if panel == 'Análise Financeira':
     st.title('Análise Financeira de Medicamentos')
     st.header('Análise com Base em Dados Históricos de Preços')
 
     # Sidebar Filtros para Análise Financeira
     st.sidebar.title('Filtros')
 
-    # Selecionar Medicamentos
-    medications = pmc_df['substancia'].unique()
-    medications_selected = st.sidebar.multiselect('Selecionar Medicamentos', options=medications, default=medications[:5])
+    # Selecionar Substância
+    substances = pmc_df['substancia'].dropna().unique()
+    substance_selected = st.sidebar.selectbox('Selecionar Substância', options=substances)
+
+    # Filtrar dados pela substância selecionada
+    df_substance = pmc_df[pmc_df['substancia'] == substance_selected].copy()
 
     # Selecionar Laboratórios
-    laboratories = pmc_df['laboratorio'].unique()
-    laboratories_selected = st.sidebar.multiselect('Selecionar Laboratórios', options=laboratories, default=laboratories[:5])
+    laboratories = df_substance['laboratorio'].dropna().unique()
+    laboratories_selected = st.sidebar.multiselect('Selecionar Laboratórios', options=laboratories, default=laboratories)
 
     # Filtro de Intervalo de Datas
-    min_date = pmc_df['data'].min()
-    max_date = pmc_df['data'].max()
+    min_date = df_substance['data'].min()
+    max_date = df_substance['data'].max()
     date_range = st.sidebar.date_input('Intervalo de Datas', [min_date, max_date], min_value=min_date, max_value=max_date)
 
     # Filtrar Dados com Base nas Seleções
-    df_filtered = pmc_df[
-        (pmc_df['substancia'].isin(medications_selected)) &
-        (pmc_df['laboratorio'].isin(laboratories_selected)) &
-        (pmc_df['data'] >= pd.to_datetime(date_range[0])) &
-        (pmc_df['data'] <= pd.to_datetime(date_range[1]))
+    df_filtered = df_substance[
+        (df_substance['laboratorio'].isin(laboratories_selected)) &
+        (df_substance['data'] >= pd.to_datetime(date_range[0])) &
+        (df_substance['data'] <= pd.to_datetime(date_range[1]))
     ].copy()
 
     # Verificar se há dados disponíveis
     if df_filtered.empty:
         st.warning('Nenhum dado disponível para os filtros selecionados.')
     else:
-        # Criar colunas para layout
-        col1, col2 = st.columns(2)
+        # Adicionar uma coluna de mês-ano para agrupamentos mensais
+        df_filtered['Mes_Ano'] = df_filtered['data'].dt.to_period('M').dt.to_timestamp()
 
-        # 1. Evolução de Preços ao Longo do Tempo
-        with col1:
-            st.subheader('1. Evolução de Preços ao Longo do Tempo')
+        # Calcular a média mensal para cada preço
+        monthly_mean_pf = df_filtered.groupby('Mes_Ano')['pf_0'].mean().reset_index()
+        monthly_mean_pmc = df_filtered.groupby('Mes_Ano')['pmc_0'].mean().reset_index()
 
-            # Agregar dados
-            price_trends = df_filtered.groupby(['substancia', 'data'])[['pf_0', 'pmc_0']].mean().reset_index()
+        # Paleta de cores menos destacadas para os laboratórios
+        num_labs = df_filtered['laboratorio'].nunique()
+        if num_labs > 1:
+            colors = n_colors('rgb(200, 200, 200)', 'rgb(100, 100, 100)', num_labs, colortype='rgb')
+        elif num_labs == 1:
+            colors = ['rgb(150, 150, 150)']  # Cor padrão para um único laboratório
+        else:
+            colors = []  # Nenhuma cor se não houver laboratórios
 
-            # Plotar a evolução dos preços para cada medicamento
-            fig = px.line(
-                price_trends,
-                x='data',
-                y=['pf_0', 'pmc_0'],
-                color='substancia',
-                labels={'value': 'Preço (R$)', 'data': 'Data', 'variable': 'Tipo de Preço'},
-                title='Evolução de Preços ao Longo do Tempo',
-                markers=True
-            )
-            fig.update_layout(
-                xaxis_title='Data',
-                yaxis_title='Preço (R$)',
-                legend_title='Medicamento',
-                xaxis=dict(rangeslider=dict(visible=True), type='date'),
-                legend=dict(
-                    x=0,
-                    y=0,
-                    font=dict(
-                        size=8
-                    ),
-                    orientation='v'
-                )
-                
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
-        # 2. Evolução Média de Preços por Medicamento ao Longo dos Anos (Novo Plot)
-        with col2:
-            st.subheader('2. Evolução Média de Preços por Medicamento ao Longo dos Anos')
-
-            # Extrair o ano da coluna 'data'
-            df_filtered['Ano'] = df_filtered['data'].dt.year
-
-            # Calcular o preço médio por medicamento por ano
-            avg_price_per_year = df_filtered.groupby(['substancia', 'Ano'])['pmc_0'].mean().reset_index()
-
-            # Plotar a evolução média de preços
-            fig_avg_price = px.line(
-                avg_price_per_year,
-                x='Ano',
-                y='pmc_0',
-                color='substancia',
-                labels={'pmc_0': 'Preço Médio (R$)', 'Ano': 'Ano', 'substancia': 'Medicamento'},
-                title='Evolução Média de Preços por Medicamento ao Longo dos Anos',
-                markers=True
-            )
-            fig_avg_price.update_layout(
-                xaxis_title='Ano',
-                yaxis_title='Preço Médio (R$)',
-                legend_title='Medicamento',
-                xaxis=dict(dtick=1),  # Garante que cada ano seja mostrado no eixo x
-                legend=dict(
-                    x=0,
-                    y=1,
-                    font=dict(
-                        size=8
-                    ),
-                    orientation='v'
-                )
-            )
-            st.plotly_chart(fig_avg_price, use_container_width=True)
-
-        st.markdown('---')
-
-        # 3. Comparação de Preços no Início e no Fim de Casos Legais
-        st.subheader('3. Comparação de Preços no Início e no Fim de Casos Legais')
-
-        # Mesclar unimed_df e pmc_df com base em 'descritor' e 'substancia'
-        merged_df = unimed_df.merge(
-            pmc_df[['substancia', 'data', 'pf_0', 'pmc_0']],
-            left_on='descritor',
-            right_on='substancia',
-            how='left',
-            suffixes=('', '_pmc')
-        )
-
-        # Garantir que as colunas de data são datetime
-        merged_df['data_publicacao'] = pd.to_datetime(merged_df['data_publicacao'])
-        merged_df['data'] = pd.to_datetime(merged_df['data'])
-
-        # Criar 'data_sentenca' como 'data_publicacao' + 'tempo_processo_mes'
-        merged_df['data_sentenca'] = merged_df['data_publicacao'] + pd.to_timedelta(merged_df['tempo_processo_mes'] * 30, unit='D')
-
-        # Função para obter preço mais próximo de uma determinada data
-        def get_closest_price(substancia, target_date):
-            med_prices = pmc_df[pmc_df['substancia'] == substancia]
-            if med_prices.empty:
-                return np.nan
-            med_prices = med_prices.copy()  # Evitar SettingWithCopyWarning
-            med_prices['date_diff'] = (med_prices['data'] - target_date).abs()
-            closest_price = med_prices.loc[med_prices['date_diff'].idxmin()]
-            return closest_price['pmc_0']
-
-        # Aplicar função para obter preços em 'data_publicacao' e 'data_sentenca'
-        merged_df['pmc_inicio'] = merged_df.apply(lambda row: get_closest_price(row['descritor'], row['data_publicacao']), axis=1)
-        merged_df['pmc_sentenca'] = merged_df.apply(lambda row: get_closest_price(row['descritor'], row['data_sentenca']), axis=1)
-
-        # Calcular mudança de preço
-        merged_df['mudanca_preco'] = merged_df['pmc_sentenca'] - merged_df['pmc_inicio']
-        merged_df['mudanca_preco_perc'] = (merged_df['mudanca_preco'] / merged_df['pmc_inicio']) * 100
-
-        # Visualizar distribuição da mudança de preço
-        fig3 = px.histogram(
-            merged_df,
-            x='mudanca_preco_perc',
-            nbins=50,
-            title='Distribuição da Mudança Percentual de Preço Entre Início e Fim de Casos Legais',
-            labels={'mudanca_preco_perc': 'Mudança de Preço (%)'}
-        )
-        st.plotly_chart(fig3, use_container_width=True)
-
-        # Exibir estatísticas resumidas
-        st.write('**Estatísticas Resumidas da Mudança de Preço (%):**')
-        st.write(merged_df['mudanca_preco_perc'].describe())
+        # Gráfico 1: Evolução do Preço de Fábrica (PF)
+        st.subheader(f'Evolução do Preço de Fábrica (PF) para {substance_selected}')
         
-        st.markdown('---')
+        fig_pf = go.Figure()
 
-        # 4. Comparando Preço na Data da Sentença com Valor do Caso
-        st.subheader('4. Comparando Preço na Data da Sentença com Valor do Caso')
+        # Adicionar as linhas dos laboratórios com cores menos destacadas
+        for idx, lab in enumerate(df_filtered['laboratorio'].unique()):
+            lab_data = df_filtered[df_filtered['laboratorio'] == lab]
+            if num_labs > 1:
+                color = colors[idx]
+            else:
+                color = colors[0] if colors else 'rgb(150, 150, 150)'  # Fallback se colors estiver vazio
+            fig_pf.add_trace(go.Scatter(
+                x=lab_data['data'],
+                y=lab_data['pf_0'],
+                mode='lines+markers',
+                name=f'{lab} (PF)',
+                line=dict(width=1, color=color, dash='dot'),
+                opacity=0.6
+            ))
 
-        # Garantir que 'valor' é numérico
-        merged_df['valor'] = pd.to_numeric(merged_df['valor'], errors='coerce')
+        # Adicionar a linha de média mensal em vermelho vivo
+        fig_pf.add_trace(go.Scatter(
+            x=monthly_mean_pf['Mes_Ano'],
+            y=monthly_mean_pf['pf_0'],
+            mode='lines+markers',
+            name='Média Mensal (PF)',
+            line=dict(width=3, color='red')
+        ))
 
-        # Remover linhas com dados faltantes
-        comparison_df = merged_df.dropna(subset=['valor', 'pmc_sentenca'])
-
-        # Calcular razão de valor do caso para preço do medicamento
-        comparison_df['razao_valor_preco'] = comparison_df['valor'] / comparison_df['pmc_sentenca']
-
-        # Visualizar a relação
-        fig4 = px.scatter(
-            comparison_df,
-            x='pmc_sentenca',
-            y='valor',
-            hover_data=['substancia', 'processo'],
-            labels={'pmc_sentenca': 'Preço do Medicamento na Data da Sentença (R$)', 'valor': 'Valor do Caso (R$)'},
-            title='Valor do Caso vs. Preço do Medicamento na Data da Sentença'
+        # Configurações do layout do gráfico PF
+        fig_pf.update_layout(
+            xaxis_title='Data',
+            yaxis_title='Preço de Fábrica (R$)',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.3,
+                xanchor='center',
+                x=0.5
+            ),
+            margin=dict(b=150),  # Aumentar a margem inferior para acomodar a legenda
+            width=800,  # Tamanho fixo do gráfico
+            height=700,  # Aumentar a altura do gráfico
+            title=f'Preço de Fábrica (PF) por Laboratório e Média Mensal',
         )
-        fig4.add_shape(
-            type='line',
-            x0=comparison_df['pmc_sentenca'].min(),
-            y0=comparison_df['pmc_sentenca'].min(),
-            x1=comparison_df['pmc_sentenca'].max(),
-            y1=comparison_df['pmc_sentenca'].max(),
-            line=dict(color='Red', dash='dash'),
-            name='y = x'
+
+        st.plotly_chart(fig_pf, use_container_width=True)
+
+        # Gráfico 2: Evolução do Preço Máximo ao Consumidor (PMC)
+        st.subheader(f'Evolução do Preço Máximo ao Consumidor (PMC) para {substance_selected}')
+        
+        fig_pmc = go.Figure()
+
+        # Adicionar as linhas dos laboratórios com cores menos destacadas
+        for idx, lab in enumerate(df_filtered['laboratorio'].unique()):
+            lab_data = df_filtered[df_filtered['laboratorio'] == lab]
+            if num_labs > 1:
+                color = colors[idx]
+            else:
+                color = colors[0] if colors else 'rgb(150, 150, 150)'  # Fallback se colors estiver vazio
+            fig_pmc.add_trace(go.Scatter(
+                x=lab_data['data'],
+                y=lab_data['pmc_0'],
+                mode='lines+markers',
+                name=f'{lab} (PMC)',
+                line=dict(width=1, color=color, dash='dot'),
+                opacity=0.6
+            ))
+
+        # Adicionar a linha de média mensal em vermelho vivo
+        fig_pmc.add_trace(go.Scatter(
+            x=monthly_mean_pmc['Mes_Ano'],
+            y=monthly_mean_pmc['pmc_0'],
+            mode='lines+markers',
+            name='Média Mensal (PMC)',
+            line=dict(width=3, color='red')
+        ))
+
+        # Configurações do layout do gráfico PMC
+        fig_pmc.update_layout(
+            xaxis_title='Data',
+            yaxis_title='Preço Máximo ao Consumidor (R$)',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.3,
+                xanchor='center',
+                x=0.5
+            ),
+            margin=dict(b=150),  # Aumentar a margem inferior para acomodar a legenda
+            width=800,  # Tamanho fixo do gráfico
+            height=700,  # Aumentar a altura do gráfico
+            title=f'Preço Máximo ao Consumidor (PMC) por Laboratório e Média Mensal',
         )
-        st.plotly_chart(fig4, use_container_width=True)
 
-        # Exibir insights
-        st.write('**Insights:**')
-        st.write('- Pontos acima da linha vermelha tracejada indicam casos onde o valor do caso é maior que o preço do medicamento.')
-        st.write('- Pontos abaixo da linha indicam casos onde o valor do caso é menor que o preço do medicamento.')
+        st.plotly_chart(fig_pmc, use_container_width=True)
 
-        # Opcionalmente, fornecer uma tabela de casos com altas razões
-        high_ratio_cases = comparison_df[comparison_df['razao_valor_preco'] > 10]
-        if not high_ratio_cases.empty:
-            st.write('**Casos com Alta Razão Valor para Preço (>10):**')
-            st.dataframe(high_ratio_cases[['processo', 'substancia', 'valor', 'pmc_sentenca', 'razao_valor_preco']])
+        # **Novo: Calcular Estatísticas para o Último Mês Disponível**
+        # Determinar o último mês disponível
+        ultimo_mes = df_filtered['Mes_Ano'].max()
+        df_ultimo_mes = df_filtered[df_filtered['Mes_Ano'] == ultimo_mes].copy()
+
+        # Formatar a data do último mês para exibir como 'Mês/Ano'
+        ultimo_mes_str = ultimo_mes.strftime('%B/%Y')  # Exemplo: "Setembro/2023"
+
+        # Calcular estatísticas para o último mês (PF)
+        df_ultimo_pf = df_ultimo_mes.dropna(subset=['pf_0'])
+        if not df_ultimo_pf.empty:
+            min_pf = df_ultimo_pf['pf_0'].min()
+            lab_min_pf = df_ultimo_pf.loc[df_ultimo_pf['pf_0'].idxmin(), 'laboratorio']
+            max_pf = df_ultimo_pf['pf_0'].max()
+            lab_max_pf = df_ultimo_pf.loc[df_ultimo_pf['pf_0'].idxmax(), 'laboratorio']
+            mean_pf = df_ultimo_pf['pf_0'].mean()
+            num_labs_pf = df_ultimo_pf['laboratorio'].nunique()
+        else:
+            min_pf = max_pf = mean_pf = num_labs_pf = lab_min_pf = lab_max_pf = 'Dados indisponíveis'
+
+        # Calcular estatísticas para o último mês (PMC)
+        df_ultimo_pmc = df_ultimo_mes.dropna(subset=['pmc_0'])
+        if not df_ultimo_pmc.empty:
+            min_pmc = df_ultimo_pmc['pmc_0'].min()
+            lab_min_pmc = df_ultimo_pmc.loc[df_ultimo_pmc['pmc_0'].idxmin(), 'laboratorio']
+            max_pmc = df_ultimo_pmc['pmc_0'].max()
+            lab_max_pmc = df_ultimo_pmc.loc[df_ultimo_pmc['pmc_0'].idxmax(), 'laboratorio']
+            mean_pmc = df_ultimo_pmc['pmc_0'].mean()
+            num_labs_pmc = df_ultimo_pmc['laboratorio'].nunique()
+        else:
+            min_pmc = max_pmc = mean_pmc = num_labs_pmc = lab_min_pmc = lab_max_pmc = 'Dados indisponíveis'
+
+        # Criar tabela resumo com o mês e ano
+        resumo = pd.DataFrame({
+            'Categoria': ['Preço de Fábrica (PF)', 'Preço Máximo ao Consumidor (PMC)'],
+            'Mês/Ano': [ultimo_mes_str, ultimo_mes_str],
+            'Preço Mínimo (R$)': [min_pf, min_pmc],
+            'Laboratório com Preço Mínimo': [lab_min_pf, lab_min_pmc],
+            'Preço Máximo (R$)': [max_pf, max_pmc],
+            'Laboratório com Preço Máximo': [lab_max_pf, lab_max_pmc],
+            'Preço Médio (R$)': [mean_pf, mean_pmc],
+            'Número de Laboratórios Ofertantes': [num_labs_pf, num_labs_pmc]
+        })
+
+        st.subheader('Resumo dos Preços do Último Mês Disponível')
+        st.table(resumo)
