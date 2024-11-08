@@ -8,6 +8,11 @@ __pycache__/
 
 # Large Useless Datafiles
 pmcs/
+tjrj_20.csv
+unimed_atualizado.csv
+unimed_atualizado_cleaned.csv
+pmc_2015_2024.csv
+transform.ipynb
 
 # Distribution / packaging
 .Python
