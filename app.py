@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import re
 from collections import Counter
 from plotly.colors import n_colors
+import sklearn
 
 st.set_page_config(layout="wide")
 
@@ -404,193 +405,496 @@ if panel == 'Análise Financeira':
     st.title('Análise Financeira de Medicamentos')
     st.header('Análise com Base em Dados Históricos de Preços')
 
-    # Sidebar Filtros para Análise Financeira
+    # Sidebar filters
     st.sidebar.title('Filtros')
 
-    # Selecionar Substância
-    substances = pmc_df['substancia'].dropna().unique()
-    substance_selected = st.sidebar.selectbox('Selecionar Substância', options=substances)
+    # Read data
+    df = pd.read_parquet('df_optimized.parquet')
 
-    # Filtrar dados pela substância selecionada
-    df_substance = pmc_df[pmc_df['substancia'] == substance_selected].copy()
+    # Ensure 'data' is datetime
+    df['data'] = pd.to_datetime(df['data'])
 
-    # Selecionar Laboratórios
-    laboratories = df_substance['laboratorio'].dropna().unique()
-    laboratories_selected = st.sidebar.multiselect('Selecionar Laboratórios', options=laboratories, default=laboratories)
+    # Select 'farmaco'
+    farmacos = df['farmaco'].dropna().unique()
+    farmacos = sorted(farmacos)
+    farmaco_selected = st.sidebar.selectbox('Selecione o Fármaco', options=farmacos)
 
-    # Filtro de Intervalo de Datas
-    min_date = df_substance['data'].min()
-    max_date = df_substance['data'].max()
-    date_range = st.sidebar.date_input('Intervalo de Datas', [min_date, max_date], min_value=min_date, max_value=max_date)
+    # Filter data for the selected 'farmaco'
+    df_farmaco = df[df['farmaco'] == farmaco_selected].copy()
 
-    # Filtrar Dados com Base nas Seleções
-    df_filtered = df_substance[
-        (df_substance['laboratorio'].isin(laboratories_selected)) &
-        (df_substance['data'] >= pd.to_datetime(date_range[0])) &
-        (df_substance['data'] <= pd.to_datetime(date_range[1]))
-    ].copy()
-
-    # Verificar se há dados disponíveis
-    if df_filtered.empty:
-        st.warning('Nenhum dado disponível para os filtros selecionados.')
+    # Proceed only if data is available
+    if df_farmaco.empty:
+        st.warning('Nenhum dado disponível para o fármaco selecionado.')
     else:
-        # Adicionar uma coluna de mês-ano para agrupamentos mensais
-        df_filtered['Mes_Ano'] = df_filtered['data'].dt.to_period('M').dt.to_timestamp()
+        # Calculate mean_price
+        df_farmaco['mean_price'] = (df_farmaco['menor_preco'] + df_farmaco['maior_preco']) / 2
 
-        # Calcular a média mensal para cada preço
-        monthly_mean_pf = df_filtered.groupby('Mes_Ano')['pf_0'].mean().reset_index()
-        monthly_mean_pmc = df_filtered.groupby('Mes_Ano')['pmc_0'].mean().reset_index()
+        # Sort data by date
+        df_farmaco = df_farmaco.sort_values('data')
 
-        # Paleta de cores menos destacadas para os laboratórios
-        num_labs = df_filtered['laboratorio'].nunique()
-        if num_labs > 1:
-            colors = n_colors('rgb(200, 200, 200)', 'rgb(100, 100, 100)', num_labs, colortype='rgb')
-        elif num_labs == 1:
-            colors = ['rgb(150, 150, 150)']  # Cor padrão para um único laboratório
-        else:
-            colors = []  # Nenhuma cor se não houver laboratórios
+        # Convert date to month-year period
+        df_farmaco['Mes_Ano'] = df_farmaco['data'].dt.to_period('M')
 
-        # Gráfico 1: Evolução do Preço de Fábrica (PF)
-        st.subheader(f'Evolução do Preço de Fábrica (PF) para {substance_selected}')
-        
-        fig_pf = go.Figure()
+        # Handle multiple series for the same 'laboratorio'
+        # Use 'apresentacao' as a unique identifier
+        overall_mean_price = df_farmaco['mean_price'].mean()
 
-        # Adicionar as linhas dos laboratórios com cores menos destacadas
-        for idx, lab in enumerate(df_filtered['laboratorio'].unique()):
-            lab_data = df_filtered[df_filtered['laboratorio'] == lab]
-            if num_labs > 1:
-                color = colors[idx]
+        # Identify laboratories with multiple series
+        lab_series_counts = df_farmaco.groupby('laboratorio')['apresentacao'].nunique()
+        labs_with_multiple_series = lab_series_counts[lab_series_counts > 1].index.tolist()
+
+        # For each lab with multiple series, select the one with mean price closest to overall mean
+        df_selected_series = pd.DataFrame()
+        for lab in df_farmaco['laboratorio'].unique():
+            df_lab = df_farmaco[df_farmaco['laboratorio'] == lab]
+            unique_series = df_lab['apresentacao'].unique()
+            if len(unique_series) > 1:
+                # Multiple series exist, select the one closest to overall mean price
+                mean_prices = []
+                for series in unique_series:
+                    df_series = df_lab[df_lab['apresentacao'] == series]
+                    series_mean_price = df_series['mean_price'].mean()
+                    mean_prices.append((series, series_mean_price))
+                # Find the series with mean price closest to overall mean
+                selected_series = min(mean_prices, key=lambda x: abs(x[1] - overall_mean_price))[0]
+                # Select this series data
+                df_selected_series = pd.concat([df_selected_series, df_lab[df_lab['apresentacao'] == selected_series]])
             else:
-                color = colors[0] if colors else 'rgb(150, 150, 150)'  # Fallback se colors estiver vazio
-            fig_pf.add_trace(go.Scatter(
-                x=lab_data['data'],
-                y=lab_data['pf_0'],
-                mode='lines+markers',
-                name=f'{lab} (PF)',
-                line=dict(width=1, color=color, dash='dot'),
-                opacity=0.6
-            ))
+                # Only one series, include it
+                df_selected_series = pd.concat([df_selected_series, df_lab])
 
-        # Adicionar a linha de média mensal em vermelho vivo
-        fig_pf.add_trace(go.Scatter(
-            x=monthly_mean_pf['Mes_Ano'],
-            y=monthly_mean_pf['pf_0'],
-            mode='lines+markers',
-            name='Média Mensal (PF)',
-            line=dict(width=3, color='red')
-        ))
+        # Replace df_farmaco with the selected series data
+        df_farmaco = df_selected_series
 
-        # Configurações do layout do gráfico PF
-        fig_pf.update_layout(
-            xaxis_title='Data',
-            yaxis_title='Preço de Fábrica (R$)',
-            legend=dict(
-                orientation='h',
-                yanchor='top',
-                y=-0.3,
-                xanchor='center',
-                x=0.5
-            ),
-            margin=dict(b=150),  # Aumentar a margem inferior para acomodar a legenda
-            width=800,  # Tamanho fixo do gráfico
-            height=700,  # Aumentar a altura do gráfico
-            title=f'Preço de Fábrica (PF) por Laboratório e Média Mensal',
-        )
+        # Recalculate overall mean price (optional)
+        overall_mean_price = df_farmaco['mean_price'].mean()
 
-        st.plotly_chart(fig_pf, use_container_width=True)
+        # Create time_idx using the ordinal attribute
+        df_farmaco['time_idx'] = df_farmaco['Mes_Ano'].apply(lambda x: x.ordinal) - df_farmaco['Mes_Ano'].min().ordinal
 
-        # Gráfico 2: Evolução do Preço Máximo ao Consumidor (PMC)
-        st.subheader(f'Evolução do Preço Máximo ao Consumidor (PMC) para {substance_selected}')
-        
-        fig_pmc = go.Figure()
+        # Group by Mes_Ano and calculate mean, min, max prices across laboratories
+        df_grouped = df_farmaco.groupby('Mes_Ano').agg({
+            'menor_preco': 'min',
+            'maior_preco': 'max',
+            'mean_price': 'mean'
+        }).reset_index()
 
-        # Adicionar as linhas dos laboratórios com cores menos destacadas
-        for idx, lab in enumerate(df_filtered['laboratorio'].unique()):
-            lab_data = df_filtered[df_filtered['laboratorio'] == lab]
-            if num_labs > 1:
-                color = colors[idx]
-            else:
-                color = colors[0] if colors else 'rgb(150, 150, 150)'  # Fallback se colors estiver vazio
-            fig_pmc.add_trace(go.Scatter(
-                x=lab_data['data'],
-                y=lab_data['pmc_0'],
-                mode='lines+markers',
-                name=f'{lab} (PMC)',
-                line=dict(width=1, color=color, dash='dot'),
-                opacity=0.6
-            ))
+        # Create time_idx for grouped data
+        df_grouped['time_idx'] = df_grouped['Mes_Ano'].apply(lambda x: x.ordinal) - df_grouped['Mes_Ano'].min().ordinal
 
-        # Adicionar a linha de média mensal em vermelho vivo
-        fig_pmc.add_trace(go.Scatter(
-            x=monthly_mean_pmc['Mes_Ano'],
-            y=monthly_mean_pmc['pmc_0'],
-            mode='lines+markers',
-            name='Média Mensal (PMC)',
-            line=dict(width=3, color='red')
-        ))
+        # Prepare future periods for predictions (next 3 months)
+        forecast_horizon = 6  # Changed to 3 months
+        last_period = df_farmaco['Mes_Ano'].max()
+        future_periods = [last_period + i for i in range(1, forecast_horizon + 1)]
+        future_time_idx = [df_farmaco['time_idx'].max() + i for i in range(1, forecast_horizon + 1)]
 
-        # Configurações do layout do gráfico PMC
-        fig_pmc.update_layout(
-            xaxis_title='Data',
-            yaxis_title='Preço Máximo ao Consumidor (R$)',
-            legend=dict(
-                orientation='h',
-                yanchor='top',
-                y=-0.3,
-                xanchor='center',
-                x=0.5
-            ),
-            margin=dict(b=150),  # Aumentar a margem inferior para acomodar a legenda
-            width=800,  # Tamanho fixo do gráfico
-            height=700,  # Aumentar a altura do gráfico
-            title=f'Preço Máximo ao Consumidor (PMC) por Laboratório e Média Mensal',
-        )
+        from sklearn.ensemble import RandomForestRegressor
 
-        st.plotly_chart(fig_pmc, use_container_width=True)
+        # Function to create lagged features
+        def create_lagged_features(df, target_col, lags):
+            df_lagged = df.copy()
+            for lag in range(1, lags + 1):
+                df_lagged[f'lag_{lag}'] = df_lagged[target_col].shift(lag)
+            df_lagged = df_lagged.dropna()
+            return df_lagged
 
-        # **Novo: Calcular Estatísticas para o Último Mês Disponível**
-        # Determinar o último mês disponível
-        ultimo_mes = df_filtered['Mes_Ano'].max()
-        df_ultimo_mes = df_filtered[df_filtered['Mes_Ano'] == ultimo_mes].copy()
+        n_lags = 3  # Number of lags to use
 
-        # Formatar a data do último mês para exibir como 'Mês/Ano'
-        ultimo_mes_str = ultimo_mes.strftime('%B/%Y')  # Exemplo: "Setembro/2023"
+        # Predictions for laboratories
+        predictions_labs = pd.DataFrame()
+        laboratorios = df_farmaco['laboratorio'].unique()
 
-        # Calcular estatísticas para o último mês (PF)
-        df_ultimo_pf = df_ultimo_mes.dropna(subset=['pf_0'])
-        if not df_ultimo_pf.empty:
-            min_pf = df_ultimo_pf['pf_0'].min()
-            lab_min_pf = df_ultimo_pf.loc[df_ultimo_pf['pf_0'].idxmin(), 'laboratorio']
-            max_pf = df_ultimo_pf['pf_0'].max()
-            lab_max_pf = df_ultimo_pf.loc[df_ultimo_pf['pf_0'].idxmax(), 'laboratorio']
-            mean_pf = df_ultimo_pf['pf_0'].mean()
-            num_labs_pf = df_ultimo_pf['laboratorio'].nunique()
-        else:
-            min_pf = max_pf = mean_pf = num_labs_pf = lab_min_pf = lab_max_pf = 'Dados indisponíveis'
+        for i, lab in enumerate(laboratorios):
+            df_lab = df_farmaco[df_farmaco['laboratorio'] == lab].copy()
+            if len(df_lab) < n_lags + forecast_horizon:
+                st.warning(f'Dados insuficientes para o laboratório {lab}. Previsão não será realizada.')
+                continue
+            # Sort by time_idx
+            df_lab = df_lab.sort_values('time_idx')
+            # Prepare lagged features
+            df_lab_lagged = create_lagged_features(df_lab, 'mean_price', n_lags)
+            # Features and target
+            X_lab = df_lab_lagged[[f'lag_{lag}' for lag in range(1, n_lags + 1)]]
+            y_lab = df_lab_lagged['mean_price']
+            # Fit model
+            model_lab = RandomForestRegressor()
+            model_lab.fit(X_lab, y_lab)
+            # Prepare for recursive forecasting
+            last_known_lags = df_lab['mean_price'].iloc[-n_lags:].values
+            # Predict future prices recursively
+            future_predictions = []
+            for _ in range(forecast_horizon):
+                X_input = last_known_lags[-n_lags:].reshape(1, -1)
+                y_pred = model_lab.predict(X_input)[0]
+                future_predictions.append(y_pred)
+                # Update last_known_lags
+                last_known_lags = np.append(last_known_lags, y_pred)
+            # Prepare DataFrame with predictions
+            df_pred = pd.DataFrame({
+                'Mes_Ano': future_periods,
+                'mean_price': future_predictions,
+                'laboratorio': lab,
+                'tipo': 'Previsão'
+            })
+            # Append to predictions DataFrame
+            predictions_labs = pd.concat([predictions_labs, df_pred], ignore_index=True)
 
-        # Calcular estatísticas para o último mês (PMC)
-        df_ultimo_pmc = df_ultimo_mes.dropna(subset=['pmc_0'])
-        if not df_ultimo_pmc.empty:
-            min_pmc = df_ultimo_pmc['pmc_0'].min()
-            lab_min_pmc = df_ultimo_pmc.loc[df_ultimo_pmc['pmc_0'].idxmin(), 'laboratorio']
-            max_pmc = df_ultimo_pmc['pmc_0'].max()
-            lab_max_pmc = df_ultimo_pmc.loc[df_ultimo_pmc['pmc_0'].idxmax(), 'laboratorio']
-            mean_pmc = df_ultimo_pmc['pmc_0'].mean()
-            num_labs_pmc = df_ultimo_pmc['laboratorio'].nunique()
-        else:
-            min_pmc = max_pmc = mean_pmc = num_labs_pmc = lab_min_pmc = lab_max_pmc = 'Dados indisponíveis'
+        # Predictions for max, min, mean prices
+        # Prepare data
+        df_grouped = df_grouped.sort_values('time_idx')
 
-        # Criar tabela resumo com o mês e ano
-        resumo = pd.DataFrame({
-            'Categoria': ['Preço de Fábrica (PF)', 'Preço Máximo ao Consumidor (PMC)'],
-            'Mês/Ano': [ultimo_mes_str, ultimo_mes_str],
-            'Preço Mínimo (R$)': [min_pf, min_pmc],
-            'Laboratório com Preço Mínimo': [lab_min_pf, lab_min_pmc],
-            'Preço Máximo (R$)': [max_pf, max_pmc],
-            'Laboratório com Preço Máximo': [lab_max_pf, lab_max_pmc],
-            'Preço Médio (R$)': [mean_pf, mean_pmc],
-            'Número de Laboratórios Ofertantes': [num_labs_pf, num_labs_pmc]
+        # For Mean Price
+        df_grouped_lagged = create_lagged_features(df_grouped, 'mean_price', n_lags)
+        X_mean = df_grouped_lagged[[f'lag_{lag}' for lag in range(1, n_lags + 1)]]
+        y_mean = df_grouped_lagged['mean_price']
+        model_mean = RandomForestRegressor()
+        model_mean.fit(X_mean, y_mean)
+        # Recursive forecasting
+        last_known_lags_mean = df_grouped['mean_price'].iloc[-n_lags:].values
+        future_predictions_mean = []
+        for _ in range(forecast_horizon):
+            X_input = last_known_lags_mean[-n_lags:].reshape(1, -1)
+            y_pred = model_mean.predict(X_input)[0]
+            future_predictions_mean.append(y_pred)
+            last_known_lags_mean = np.append(last_known_lags_mean, y_pred)
+
+        # For Min Price
+        df_grouped_lagged_min = create_lagged_features(df_grouped, 'menor_preco', n_lags)
+        X_min = df_grouped_lagged_min[[f'lag_{lag}' for lag in range(1, n_lags + 1)]]
+        y_min = df_grouped_lagged_min['menor_preco']
+        model_min = RandomForestRegressor()
+        model_min.fit(X_min, y_min)
+        # Recursive forecasting
+        last_known_lags_min = df_grouped['menor_preco'].iloc[-n_lags:].values
+        future_predictions_min = []
+        for _ in range(forecast_horizon):
+            X_input = last_known_lags_min[-n_lags:].reshape(1, -1)
+            y_pred = model_min.predict(X_input)[0]
+            future_predictions_min.append(y_pred)
+            last_known_lags_min = np.append(last_known_lags_min, y_pred)
+
+        # For Max Price
+        df_grouped_lagged_max = create_lagged_features(df_grouped, 'maior_preco', n_lags)
+        X_max = df_grouped_lagged_max[[f'lag_{lag}' for lag in range(1, n_lags + 1)]]
+        y_max = df_grouped_lagged_max['maior_preco']
+        model_max = RandomForestRegressor()
+        model_max.fit(X_max, y_max)
+        # Recursive forecasting
+        last_known_lags_max = df_grouped['maior_preco'].iloc[-n_lags:].values
+        future_predictions_max = []
+        for _ in range(forecast_horizon):
+            X_input = last_known_lags_max[-n_lags:].reshape(1, -1)
+            y_pred = model_max.predict(X_input)[0]
+            future_predictions_max.append(y_pred)
+            last_known_lags_max = np.append(last_known_lags_max, y_pred)
+
+        # Prepare DataFrame with predictions
+        df_pred_prices = pd.DataFrame({
+            'Mes_Ano': future_periods,
+            'menor_preco': future_predictions_min,
+            'maior_preco': future_predictions_max,
+            'mean_price': future_predictions_mean,
+            'tipo': 'Previsão'
         })
 
-        st.subheader('Resumo dos Preços do Último Mês Disponível')
-        st.table(resumo)
+        # Combine historical data and predictions
+        df_grouped['tipo'] = 'Histórico'
+        df_prices = pd.concat([df_grouped[['Mes_Ano', 'menor_preco', 'maior_preco', 'mean_price', 'tipo']],
+                               df_pred_prices],
+                              ignore_index=True)
+
+        # Prepare data for plotting laboratories
+        df_farmaco['tipo'] = 'Histórico'
+        df_labs_all = pd.concat([df_farmaco[['Mes_Ano', 'mean_price', 'laboratorio', 'tipo']],
+                                 predictions_labs[['Mes_Ano', 'mean_price', 'laboratorio', 'tipo']]],
+                                ignore_index=True)
+
+        # Plotting 'Preços' by laboratory
+        import plotly.graph_objects as go
+        import plotly.express as px
+
+        st.subheader('Evolução dos Preços por Laboratório')
+
+        fig_prices = go.Figure()
+
+        # Get list of labs
+        labs = df_labs_all['laboratorio'].unique()
+
+        # Generate a color palette
+        colors = px.colors.qualitative.Plotly
+
+        for i, lab in enumerate(labs):
+            df_lab = df_labs_all[df_labs_all['laboratorio'] == lab]
+            df_hist = df_lab[df_lab['tipo'] == 'Histórico']
+            df_pred = df_lab[df_lab['tipo'] == 'Previsão']
+            color = colors[i % len(colors)]
+            # Plot historical data
+            fig_prices.add_trace(go.Scatter(
+                x=df_hist['Mes_Ano'].dt.to_timestamp(),
+                y=df_hist['mean_price'],
+                mode='lines+markers',
+                name=f'{lab}',
+                line=dict(color=color, dash='solid'),
+                legendgroup=lab
+            ))
+            # Plot predictions
+            if not df_pred.empty:
+                fig_prices.add_trace(go.Scatter(
+                    x=pd.PeriodIndex(df_pred['Mes_Ano']).to_timestamp(),
+                    y=df_pred['mean_price'],
+                    mode='lines+markers',
+                    name=f'{lab}',
+                    line=dict(color=color, dash='dash'),
+                    legendgroup=lab,
+                    showlegend=False
+                ))
+
+        # Add legend entries for line styles
+        fig_prices.add_trace(go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            line=dict(color='black', dash='solid'),
+            name='Histórico',
+            showlegend=True
+        ))
+        fig_prices.add_trace(go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            line=dict(color='black', dash='dash'),
+            name='Previsão',
+            showlegend=True
+        ))
+
+        # Adjust layout to place legend below the plot
+        fig_prices.update_layout(
+            xaxis_title='Data',
+            yaxis_title='Preço Médio (R$)',
+            title='Evolução dos Preços por Laboratório',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.25,
+                xanchor='left',
+                x=0,
+                title_text='Laboratórios',
+                font=dict(size=10),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            margin=dict(b=200),
+            width=900,
+            height=600
+        )
+
+        st.plotly_chart(fig_prices, use_container_width=True)
+
+        # Plotting max, min, mean prices
+        st.subheader('Evolução do Preço Máximo, Mínimo e Médio')
+
+        fig_stats = go.Figure()
+
+        df_hist = df_prices[df_prices['tipo'] == 'Histórico']
+        df_pred = df_prices[df_prices['tipo'] == 'Previsão']
+
+        # Plot 'menor_preco' (Min Price)
+        fig_stats.add_trace(go.Scatter(
+            x=df_hist['Mes_Ano'].dt.to_timestamp(),
+            y=df_hist['menor_preco'],
+            mode='lines+markers',
+            name='Preço Mínimo',
+            line=dict(color='blue', dash='solid'),
+            legendgroup='Preço Mínimo'
+        ))
+        fig_stats.add_trace(go.Scatter(
+            x=pd.PeriodIndex(df_pred['Mes_Ano']).to_timestamp(),
+            y=df_pred['menor_preco'],
+            mode='lines+markers',
+            name='Preço Mínimo',
+            line=dict(color='blue', dash='dash'),
+            legendgroup='Preço Mínimo',
+            showlegend=False
+        ))
+
+        # Plot 'maior_preco' (Max Price)
+        fig_stats.add_trace(go.Scatter(
+            x=df_hist['Mes_Ano'].dt.to_timestamp(),
+            y=df_hist['maior_preco'],
+            mode='lines+markers',
+            name='Preço Máximo',
+            line=dict(color='red', dash='solid'),
+            legendgroup='Preço Máximo'
+        ))
+        fig_stats.add_trace(go.Scatter(
+            x=pd.PeriodIndex(df_pred['Mes_Ano']).to_timestamp(),
+            y=df_pred['maior_preco'],
+            mode='lines+markers',
+            name='Preço Máximo',
+            line=dict(color='red', dash='dash'),
+            legendgroup='Preço Máximo',
+            showlegend=False
+        ))
+
+        # Plot 'mean_price' (Mean Price)
+        fig_stats.add_trace(go.Scatter(
+            x=df_hist['Mes_Ano'].dt.to_timestamp(),
+            y=df_hist['mean_price'],
+            mode='lines+markers',
+            name='Preço Médio',
+            line=dict(color='green', dash='solid'),
+            legendgroup='Preço Médio'
+        ))
+        fig_stats.add_trace(go.Scatter(
+            x=pd.PeriodIndex(df_pred['Mes_Ano']).to_timestamp(),
+            y=df_pred['mean_price'],
+            mode='lines+markers',
+            name='Preço Médio',
+            line=dict(color='green', dash='dash'),
+            legendgroup='Preço Médio',
+            showlegend=False
+        ))
+
+        # Add legend entries for line styles
+        fig_stats.add_trace(go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            line=dict(color='black', dash='solid'),
+            name='Histórico',
+            showlegend=True
+        ))
+        fig_stats.add_trace(go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            line=dict(color='black', dash='dash'),
+            name='Previsão',
+            showlegend=True
+        ))
+
+        # Adjust layout to place legend below the plot
+        fig_stats.update_layout(
+            xaxis_title='Data',
+            yaxis_title='Preço (R$)',
+            title='Evolução do Preço Máximo, Mínimo e Médio',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.25,
+                xanchor='left',
+                x=0,
+                title_text='Preços',
+                font=dict(size=10),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            margin=dict(b=200),
+            width=900,
+            height=600
+        )
+
+        st.plotly_chart(fig_stats, use_container_width=True)
+
+        # Additional Analyses
+        st.subheader('Estatísticas Descritivas dos Preços')
+        stats_summary = df_farmaco[['menor_preco', 'maior_preco', 'mean_price']].describe()
+        st.table(stats_summary)
+
+        # Plot histograms
+        st.subheader('Distribuição dos Preços')
+        fig_hist = go.Figure()
+        fig_hist.add_trace(go.Histogram(
+            x=df_farmaco['menor_preco'],
+            name='Menor Preço',
+            opacity=0.5
+        ))
+        fig_hist.add_trace(go.Histogram(
+            x=df_farmaco['maior_preco'],
+            name='Maior Preço',
+            opacity=0.5
+        ))
+        fig_hist.add_trace(go.Histogram(
+            x=df_farmaco['mean_price'],
+            name='Preço Médio',
+            opacity=0.5
+        ))
+        fig_hist.update_layout(
+            barmode='overlay',
+            xaxis_title='Preço (R$)',
+            yaxis_title='Frequência',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.25,
+                xanchor='left',
+                x=0,
+                font=dict(size=10),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            margin=dict(b=150),
+            width=900,
+            height=600
+        )
+        st.plotly_chart(fig_hist, use_container_width=True)
+
+        # Plot box plots
+        st.subheader('Box Plot dos Preços')
+        fig_box = go.Figure()
+        fig_box.add_trace(go.Box(
+            y=df_farmaco['menor_preco'],
+            name='Menor Preço'
+        ))
+        fig_box.add_trace(go.Box(
+            y=df_farmaco['maior_preco'],
+            name='Maior Preço'
+        ))
+        fig_box.add_trace(go.Box(
+            y=df_farmaco['mean_price'],
+            name='Preço Médio'
+        ))
+        fig_box.update_layout(
+            yaxis_title='Preço (R$)',
+            legend=dict(
+                orientation='h',
+                yanchor='top',
+                y=-0.25,
+                xanchor='left',
+                x=0,
+                font=dict(size=10),
+                bgcolor='rgba(0,0,0,0)'
+            ),
+            margin=dict(b=150),
+            width=900,
+            height=600
+        )
+        st.plotly_chart(fig_box, use_container_width=True)
+
+        # Explanation of the Predictor
+        st.subheader('Modelo de Previsão Utilizado')
+        st.write("""
+        **Modelo Utilizado:** `RandomForestRegressor` com características defasadas (lagged features).
+
+        **Motivação da Escolha:**
+
+        - O `RandomForestRegressor` é um modelo de aprendizado de máquina robusto que pode capturar relações não lineares nos dados.
+        - Ao usar características defasadas, o modelo considera valores anteriores para prever futuros, capturando tendências temporais.
+        - A abordagem de previsão recursiva permite que previsões anteriores influenciem as subsequentes, proporcionando uma previsão mais dinâmica.
+        - O `RandomForestRegressor` é menos propenso a overfitting e pode lidar bem com dados ruidosos e complexos.
+        - A biblioteca scikit-learn foi utilizada, garantindo a confiabilidade e eficiência computacional do modelo.
+
+        **Como Funciona:**
+
+        - **Características Defasadas:** Para cada ponto de dados, utilizamos os preços médios dos 3 meses anteriores como entradas (lags) para prever o preço futuro.
+        - **Previsão Recursiva:** Para prever os próximos 6 meses, usamos as previsões anteriores como entradas para as próximas previsões, permitindo que o modelo capture a dinâmica temporal.
+        - **Aplicação aos Laboratórios e Preços Agregados:** Essa abordagem foi aplicada tanto para prever os preços de cada laboratório individualmente quanto para os preços máximos, mínimos e médios agregados.
+
+        **Vantagens:**
+
+        - Captura de padrões complexos nos dados históricos.
+        - Flexibilidade para modelar relações não lineares.
+        - Robustez contra outliers e variabilidade nos dados.
+
+        **Considerações Finais:**
+
+        - Embora o `RandomForestRegressor` não seja especificamente um modelo de séries temporais, a inclusão de características defasadas permite que ele seja adaptado para previsões temporais.
+        - Para aplicações futuras, especialmente com dados mais extensos, pode-se considerar modelos especializados em séries temporais, como ARIMA ou Prophet.
+        """)
