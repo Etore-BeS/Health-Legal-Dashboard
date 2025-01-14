@@ -1,0 +1,314 @@
+[
+    {
+        "FÁRMACO": "Abemaciclibe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama avançado ou metastático, com HR+ e HER2- em pacientes adultas",
+        "Data de Incorporação": "06/12/2021",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2021/20211207_portaria_73.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2021/20211207_relatorio_678_abemaciclibe_palbociclibe_ribociclibe_carcinoma_mama_final.pdf"
+    },
+    {
+        "FÁRMACO": "Abiraterona",
+        "Localização": "Prostata",
+        "Indicação": "Câncer de próstata metastático resistente à castração em pacientes com uso prévio de quimioterapia",
+        "Data de Incorporação": "24/07/2019",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2019/portariasctie_37_38_39_2019.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2019/relatorio_abiraterona_adenocarcinoma_464_2019.pdf"
+    },
+    {
+        " FÁRMACO": "Alfainterferona",
+        "Localização": "Melanoma",
+        "Indicação": "Melanoma cutâneo em estágio clínico III, tratamento adjuvante",
+        "Data de Incorporação": "18/01/2013",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2013/portaria1a4_2013.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/alfainterferona-melanoma-final.pdf"
+    },
+    {
+        "FÁRMACO": "Blinatumomabe",
+        "Localização": "Leucemia linfoblástica aguda",
+        "Indicação": "Leucemia linfoblástica aguda (LLA) B derivada pediátrica em primeira recidiva medular de alto risco",
+        "Data de Incorporação": "01/06/2022",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2022/20220603_portaria_51.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2022/20220603_relatorio_725_blinatumomabe_leucemia_linfoblstica_aguda.pdf"
+    },
+    {
+        "FÁRMACO": "Bortezomibe",
+        "Localização": "Mieloma múltiplo",
+        "Indicação": "Mieloma múltiplo em pacientes adultos, não previamente tratados, inelegíveis ao transplante autólogo de células-tronco hematopoiéticas",
+        "Data de Incorporação": "25/09/2020",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2020/20200928_portaria_sctie_45.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2020/20200928_relatorio_de_recomendacao_559_bortezomibe_mieloma_inelegiveis.pdf"
+    },
+    {
+        "FÁRMACO": "Bortezomibe",
+        "Localização": "Mieloma múltiplo",
+        "Indicação": "Mieloma múltiplo em pacientes adultos, previamente tratados",
+        "Data de Incorporação": "25/09/2020",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2020/20200928_portaria_sctie_44.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2020/20200928_relatorio_de_recomendacao_557_bortezomibe.pdf"
+    },
+    {
+        "FÁRMACO": "Bortezomibe",
+        "Localização": "Mieloma múltiplo",
+        "Indicação": "Mieloma múltiplo em pacientes adultos, não previamente tratados, elegíveis ao transplante autólogo de células-tronco hematopoiéticas",
+        "Data de Incorporação": "25/09/2020",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2020/20200928_portaria_sctie_43.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/consultas/relatorios/2020/20200928_relatorio_de_recomendacao_558_bortezomibe_mieloma_elegiveis.pdf"
+    },
+    {
+        "FÁRMACO": "Brentuximabe vedotina",
+        "Localização": "Linfoma de Hodgkin",
+        "Indicação": "Linfoma de Hodgkin refratário ou recidivado após transplante autólogo de células tronco hematopoiéticas em pacientes adultos",
+        "Data de Incorporação": "11/03/2019",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2019/portariasctie_12_2019.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2019/relatorio_brentuximabe_linfomahodgkin.pdf"
+    },
+    {
+        "FÁRMACO": "Crizotinibe",
+        "Localização": "Pulmão",
+        "Indicação": "Câncer de Pulmão não pequenas células (CPNPC) avançado ALK+, tratamento em primeira linha de pacientes adultos",
+        "Data de Incorporação": "06/12/2022",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2022/20221208_portaria_sctie_ms_n168.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2022/20221208_relatorio_crizotinibe_cpnpc_786.pdf"
+    },
+    {
+        "FÁRMACO": "cloridrato de Erlotinibe",
+        "Localização": "Pulmão",
+        "Indicação": "Câncer de Pulmão não pequenas células (CPNPC) avançado ou metastático com mutação EGFR",
+        "Data de Incorporação": "07/11/2013",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2013/cp38a40-pt51.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/erlotinibe-final.pdf"
+    },
+    {
+        "FÁRMACO": "Gefitinibe",
+        "Localização": "Pulmão",
+        "Indicação": "Câncer de Pulmão não pequenas células (CPNPC) avançado ou metastático com mutação EGFR, em primeira linha",
+        "Data de Incorporação": "07/11/2013",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2013/pt51a53-2013.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/gefitinibe-final.pdf"
+    },
+    {
+        "FÁRMACO": "Hormonioterapia prévia",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama - tratamento pré-operatório e neoadjuvante",
+        "Data de Incorporação": "10/06/2014",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2014/portarias18a22_11-06-2014.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/hormonioterapia-cmama-final.pdf"
+    },
+    {
+        "FÁRMACO": "mesilato de Imatinibe",
+        "Localização": "GIST - Tumor estromal gastrointestinal",
+        "Indicação": "Quimioterapia adjuvante do tumor do estroma gastrointestinal",
+        "Data de Incorporação": "04/07/2014",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2014/portarias25a27_07-07-2014.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/imatinibe-gist-final.pdf"
+    },
+    {
+        "FÁRMACO": "Nivolumabe",
+        "Localização": "Melanoma",
+        "Indicação": "Melanoma avançado não-cirúrgico e metastático, tratamento em primeira linha",
+        "Data de Incorporação": "04/08/2020",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2020/portaria_sctie_23_05_08_2020.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2020/relatorio_541_terapiaalvo_melanoma_final_2020.pdf"
+    },
+    {
+        "FÁRMACO": "Palbociclibe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama avançado ou metastático, com HR+ e HER2- em pacientes adultas",
+        "Data de Incorporação": "06/12/2021",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2021/20211207_portaria_73.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2021/20211207_relatorio_678_abemaciclibe_palbociclibe_ribociclibe_carcinoma_mama_final.pdf"
+    },
+    {
+        "FÁRMACO": "cloridrato de Pazopanibe",
+        "Localização": "Renal",
+        "Indicação": "Carcinoma renal de células claras metastático",
+        "Data de Incorporação": "27/12/2018",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2018/portariassctie_89a91_2018.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2018/relatorio_sunitinibeepazopanibe_carcinomarenal.pdf"
+    },
+    {
+        "FÁRMACO": "Pembrolizumabe",
+        "Localização": "Melanoma",
+        "Indicação": "Melanoma avançado não-cirúrgico e metastático, tratamento em primeira linha",
+        "Data de Incorporação": "04/08/2020",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2020/portaria_sctie_23_05_08_2020.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2020/relatorio_541_terapiaalvo_melanoma_final_2020.pdf"
+    },
+    {
+        "FÁRMACO": "Pertuzumabe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama HER2-positivo metastático em primeira linha de tratamento associado ao trastuzumabe e docetaxel",
+        "Data de Incorporação": "04/12/2017",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2017/portariasctie-57_2017_republicacao.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2017/relatorio_pertuzumabetrastuzumabe_ca_mama.pdf"
+    },
+    {
+        "FÁRMACO": "succinato de Ribociclibe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama avançado ou metastático, com HR+ e HER2- em pacientes adultas",
+        "Data de Incorporação": "06/12/2021",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2021/20211207_portaria_73.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2021/20211207_relatorio_678_abemaciclibe_palbociclibe_ribociclibe_carcinoma_mama_final.pdf"
+    },
+    {
+        "FÁRMACO": "Rituximabe",
+        "Localização": "Linfoma não Hodgkin",
+        "Indicação": "Linfoma não Hodgkin de Células B, folicular, CD20 Positivo, em 1ª e 2ª linha",
+        "Data de Incorporação": "27/12/2013",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2013/pt-63-2013.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/incorporados/relatorio_rtx_linfomafolicular_81-final.pdf"
+    },
+    {
+        "FÁRMACO": "malato de Sunitinibe",
+        "Localização": "Renal",
+        "Indicação": "Carcinoma renal de células claras metastático",
+        "Data de Incorporação": "27/12/2018",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2018/portariassctie_89a91_2018.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2018/relatorio_sunitinibeepazopanibe_carcinomarenal.pdf"
+    },
+    {
+        "FÁRMACO": "Talidomida",
+        "Localização": "Síndrome Mielodisplásica",
+        "Indicação": "Síndrome Mielodisplásica",
+        "Data de Incorporação": "16/12/2014",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2014/portariassctie_44_a_48de17_12_2014.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/artigos_publicacoes/relatorio_talidomida_para_mds_final.pdf"
+    },
+    {
+        "FÁRMACO": "Trastuzumabe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama avançado",
+        "Data de Incorporação": "25/07/2012",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2012/portaria18e19_2012.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2012/trastuzumabe_caavancado_final.pdf"
+    },
+    {
+        "FÁRMACO": "Trastuzumabe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama inicial",
+        "Data de Incorporação": "25/07/2012",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2012/portaria18e19_2012.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2012/trastuzumabe_cainicial_final.pdf"
+    },
+    {
+        "FÁRMACO": "Trastuzumabe",
+        "Localização": "Mama",
+        "Indicação": "Câncer de mama HER2-positivo metastático em primeira linha de tratamento",
+        "Data de Incorporação": "02/08/2017",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/legislacao/portarias_sctie_26-27-29-30_consulta_publica_33-34-35-36.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2017/relatorio_trastuzumabe_ca-mama_metastatico_final.pdf"
+    },
+    {
+        "FÁRMACO": "Trastuzumabe entansina",
+        "Localização": "Mama",
+        "Indicação": "Tratamento adjuvante do câncer de mama HER2-positivo operado em estádio III com doença residual na peça cirúrgica após tratamento neoadjuvante",
+        "Data de Incorporação": "09/09/2022",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2022/20220912_portaria_98.pdf",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2022/20220912_relatorio_751_transtuzumabe_entancila.pdf"
+    },
+    {
+        "FÁRMACO": "Rituximabe associado à quimioterapia com fludarabina e ciclofosfamida",
+        "Localização": "Leucemia linfocítica crônica",
+        "Indicação": "Tratamento de primeira linha da leucemia linfocítica crônica",
+        "Data de Incorporação": "21/07/2023",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2023/portaria-sectics-ms-no-42-de-21-de-julho-de-2023",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2023/rituximabe-associado-a-quimioterapia-com-fludarabina-e-ciclofosfamida-para-o-tratamento-de-primeira-linha-da-leucemia-linfocitica-cronica"
+    },
+    {
+        "FÁRMACO": "Terapia fotodinâmica",
+        "Localização": "Pele",
+        "Indicação": "Tratamento de câncer de pele não melanoma do tipo carcinoma basocelular superficial e nodular",
+        "Data de Incorporação": "05/09/2023",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2023/portaria-sectics-ms-no-46",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2023/procedimento-terapia-fotodinamica-para-tratamento-de-carcinoma-basocelular-superficial-e-nodular"
+    },
+    {
+        "FÁRMACO": "Carfilzomibe",
+        "Localização": "Mieloma múltiplo",
+        "Indicação": "Tratamento de pacientes com mieloma múltiplo recidivado ou refratário que receberam uma terapia prévia",
+        "Data de Incorporação": "09/11/2023",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2023/portaria-sectics-no-65.2023",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2023/Relatrioderecomendacao847Carfilzomibe.pdf"
+    },
+    {
+        "FÁRMACO": "Ablação térmica",
+        "Localização": "Cólon e reto",
+        "Indicação": "Tratamento da metástase hepática irressecável ou ressecável com alto risco cirúrgico do câncer de cólon e reto",
+        "Data de Incorporação": "05/03/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-6-de-5-de-marco-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-428"
+    },
+    {
+        "FÁRMACO": "Teste de reação em cadeia da polimerase emtempo real (rt-PCR)",
+        "Localização": "Pulmão",
+        "Indicação": "Identificação de mutação do receptor do fator de crescimento epidérmico (EGFR) em pacientes com câncer de pulmão de células não pequenas",
+        "Data de Incorporação": "05/03/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-8-de-5-de-marco-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-430"
+    },
+    {
+        "FÁRMACO": "Testagem Molecular",
+        "Localização": "Útero",
+        "Indicação": "Detecção de HPV e rastreamento do câncer do colo do útero",
+        "Data de Incorporação": "07/03/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-3-de-7-de-marco-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/20240803_ReSoc_441_testagem_molecular_HPV1.pdf"
+    },
+    {
+        "FÁRMACO": "Ecobroncoscopia e ecoendoscopia em uso combinado, ou ecobroncoscopia em uso isolado",
+        "Localização": "Pulmão",
+        "Indicação": "Pacientes diagnosticados com câncer de pulmão",
+        "Data de Incorporação": "18/04/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-16-de-18-de-abril-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-447"
+    },
+    {
+        "FÁRMACO": "Durvalumabe",
+        "Localização": "Pulmão",
+        "Indicação": "Tratamento de pacientes com câncer de pulmão de células não-pequenas (CPCNP) estágio III irressecável, cuja doença não progrediu após a terapia de quimiorradiação à base de platina",
+        "Data de Incorporação": "18/04/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-21-de-18-de-abril-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-433"
+    },
+    {
+        "FÁRMACO": "Lenalidomida em combinação com rituximabe",
+        "Localização": "Linfoma não Hodgkin",
+        "Indicação": "Pacientes com linfoma folicular previamente tratados",
+        "Data de Incorporação": "26/06/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-29-de-26-de-junho-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-455"
+    },
+    {
+        "FÁRMACO": "Abiraterona em monoterapia ou associada ao docetaxel",
+        "Localização": "Próstata",
+        "Indicação": "Tratamento de pacientes com câncer de próstata sensível à castração e metastático (CPSCm), conforme protocolo do Ministério da Saúde.",
+        "Data de Incorporação": "22/08/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-32-de-22-de-agosto-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-no-460-com-decisao-final"
+    },
+    {
+        "FÁRMACO": "Abiraterona associada à terapia de privação androgênica (TPA)",
+        "Localização": "Próstata",
+        "Indicação": "Pacientes com câncer de próstata resistente à castração, metastático e virgens de quimioterapia, conforme protocolo do Ministério da Saúde.",
+        "Data de Incorporação": "22/08/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-33-de-22-de-agosto-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-no-459-com-decisao-final"
+    },
+    {
+        "FÁRMACO": "TSH recombinante",
+        "Localização": "Tireoide",
+        "Indicação": "Tratamento de pacientes com diagnóstico de carcinoma diferenciado de tireoide com indicação de iodo radioativo e contraindicação à indução de hipotireoidismo endógeno ou incapacidade de produção do TSH endógeno",
+        "Data de Incorporação": "07/10/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-43-de-4-de-outubro-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-469-1"
+    },
+    {
+        "FÁRMACO": "Olaparibe",
+        "Localização": "Ovário",
+        "Indicação": "Tratamento de manutenção do câncer de ovário (incluindo trompas de Falópio ou peritoneal primário), seroso ou endometrioide, recém diagnosticado, de alto grau, avançado (estágio FIGO III ou IV), com mutação nos genes BRCA, sensível à quimioterapia de primeira linha, à base de platina.",
+        "Data de Incorporação": "07/10/2024",
+        "Portaria": "https://www.gov.br/conitec/pt-br/midias/relatorios/portaria/2024/portaria-sectics-ms-no-45-de-4-de-outubro-de-2024",
+        "Relatório de Recomendação": "https://www.gov.br/conitec/pt-br/midias/relatorios/2024/sociedade/relatorio-para-a-sociedade-com-decisao-final-no-458"
+    }
+]

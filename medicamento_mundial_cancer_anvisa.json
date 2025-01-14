@@ -1,0 +1,1570 @@
+[
+    {
+        "MEDICAMENTO": "abvd | doxorubicin| bleomycin| vinblastine|dacarbazine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ac | doxorubicin | cyclophosphamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trioxido de ars\u00eanio",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "arsenico trioxido e tretinoin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "abemaciclib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "abiraterone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "abraxane",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "abstral",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "acalabrutinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "actimorph",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "actinomycin d",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "actiq",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "adriamycin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "afatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "afinitor",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "aldara",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "alectinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "alkeran",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "alpelisib and fulvestrant",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "anastrazole",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "apalutamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ara c",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "arimidex",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "aromasin",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "arsenico trioxido and tretinoin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "asciminib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "asparaginase",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "atezolizumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "atezolizumab and bevacizumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "atezolizumab and nab-paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "avelumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "axitinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "azacitidine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "beacopp",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "beam",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bendamustine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "besponsa",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bevacizumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bexarotene",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bicalutamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bleomycin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bleomycin, etoposide and platinum",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "blinatumomab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bortezomib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bortezomib, cyclophosphamide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "bosulif",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "bosutinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "brentuximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "brigatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "buserelin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "busulfan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cape-ox",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "capox",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ccnu",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "chop",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cpx351",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cabazitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cabometyx",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "cabozantinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "caelyx",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "calpol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "campto",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "caprelsa",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "carbotaxol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "carboplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "carboplatin and etoposide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "carboplatin and paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "carfilzomib and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "carmustine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "casodex",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "cemiplimab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ceritinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cetuximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "chlorambucil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cisplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cisplatin and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cisplatin and fluorouracil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cisplatin, etoposide and ifosfamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cisplatin, fluorouracil and trastuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cladribine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "clasteon",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cometriq",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cosmegen",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "crisantaspase",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "crizotinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cyclophosphamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cyclophosphamide, thalidomide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cyprostat",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cyproterone acetate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cytarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cytarabine into spinal fluid",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "cytosine arabinoside",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dabrafenib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dabrafenib and trametinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dacarbazine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dacomitinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dactinomycin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "daratumumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "daratumumab, bortezomib, thalidomide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "daratumumab, lenalidomide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "darolutamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "darzalex",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dasatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "daunorubicin and cytarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "daunorubicin, cytarabine and midostaurin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "decapeptyl sr",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "degarelix",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "denosumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "diamorphine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "disprol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "docetaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "docetaxel, cisplatin and fluorouracil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "dostarlimab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "doxifos",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "doxorubicin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "doxorubicin and ifosfamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "durogesic",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "durvalumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "effentora",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "encorafenib and binimetinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "encorafenib and cetuximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "entrectinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "enzalutamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "epirubicin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "epirubicin, cisplatin and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "epirubicin, oxaliplatin and fluorouracil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "erbitux",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "eribulin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "erlotinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "erwinase",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "etopophos",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "etoposide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "everolimus",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "exemestane",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "folfirinox",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "folfox",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "folfoxiri",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "faslodex",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "femara",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "fentanyl",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "firmagon",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "fludara",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fludarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fludarabine, cyclophosphamide and rituximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fluorouracil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fluorouracil and mitomycin c",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fluorouracil, leucovorin, oxaliplatin and docetaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "flutamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "folinic acid, fluorouracil and irinotecan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fotivda",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "fulvestrant",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gefitinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcarbo",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemtaxol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcitabine and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcitabine and cisplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcitabine and nab-paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemcitabine and paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemtuzumab ozogamicin, daunorubicin and cytarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "gemzar",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "gilteritinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "giotrif",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "gliadel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "glivec",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "gonapeptyl depot",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "goserelin for breast cancer",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "goserelin for prostate cancer",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "granulocyte colony stimulating factor",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "halaven",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "herceptin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "herzuma",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "hycamtin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "hydrea",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "hydrocortisone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "hydroxycarbamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "hydroxyurea",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ibandronic acid",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ibrance",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "ibrutinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ibuprofen",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "iclusig",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "idarubicin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ifosfamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "imatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "imiquimod cream",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "inotuzumab ozogamicin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ipilimumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ipilimumab and nivolumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ircap",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "iressa",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "irinotecan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "irinotecan and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "irinotecan de gramont",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "irinotecan modified de gramont",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ivosidenib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ivosidenib and azacitidine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ixazomib, lenalidomide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "jevtana",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "kadcyla",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "kapake",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "keytruda",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "kisqali",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "l-da",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lanreotide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "larotrectinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lenalidomide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lenvatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "letrozole",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "leukeran",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "leuprorelin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "leustat",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "levact",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "liposomal daunorubicin and cytarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "liposomal doxorubicin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "litak",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lomustine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lonsurf",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "lorlatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lutrate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lynparza",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "lysodren",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mabthera",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "medroxyprogesterone acetate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "megace",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "megestrol acetate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "melphalan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mepact",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mercaptopurine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "methotrexate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "methylprednisolone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "midostaurin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mifamurtide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mitomycin c",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mitotane",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mitoxana",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mitoxantrone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "mobocertinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "modified de gramont",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "morphgesic sr",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "morphine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nab paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "navelbine",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "nelarabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "neratinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nerlynx",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nexavar",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "nilotinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nintedanib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nipent",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "niraparib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "nivolumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "obinutuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "octreotide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "olaparib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ontruzant",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "opdivo",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "oramorph",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "osimertinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "oxcap",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "oxaliplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "oxaliplatin and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pc",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pe",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pmitcebo",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "paclitaxel",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "paclitaxel and carboplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "palbociclib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pamidronate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pamidronate disodium",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "panadol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "panitumumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "panobinostat, bortezomib and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "paracetamol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pazopanib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "peginterferon alfa 2a",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pembrolizumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pemetrexed",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pemetrexed and carboplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pemetrexed and cisplatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pemigatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pentostatin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "perjeta",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pertuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "phesgo or trastuzumab and pertuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "polatuzumab vedotin, bendamustine and rituximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "pomalidomide and dexamethasone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ponatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "prednisolone",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "procarbazine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "procarbazine, lomustine and vincristine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "prolia",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "prostap",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "provera",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "r-chop",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "r-cvp",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "r-dhap",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "r-eshap",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "r-idelalisib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "rice",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "raloxifene",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "raltitrexed",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "regorafenib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "revlimid",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "ribociclib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "rituximab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "rixathon",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "rubraca",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "rucaparib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ruxience",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "ruxolitinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sacituzumab govitecan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "selpercatinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sevredol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sodium clodronate",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "solpadol",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sorafenib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "steroids",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "stivarga",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "streptozocin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sunitinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "sutent",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "tip",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tafinlar",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "tagrisso",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "talazoparib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "talimogene laherparepvec",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tamoxifen",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tarceva",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "targretin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tasigna",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "taxol",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "taxotere",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "taxotere and cyclophosphamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tecentriq",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "temodal",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "temozolomide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tepadina",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tepotinib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "thiotepa",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tivozanib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tomudex",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "topotecan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trabectedin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trastuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trastuzumab and pertuzumab",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trastuzumab deruxtecan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trastuzumab emtansine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "treosulfan",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trifluridine and tipiracil",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "triptorelin",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "trisenox",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "truxima",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tucatinib, trastuzumab and capecitabine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "tylex",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "vdc\/ie",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vargatef",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "veip",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vectibix",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "velcade",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "vemurafenib",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "venetoclax",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vesanoid",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "vidaza",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "vinblastine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vincristine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vincristine, actinomycin d and cyclophosphamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vincristine, actinomycin d and ifosfamide",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "vinorelbine",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "votrient",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "vyxeos",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "x",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "xelox",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "xalkori",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "xeloda",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "xgeva",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "xospata",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "xtandi",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "yervoy",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "yondelis",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zanosar",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zelboraf",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "zoladex (breast cancer)",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zoladex (prostate cancer)",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zoledronic acid",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zometa",
+        "APROVADO_ANVISA": true
+    },
+    {
+        "MEDICAMENTO": "zomorph",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zydelig",
+        "APROVADO_ANVISA": false
+    },
+    {
+        "MEDICAMENTO": "zytiga",
+        "APROVADO_ANVISA": true
+    }
+]
