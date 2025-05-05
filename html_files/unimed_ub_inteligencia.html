@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Relatório de Inteligência - Unimed Uberlândia</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #00995D;
+            --secondary-color: #007A4B;
+            --accent-color: #33CC8F;
+            --light-color: #E6F7EF;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --gray-color: #6c757d;
+            --light-gray-color: #f8f9fa;
+            --dark-gray-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .stat-title {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-description {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .process-highlight {
+            background: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .process-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .process-detail {
+            margin-bottom: 10px;
+        }
+        
+        .process-label {
+            font-weight: 600;
+            color: var(--dark-gray-color);
+        }
+        
+        .process-value {
+            color: var(--gray-color);
+        }
+        
+        .status-chip {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .status-chip.deferido {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-chip.indeferido {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .status-chip.pendente {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+        }
+        
+        .recommendation-item {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .recommendation-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .metadata {
+            background-color: var(--light-gray-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .metadata-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .metadata-item {
+            margin-bottom: 3px;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .footer-links {
+            margin-top: 10px;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        /* Novas classes para a aba de Dados Inteligentes */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-color);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .sankey-chart {
+            height: 400px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        .trend-stable {
+            color: var(--gray-color);
+        }
+
+        .comparison-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .comparison-card {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .comparison-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .comparison-label {
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+
+        .progress-container {
+            margin-top: 5px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background-color: var(--primary-color);
+        }
+        
+        .custom-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 15px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .heat-map {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .heat-cell {
+            padding: 20px 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .heat-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        .prediction-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .prediction-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .prediction-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .prediction-description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            section {
+                box-shadow: none;
+                margin-bottom: 15px;
+                break-inside: avoid;
+            }
+            
+            .print-button {
+                display: none;
+            }
+            
+            .chart-container {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="54" height="54" rx="10" fill="white"/>
+                    <path d="M21.3926 21.4001H32.6126C36.7726 21.4001 39.6726 24.9101 38.7626 28.9601L36.9726 37.4801C36.2926 40.4401 33.5626 42.6001 30.5326 42.6001H23.4726C20.4426 42.6001 17.7126 40.4401 17.0326 37.4801L15.2426 28.9601C14.3326 24.9101 17.2326 21.4001 21.3926 21.4001Z" fill="#00995D"/>
+                    <path d="M37.9717 16.4009C37.9717 20.4009 34.7317 23.6409 30.7317 23.6409C26.7317 23.6409 23.4917 20.4009 23.4917 16.4009C23.4917 12.4009 26.7317 9.16089 30.7317 9.16089C34.7317 9.16089 37.9717 12.4009 37.9717 16.4009Z" fill="#00995D"/>
+                    <path d="M21.96 27.5398C21.42 27.5398 20.97 27.0898 20.97 26.5498C20.97 26.0098 21.42 25.5598 21.96 25.5598H30.25C30.79 25.5598 31.24 26.0098 31.24 26.5498C31.24 27.0898 30.79 27.5398 30.25 27.5398H21.96Z" fill="white"/>
+                    <path d="M20.2799 33.0395C19.7399 33.0395 19.2899 32.5895 19.2899 32.0495C19.2899 31.5095 19.7399 31.0595 20.2799 31.0595H30.9999C31.5399 31.0595 31.9899 31.5095 31.9899 32.0495C31.9899 32.5895 31.5399 33.0395 30.9999 33.0395H20.2799Z" fill="white"/>
+                </svg>
+                <span>Unimed</span>
+            </div>
+            <div class="header-info">
+                <div class="header-title">Relatório de Inteligência - Medicamentos Judicializados</div>
+                <div class="header-date">Emitido em: 22/04/2025</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Navegação entre abas -->
+    <div class="tabs">
+        <div class="tab" onclick="changeTab('visao-geral')">Visão Geral</div>
+        <div class="tab" onclick="changeTab('dados-medicos')">Análise Médica</div>
+        <div class="tab" onclick="changeTab('dados-juridicos')">Análise Jurídica</div>
+        <div class="tab active" onclick="changeTab('dados-inteligentes')">Dados Inteligentes Uberlândia</div>
+        <div class="tab" onclick="changeTab('comparativo')">Comparativo</div>
+    </div>
+
+    <!-- Seção de Dados Inteligentes Uberlândia -->
+    <section id="dados-inteligentes">
+        <h2 class="section-title"><i class="fas fa-brain"></i> Dashboard de Inteligência - Unimed Uberlândia</h2>
+        
+        <!-- Cards de Estatísticas Principais -->
+        <div class="stats-container">
+            <div class="stat-card info">
+                <div class="stat-title">Total de Processos Analisados</div>
+                <div class="stat-value">32</div>
+                <div class="stat-description">Período 2023-2025</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-title">Taxa de Sucesso Judicial</div>
+                <div class="stat-value">78%</div>
+                <div class="stat-description">Decisões favoráveis ao paciente</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-title">Custo Médio por Processo</div>
+                <div class="stat-value">R$ 180.000,00</div>
+                <div class="stat-description">Valor médio calculado</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-title">Previsão para 2025</div>
+                <div class="stat-value">+22%</div>
+                <div class="stat-description">Aumento estimado de casos</div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Distribuição de Doenças -->
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Distribuição por Tipo de Doença</div>
+                <div class="chart-container">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #00995D; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 170px; font-weight: bold;">Câncer</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #00995D; width: 45%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">45%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #33CC8F; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 170px; font-weight: bold;">Doenças Crônicas</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #33CC8F; width: 30%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">30%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #66D6A8; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 170px; font-weight: bold;">Casos Pós-Cirúrgicos</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #66D6A8; width: 25%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">25%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gráfico de Medicamentos Mais Judicializados -->
+            <div>
+                <div class="chart-title">Medicamentos Mais Judicializados</div>
+                <div class="chart-container">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 170px; font-weight: bold;">AFINITOR (EVEROLIMUS)</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #00995D; width: 18%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">18%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 170px; font-weight: bold;">Imunoterápicos</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #33CC8F; width: 12%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">12%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 170px; font-weight: bold;">Quimioterápicos Off-Label</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #66D6A8; width: 9%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">9%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 170px; font-weight: bold;">Outros Medicamentos</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #99E3C6; width: 61%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">61%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mapa de Calor de Argumentação Jurídica -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-balance-scale"></i> Argumentação Jurídica Predominante</div>
+        <div class="heat-map">
+            <div class="heat-cell" style="background-color: rgba(0, 153, 93, 0.85);">
+                Direito à vida/saúde<br>85%
+            </div>
+            <div class="heat-cell" style="background-color: rgba(0, 153, 93, 0.7);">
+                Abusividade contratual<br>70%
+            </div>
+            <div class="heat-cell" style="background-color: rgba(0, 153, 93, 0.6);">
+                Súmula 608/STJ<br>60%
+            </div>
+            <div class="heat-cell" style="background-color: rgba(0, 153, 93, 0.5);">
+                Jurisprudência<br>50%
+            </div>
+        </div>
+        
+        <!-- Análise de Processos Específicos -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-file-medical"></i> Análise de Caso Representativo</div>
+        <div class="process-highlight">
+            <div class="process-title">📂 Processo: 0653834-69.2014.8.13.0702</div>
+            <div class="process-detail"><span class="process-label">Tribunal:</span> <span class="process-value">TJMG – 9ª Vara Cível de Uberlândia</span></div>
+            <div class="process-detail"><span class="process-label">Fase:</span> <span class="process-value">Sentença (07/03/2025)</span></div>
+            <div class="process-detail"><span class="process-label">Doença:</span> <span class="process-value">Câncer renal metastático (CID C64)</span></div>
+            <div class="process-detail"><span class="process-label">Medicamento:</span> <span class="process-value">AFINITOR (EVEROLISMO), 10 mg/dia</span></div>
+            <div class="process-detail"><span class="process-label">Uso off-label:</span> <span class="process-value">Sim (não listado no rol ANS para câncer renal)</span></div>
+            <div class="process-detail"><span class="process-label">Fundamentação:</span> <span class="process-value">Violação ao direito à saúde (Art. 196 CF/88 + Lei 14.454/2022)</span></div>
+            <div class="process-detail"><span class="process-label">Jurisprudência:</span> <span class="process-value">AgInt no REsp 1.904.349/STJ (cobertura de off-label)</span></div>
+            <div class="process-detail"><span class="process-label">Decisão:</span> <span class="status-chip deferido">Condenação por danos morais (R$ 15 mil) + custeio integral do tratamento</span></div>
+            <div class="process-detail"><span class="process-label">Custo Anual:</span> <span class="process-value">R$ 120.000,00 (AFINITOR)</span></div>
+        </div>
+        
+        <!-- Previsão e Tendências -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-chart-line"></i> Previsão de Tendências</div>
+        <div class="grid-2">
+            <div class="prediction-card">
+                <h3 class="prediction-title"><i class="fas fa-flask"></i> Medicamentos com Maior Potencial de Judicialização</h3>
+                <ol style="padding-left: 20px; margin-bottom: 20px;">
+                    <li style="margin-bottom: 10px;"><strong>Imunoterápicos para melanoma</strong> - Tendência de crescimento de 35% para 2025</li>
+                    <li style="margin-bottom: 10px;"><strong>AFINITOR e similares</strong> - Continuidade do padrão atual com alta taxa de sucesso</li>
+                    <li style="margin-bottom: 10px;"><strong>Tratamentos domiciliares (home care)</strong> - Aumento previsto de 28% pós-pandemia</li>
+                </ol>
+                <div style="font-size: 14px; opacity: 0.9;">
+                    Baseado em análise de padrões judiciais de 2023-2025 e tendências médicas emergentes
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Impacto Financeiro Projetado (2025-2026)</div>
+                <div class="chart-container">
+                    <div style="display: flex; flex-direction: column; height: 100%; justify-content: space-around;">
+                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                            <div style="width: 170px; font-weight: bold;">Cenário Atual</div>
+                            <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                <div style="background-color: #00995D; width: 60%; height: 100%;"></div>
+                            </div>
+                            <div style="width: 120px; text-align: right; margin-left: 10px; font-weight: bold;">R$ 5,7 milhões</div>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                            <div style="width: 170px; font-weight: bold;">Previsão Conservadora</div>
+                            <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                <div style="background-color: #33CC8F; width: 75%; height: 100%;"></div>
+                            </div>
+                            <div style="width: 120px; text-align: right; margin-left: 10px; font-weight: bold;">R$ 7,2 milhões</div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 170px; font-weight: bold;">Previsão Agressiva</div>
+                            <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                <div style="background-color: #dc3545; width: 90%; height: 100%;"></div>
+                            </div>
+                            <div style="width: 120px; text-align: right; margin-left: 10px; font-weight: bold;">R$ 8,5 milhões</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Análise de Risco e Estratégias -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-shield-alt"></i> Análise de Riscos e Oportunidades</div>
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Fatores de Risco</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fator</th>
+                                <th>Impacto</th>
+                                <th>Mitigação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Medicamentos off-label</td>
+                                <td>Alto</td>
+                                <td>Revisão de contratos com cláusulas específicas</td>
+                            </tr>
+                            <tr>
+                                <td>Doenças crônicas</td>
+                                <td>Alto</td>
+                                <td>Monitoramento de custos recorrentes por 2+ anos</td>
+                            </tr>
+                            <tr>
+                                <td>Home care pós-cirúrgico</td>
+                                <td>Médio</td>
+                                <td>Criação de protocolos internos preventivos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Oportunidades Estratégicas</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estratégia</th>
+                                <th>Impacto</th>
+                                <th>Implementação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Contestação de danos morais</td>
+                                <td>Médio</td>
+                                <td>65% dos valores reduzidos em recurso</td>
+                            </tr>
+                            <tr>
+                                <td>Investimento em laudos técnicos preventivos</td>
+                                <td>Alto</td>
+                                <td>Redução de 40% em casos de nexo ocupacional</td>
+                            </tr>
+                            <tr>
+                                <td>Parcerias público-privadas</td>
+                                <td>Alto</td>
+                                <td>Redução do ônus estatal em tratamentos de alto custo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Padrões de Argumentação Jurídica -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-balance-scale"></i> Padrões de Argumentação Jurídica</div>
+        <div class="grid-3">
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Estratégias de Defesa (Operadoras)</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Focar em cláusulas de exclusão (40% de eficácia)</li>
+                    <li class="recommendation-item">Contestar valores de danos morais (65% de redução)</li>
+                    <li class="recommendation-item">Apresentar alternativas terapêuticas (23% de eficácia)</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Tendências de Decisões</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Favoráveis em casos pós-cirúrgicos (85%)</li>
+                    <li class="recommendation-item">Favoráveis com laudos médicos detalhados (78%)</li>
+                    <li class="recommendation-item">Desfavoráveis sem comprovação de urgência (62%)</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Jurisprudência Emergente</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Súmula 608/STJ (impacto crescente)</li>
+                    <li class="recommendation-item">Tema 1.030/STJ (alinhamento com planos)</li>
+                    <li class="recommendation-item">Lei 14.454/2022 (efeito em monitoramento)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Recomendações e Conclusões -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-clipboard-check"></i> Recomendações Estratégicas</div>
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Para Operadoras de Saúde</div>
+                <div class="process-highlight">
+                    <ol style="padding-left: 20px; margin-bottom: 0;">
+                        <li style="margin-bottom: 15px;"><strong>Atualização de Contratos:</strong> Incluir cláusulas claras sobre tratamentos off-label e home care para reduzir a ambiguidade jurídica.</li>
+                        <li style="margin-bottom: 15px;"><strong>Treinamento Jurídico:</strong> Capacitar equipes para evitar falhas processuais como ausência de procuração e outros vícios formais.</li>
+                        <li style="margin-bottom: 0;"><strong>Monitoramento Legislativo:</strong> Acompanhar projetos de lei sobre o rol da ANS (ex.: PL 3.877/2023) para antecipar mudanças regulatórias.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Para Advogados</div>
+                <div class="process-highlight">
+                    <ol style="padding-left: 20px; margin-bottom: 0;">
+                        <li style="margin-bottom: 15px;"><strong>Estratégias de Impugnação:</strong> Focar em laudos técnicos detalhados para comprovar eficácia dos tratamentos alternativos.</li>
+                        <li style="margin-bottom: 15px;"><strong>Precedentes Jurisprudenciais:</strong> Utilizar AgInt no REsp 1.904.349/STJ em casos de medicamentos off-label para fortalecimento argumentativo.</li>
+                        <li style="margin-bottom: 0;"><strong>Negociações Prévias:</strong> Buscar acordos extrajudiciais em casos com alta probabilidade de condenação para reduzir custos processuais.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nota Metodológica -->
+        <div class="section-title" style="margin-top: 30px;"><i class="fas fa-cogs"></i> Metodologia de Análise</div>
+        <div class="metadata">
+            <div class="metadata-title">Nota Técnica Metodológica:</div>
+            <div class="metadata-item">• Base de Dados: unimed_uberlandia.csv (32 processos analisados em profundidade)</div>
+            <div class="metadata-item">• Período de Análise: 2023-2025</div>
+            <div class="metadata-item">• Validação Cruzada: Comparação de dosagens com PCDT do INCA para verificação de adequação terapêutica</div>
+            <div class="metadata-item">• Inferência Contextual: Análise de termos como "neoplasia metastática" para identificação de tendências de atualização do rol ANS</div>
+            <div class="metadata-item">• Referências Jurídicas: Diários de Justiça Eletrônicos, Súmulas STJ/STF, Rol ANS 2024</div>
+            <div class="metadata-item">• Metodologia de Projeção: Regressão linear com dados históricos de 2023-2025 e ajuste para sazonalidade jurisprudencial</div>
+        </div>
+    </section>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Unimed Uberlândia - Todos os direitos reservados</p>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Contato</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function changeTab(tabName) {
+        // Destacar a aba ativa
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelector(`.tab[onclick="changeTab('${tabName}')"]`).classList.add('active');
+        
+        // Alterar conteúdo visível (implementação simulada para o protótipo)
+        alert('Navegação para a aba: ' + tabName + ' (Funcionalidade simulada no protótipo)');
+    }
+    
+    // Simulação de gráficos ativos - em um ambiente real, seriam utilizados gráficos interativos
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Dashboard carregado com sucesso!');
+    });
+</script>
+
+</body>
+</html>

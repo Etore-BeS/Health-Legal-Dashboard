@@ -9,6 +9,7 @@ import re
 from collections import Counter
 from plotly.colors import n_colors
 import sklearn
+import os
 
 st.set_page_config(layout="wide")
 
@@ -33,7 +34,7 @@ unimed_df, pmc_df = load_data()
 
 # Navegação
 st.sidebar.title('Navegação')
-panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira'])
+panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira', 'Relatórios'])
 
 
 if panel == 'Análise Geral':
@@ -898,3 +899,14 @@ if panel == 'Análise Financeira':
         - Embora o `RandomForestRegressor` não seja especificamente um modelo de séries temporais, a inclusão de características defasadas permite que ele seja adaptado para previsões temporais.
         - Para aplicações futuras, especialmente com dados mais extensos, pode-se considerar modelos especializados em séries temporais, como ARIMA ou Prophet.
         """)
+
+
+if panel == 'View HTML Files':
+    HTML_DIR = 'html_files'  # your folder with HTML files
+    html_files = [f for f in os.listdir(HTML_DIR) if f.endswith('.html')]
+    selected_file = st.selectbox("Select an HTML file to view", html_files)
+    file_path = os.path.join(HTML_DIR, selected_file)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    st.components.v1.html(html_content, height=800, scrolling=True)
+    
