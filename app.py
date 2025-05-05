@@ -901,7 +901,7 @@ if panel == 'Análise Financeira':
         """)
 
 
-if panel == 'View HTML Files':
+if panel == 'Relatórios':
     HTML_DIR = 'html_files'  # your folder with HTML files
     html_files = [f for f in os.listdir(HTML_DIR) if f.endswith('.html')]
     selected_file = st.selectbox("Select an HTML file to view", html_files)
