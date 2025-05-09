@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Abas Complementares - Dashboard Medicamentos Judicializados</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary-color: #0066CC;
+            --secondary-color: #004C99;
+            --accent-color: #3399FF;
+            --light-color: #E6F0FF;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --gray-color: #6c757d;
+            --light-gray-color: #f8f9fa;
+            --dark-gray-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        
+        .tab-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        h3.tab-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .stat-title {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-description {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .process-highlight {
+            background: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .process-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .process-detail {
+            margin-bottom: 10px;
+        }
+        
+        .process-label {
+            font-weight: 600;
+            color: var(--dark-gray-color);
+        }
+        
+        .process-value {
+            color: var(--gray-color);
+        }
+        
+        .status-chip {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .status-chip.deferido {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-chip.indeferido {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .status-chip.pendente {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent-color);
+            height: 100%;
+        }
+        
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+        }
+        
+        .recommendation-item {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .recommendation-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .data-period {
+            background-color: rgba(0, 102, 204, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .heat-map {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .heat-cell {
+            padding: 20px 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .heat-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        .prediction-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .prediction-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .map-container {
+            height: 450px;
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .brazil-map {
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><path d="M400 100C200 100 100 300 150 500C200 700 400 750 600 700C800 650 750 400 700 300C650 200 500 100 400 100Z" fill="%23E6F0FF" stroke="%230066CC" stroke-width="2"/></svg>');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            position: relative;
+        }
+        
+        .map-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3);
+        }
+        
+        .map-marker.large {
+            width: 30px;
+            height: 30px;
+            background-color: var(--danger-color);
+        }
+        
+        .map-marker.medium {
+            width: 25px;
+            height: 25px;
+            background-color: var(--warning-color);
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--light-color);
+            transform: translateY(-50%);
+        }
+        
+        .timeline-point {
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-point.active {
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(51, 153, 255, 0.3);
+        }
+        
+        .timeline-label {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-color);
+        }
+        
+        .timeline-value {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .donut-chart {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .donut-segment {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .donut-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 60%;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .donut-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray-color);
+        }
+        
+        .donut-label {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .correlation-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .correlation-cell {
+            height: 50px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .axis-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-color);
+            margin: 10px 0;
+        }
+        
+        .axis-label.vertical {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .heat-map {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .correlation-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ABA 1: VISÃO GERAL -->
+        <div class="tab-section">
+            <h3 class="tab-title">Visão Geral - Medicamentos Judicializados</h3>
+            
+            <!-- Lembrete de período de dados -->
+            <div class="data-period">
+                <i class="fas fa-info-circle"></i> <strong>Dados Plano de Saúde Amil - 01/01/2025 - 09/05/2025</strong>
+            </div>
+            
+            <!-- Resumo Executivo -->
+            <div class="section-title"><i class="fas fa-tachometer-alt"></i> Resumo Executivo</div>
+            
+            <div class="stats-container">
+                <div class="stat-card info">
+                    <div class="stat-title">Total de Processos</div>
+                    <div class="stat-value">2382</div>
+                    <div class="stat-description">Movimentações analisadas</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-title">Processos Relacionados à Saúde</div>
+                    <div class="stat-value">1245</div>
+                    <div class="stat-description">52,3% do total</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-title">Processos com Medicamentos</div>
+                    <div class="stat-value">782</div>
+                    <div class="stat-description">32,8% do total</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-title">Impacto Financeiro</div>
+                    <div class="stat-value">R$ 134,6M</div>
+                    <div class="stat-description">Valor total estimado</div>
+                </div>
+            </div>
+            
+            <!-- Distribuição Geográfica -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-map-marked-alt"></i> Distribuição Geográfica</div>
+            
+            <div class="map-container">
+                <div class="brazil-map">
+                    <!-- Marcadores para as principais regiões -->
+                    <div class="map-marker large" style="top: 35%; left: 60%;" title="Rio de Janeiro: 1872 processos"></div>
+                    <div class="map-marker medium" style="top: 30%; left: 70%;" title="São Paulo: 245 processos"></div>
+                    <div class="map-marker" style="top: 25%; left: 50%;" title="Minas Gerais: 95 processos"></div>
+                    <div class="map-marker" style="top: 45%; left: 40%;" title="Mato Grosso: 43 processos"></div>
+                    <div class="map-marker" style="top: 15%; left: 45%;" title="Bahia: 37 processos"></div>
+                    <div class="map-marker" style="top: 50%; left: 80%;" title="Rio Grande do Sul: 32 processos"></div>
+                    <div class="map-marker" style="top: 20%; left: 65%;" title="Espírito Santo: 28 processos"></div>
+                    <div class="map-marker" style="top: 35%; left: 30%;" title="Goiás: 20 processos"></div>
+                    <div class="map-marker" style="top: 10%; left: 20%;" title="Outros estados: 10 processos"></div>
+                    
+                    <!-- Legenda do mapa -->
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--danger-color);"></div>
+                            <span>Mais de 1000 processos</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--warning-color);"></div>
+                            <span>100-1000 processos</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--primary-color);"></div>
+                            <span>Menos de 100 processos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline de Evolução -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-chart-line"></i> Evolução Temporal</div>
+            
+            <div class="timeline">
+                <div class="timeline-point">
+                    <div class="timeline-label">Jan/2025</div>
+                    <div class="timeline-value">287</div>
+                </div>
+                <div class="timeline-point">
+                    <div class="timeline-label">Fev/2025</div>
+                    <div class="timeline-value">324</div>
+                </div>
+                <div class="timeline-point">
+                    <div class="timeline-label">Mar/2025</div>
+                    <div class="timeline-value">456</div>
+                </div>
+                <div class="timeline-point active">
+                    <div class="timeline-label">Abr/2025</div>
+                    <div class="timeline-value">798</div>
+                </div>
+                <div class="timeline-point">
+                    <div class="timeline-label">Mai/2025</div>
+                    <div class="timeline-value">517</div>
+                </div>
+            </div>
+            
+            <!-- Tendências e Análise de Risco -->
+            <div class="grid-2" style="margin-top: 40px;">
+                <div>
+                    <div class="chart-title">Principais Tendências</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 250px; font-weight: bold;">Aumento de processos oncológicos</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #0066CC; width: 78%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">+78%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 250px; font-weight: bold;">Processos com medicamentos biológicos</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #3399FF; width: 42%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">+42%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 250px; font-weight: bold;">Decisões relacionadas a prazos</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #66B2FF; width: 35%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">+35%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 250px; font-weight: bold;">Uso de jurisprudência nas decisões</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #99CCFF; width: 29%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">+29%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="chart-title">Distribuição por Status da Tutela</div>
+                    <div class="chart-container" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 250px; height: 250px; position: relative;">
+                            <!-- Simulação de um gráfico de rosca (donut chart) -->
+                            <div class="donut-chart">
+                                <svg width="100%" height="100%" viewBox="0 0 42 42">
+                                    <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#3399FF" stroke-width="8" stroke-dasharray="68 32" stroke-dashoffset="25"></circle>
+                                    <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#dc3545" stroke-width="8" stroke-dasharray="26 74" stroke-dashoffset="93"></circle>
+                                    <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#ffc107" stroke-width="8" stroke-dasharray="6 94" stroke-dashoffset="67"></circle>
+                                </svg>
+                                <div class="donut-hole">
+                                    <div class="donut-value">782</div>
+                                    <div class="donut-label">Processos</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left: 20px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div style="width: 15px; height: 15px; background-color: #3399FF; margin-right: 10px;"></div>
+                                <div>Deferidas: 68% (532 processos)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div style="width: 15px; height: 15px; background-color: #dc3545; margin-right: 10px;"></div>
+                                <div>Indeferidas: 26% (203 processos)</div>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 15px; height: 15px; background-color: #ffc107; margin-right: 10px;"></div>
+                                <div>Pendentes: 6% (47 processos)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPIs e Indicadores de Desempenho -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-bullseye"></i> Indicadores-Chave (KPIs)</div>
+            
+            <div class="grid-3">
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Tempo Médio de Processamento</h3>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 36px; font-weight: 700; color: var(--primary-color);">27,3</div>
+                        <div style="font-size: 14px; color: var(--gray-color);">dias entre petição inicial e decisão</div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 13px;">
+                        <i class="fas fa-arrow-down" style="color: var(--success-color);"></i> <strong style="color: var(--success-color);">8,2%</strong> de redução em relação ao período anterior
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Taxa de Conversão em Dano Moral</h3>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 36px; font-weight: 700; color: var(--primary-color);">42%</div>
+                        <div style="font-size: 14px; color: var(--gray-color);">dos processos com condenação adicional</div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 13px;">
+                        <i class="fas fa-arrow-up" style="color: var(--danger-color);"></i> <strong style="color: var(--danger-color);">12,5%</strong> de aumento em relação ao período anterior
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Custo Médio por Processo</h3>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="font-size: 36px; font-weight: 700; color: var(--primary-color);">R$ 56.400</div>
+                        <div style="font-size: 14px; color: var(--gray-color);">valor médio por processo (medicamento)</div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 13px;">
+                        <i class="fas fa-arrow-up" style="color: var(--danger-color);"></i> <strong style="color: var(--danger-color);">18,3%</strong> de aumento em relação ao período anterior
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recomendações de Alto Nível -->
+            <div class="prediction-card" style="margin-top: 30px;">
+                <h3 class="prediction-title"><i class="fas fa-lightbulb"></i> Recomendações Gerais</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 10px; opacity: 0.9;">Imediatas</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 0;">
+                            <li style="margin-bottom: 8px;">Revisar estratégia processual para medicamentos biológicos (68% de deferimento)</li>
+                            <li style="margin-bottom: 8px;">Estabelecer células dedicadas para casos de alta prioridade no Rio de Janeiro</li>
+                            <li style="margin-bottom: 8px;">Desenvolver fluxo para identificação precoce de processos com potencial dano moral</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 10px; opacity: 0.9;">Médio Prazo</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 0;">
+                            <li style="margin-bottom: 8px;">Criar banco de dados unificado de jurisprudência para contestações</li>
+                            <li style="margin-bottom: 8px;">Implementar sistema de alerta precoce para identificar novos medicamentos de alto risco</li>
+                            <li style="margin-bottom: 8px;">Desenvolver protocolos preventivos para os 5 medicamentos mais judicializados</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ABA 2: ANÁLISE JURÍDICA -->
+        <div class="tab-section">
+            <h3 class="tab-title">Análise Jurídica - Medicamentos Judicializados</h3>
+            
+            <!-- Lembrete de período de dados -->
+            <div class="data-period">
+                <i class="fas fa-info-circle"></i> <strong>Dados Plano de Saúde Amil - 01/01/2025 - 09/05/2025</strong>
+            </div>
+            
+            <!-- Tipos de Ação e Distribuição Processual -->
+            <div class="grid-2">
+                <div>
+                    <div class="section-title"><i class="fas fa-balance-scale"></i> Distribuição por Tipo de Ação</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 20px; height: 20px; background-color: #0066CC; margin-right: 10px; border-radius: 3px;"></div>
+                                    <div style="width: 160px; font-weight: bold;">Procedimento Comum</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #0066CC; width: 51%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">51%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 20px; height: 20px; background-color: #3399FF; margin-right: 10px; border-radius: 3px;"></div>
+                                    <div style="width: 160px; font-weight: bold;">Obrigação de Fazer</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #3399FF; width: 31%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">31%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 20px; height: 20px; background-color: #66B2FF; margin-right: 10px; border-radius: 3px;"></div>
+                                    <div style="width: 160px; font-weight: bold;">Mandado de Segurança</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #66B2FF; width: 12%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">12%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 20px; height: 20px; background-color: #99CCFF; margin-right: 10px; border-radius: 3px;"></div>
+                                    <div style="width: 160px; font-weight: bold;">Outros</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #99CCFF; width: 6%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">6%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="section-title"><i class="fas fa-gavel"></i> Distribuição por Fase Processual</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Liminar/Tutela</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #0066CC; width: 38%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">38% (297)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Sentença</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #3399FF; width: 24%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">24% (187)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Acórdão</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #66B2FF; width: 12%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">12% (95)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Cumprimento</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #99CCFF; width: 20%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">20% (156)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Outros</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #CCE5FF; width: 6%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">6% (47)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Análise de Argumentação Jurídica -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-balance-scale"></i> Análise de Argumentação Jurídica</div>
+            
+            <div class="heat-map">
+                <div class="heat-cell" style="background-color: rgba(0, 102, 204, 0.85);">
+                    Direito à vida/saúde<br>85%
+                </div>
+                <div class="heat-cell" style="background-color: rgba(0, 102, 204, 0.78);">
+                    Rol ANS exemplificativo<br>78%
+                </div>
+                <div class="heat-cell" style="background-color: rgba(0, 102, 204, 0.65);">
+                    Súmula 608/STJ<br>65%
+                </div>
+                <div class="heat-cell" style="background-color: rgba(0, 102, 204, 0.58);">
+                    Lei 14.454/2022<br>58%
+                </div>
+            </div>
+            
+            <!-- Análise de Jurisprudência -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-landmark"></i> Principais Precedentes Utilizados</div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Precedente</th>
+                            <th>Menções</th>
+                            <th>Impacto na Decisão</th>
+                            <th>Tendência</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Súmula 608/STJ</strong><br>Rol ANS exemplificativo</td>
+                            <td>215</td>
+                            <td><div class="status-chip deferido">Alto (+78%)</div></td>
+                            <td><i class="fas fa-arrow-up" style="color: var(--danger-color);"></i> Em crescimento</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tema 1.067/STJ</strong><br>Rol ANS taxativo</td>
+                            <td>187</td>
+                            <td><div class="status-chip indeferido">Alto (-65%)</div></td>
+                            <td><i class="fas fa-arrow-down" style="color: var(--success-color);"></i> Em declínio</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AgInt no REsp 1.904.349/STJ</strong><br>Cobertura de medicamentos off-label</td>
+                            <td>142</td>
+                            <td><div class="status-chip deferido">Médio (+52%)</div></td>
+                            <td><i class="fas fa-arrow-up" style="color: var(--danger-color);"></i> Em crescimento</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lei 14.454/2022</strong><br>Rol exemplificativo e critérios</td>
+                            <td>128</td>
+                            <td><div class="status-chip deferido">Alto (+82%)</div></td>
+                            <td><i class="fas fa-arrow-up" style="color: var(--danger-color);"></i> Em crescimento rápido</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AgRg no AREsp 1.043.735/SP</strong><br>Exclusão contratual de home care</td>
+                            <td>76</td>
+                            <td><div class="status-chip indeferido">Médio (-48%)</div></td>
+                            <td><i class="fas fa-equals" style="color: var(--gray-color);"></i> Estável</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Análise de Relação com Juízes -->
+            <div class="grid-2" style="margin-top: 30px;">
+                <div>
+                    <div class="section-title"><i class="fas fa-user-tie"></i> Varas com Maior Volume</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">5ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #0066CC; width: 78%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">78</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">14ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #3399FF; width: 65%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">65</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">2ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #66B2FF; width: 54%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">54</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">9ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #99CCFF; width: 47%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">47</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">7ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #CCE5FF; width: 42%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">42</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="section-title"><i class="fas fa-percent"></i> Taxa de Deferimento por Vara</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">5ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #dc3545; width: 86%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">86%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">14ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #dc3545; width: 82%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">82%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">2ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #dc3545; width: 75%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">75%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">9ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #ffc107; width: 65%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">65%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 200px; font-weight: bold;">7ª Vara Cível (RJ)</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #ffc107; width: 62%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 40px; text-align: right; margin-left: 10px; font-weight: bold;">62%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estratégias Jurídicas e Recomendações -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-briefcase"></i> Estratégias Jurídicas Recomendadas</div>
+            
+            <div class="grid-3">
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Contestações Efetivas</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Focar em alternativas terapêuticas baseadas em evidências (42% eficácia)</li>
+                        <li class="recommendation-item">Contestar uso off-label não previsto em bula (38% eficácia)</li>
+                        <li class="recommendation-item">Explorar falhas de formulação dos laudos médicos (35% eficácia)</li>
+                        <li class="recommendation-item">Questionar dosagens não padronizadas pela ANVISA (32% eficácia)</li>
+                    </ul>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Jurisprudência Favorável</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">REsp 1.886.929/SP - Alternativas terapêuticas validadas</li>
+                        <li class="recommendation-item">AgInt no REsp 1.733.013/SP - Exclusão de medicamentos experimentais</li>
+                        <li class="recommendation-item">REsp 1.721.705/SP - Medicamentos sem registro na ANVISA</li>
+                        <li class="recommendation-item">REsp 1.846.108/SP - Critérios para importação de medicamentos</li>
+                    </ul>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Acordos Estratégicos</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Propor substituição por genéricos quando possível (75% aceitação)</li>
+                        <li class="recommendation-item">Oferecer cobertura parcial para medicamentos de alto custo (52% aceitação)</li>
+                        <li class="recommendation-item">Negociar cronograma de fornecimento dividido em etapas (48% aceitação)</li>
+                        <li class="recommendation-item">Propor monitoramento conjunto da evolução clínica (42% aceitação)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Análise de Danos Morais -->
+            <div class="prediction-card" style="margin-top: 30px;">
+                <h3 class="prediction-title"><i class="fas fa-exclamation-triangle"></i> Análise de Risco: Danos Morais</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 10px; opacity: 0.9;">Perfil de Condenações</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 0;">
+                            <li style="margin-bottom: 8px;">42% dos processos resultam em condenação adicional por danos morais</li>
+                            <li style="margin-bottom: 8px;">Valor médio: R$ 15.000,00 (aumento de 23% em relação a 2024)</li>
+                            <li style="margin-bottom: 8px;">87% das condenações ocorrem em casos com prazo inferior a 15 dias e não cumprimento</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 10px; opacity: 0.9;">Estratégias de Mitigação</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 0;">
+                            <li style="margin-bottom: 8px;">Recurso específico para redução de valores (65% de sucesso na redução)</li>
+                            <li style="margin-bottom: 8px;">Justificativa técnica para impossibilidade de cumprimento (48% eficácia)</li>
+                            <li style="margin-bottom: 8px;">Comunicação proativa com o paciente durante o trâmite judicial (35% redução)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ABA 3: ANÁLISE MÉDICA -->
+        <div class="tab-section">
+            <h3 class="tab-title">Análise Médica - Medicamentos Judicializados</h3>
+            
+            <!-- Lembrete de período de dados -->
+            <div class="data-period">
+                <i class="fas fa-info-circle"></i> <strong>Dados Plano de Saúde Amil - 01/01/2025 - 09/05/2025</strong>
+            </div>
+            
+            <!-- Distribuição por Patologia -->
+            <div class="section-title"><i class="fas fa-heartbeat"></i> Distribuição por Patologia (CID)</div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #0066CC; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Câncer (C00-C97)</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #0066CC; width: 28%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">28%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #3399FF; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Doenças autoimunes (M05-M14)</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #3399FF; width: 22%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">22%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #66B2FF; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Doenças neurológicas (G00-G99)</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #66B2FF; width: 15%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">15%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #99CCFF; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Doenças oftalmológicas (H00-H59)</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #99CCFF; width: 12%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">12%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #CCE5FF; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Doenças raras</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #CCE5FF; width: 10%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">10%</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background-color: #E6F0FF; margin-right: 10px; border-radius: 3px;"></div>
+                                <div style="width: 240px; font-weight: bold;">Outras patologias</div>
+                                <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background-color: #E6F0FF; width: 13%; height: 100%;"></div>
+                                </div>
+                                <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">13%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="chart-title">CIDs Específicos Mais Frequentes</div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>CID</th>
+                                    <th>Descrição</th>
+                                    <th>Processos</th>
+                                    <th>Taxa de Deferimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>C50.9</strong></td>
+                                    <td>Neoplasia maligna da mama</td>
+                                    <td>38</td>
+                                    <td>92%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>M45</strong></td>
+                                    <td>Espondilite anquilosante</td>
+                                    <td>42</td>
+                                    <td>90%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>K50.0</strong></td>
+                                    <td>Doença de Crohn do intestino delgado</td>
+                                    <td>35</td>
+                                    <td>85%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>C91.1</strong></td>
+                                    <td>Leucemia linfocítica crônica</td>
+                                    <td>27</td>
+                                    <td>88%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>C18.9</strong></td>
+                                    <td>Neoplasia maligna do cólon</td>
+                                    <td>22</td>
+                                    <td>86%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Análise de Evidências Médicas -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-file-medical-alt"></i> Qualidade das Evidências Médicas</div>
+            
+            <div style="background: var(--light-color); border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                <div style="display: flex; margin-bottom: 20px;">
+                    <div style="flex: 1; text-align: center; padding: 15px; background-color: rgba(0, 102, 204, 0.1); border-radius: 8px; margin-right: 10px;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--primary-color);">68%</div>
+                        <div style="font-size: 14px; color: var(--gray-color);">Laudos com evidência Nível A (ensaios clínicos randomizados)</div>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 15px; background-color: rgba(0, 102, 204, 0.1); border-radius: 8px; margin-left: 10px;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--primary-color);">82%</div>
+                        <div style="font-size: 14px; color: var(--gray-color);">Taxa de deferimento para laudos detalhados vs. 45% para laudos simples</div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                    <div style="text-align: center; padding: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 5px;">Detalhamento do diagnóstico</div>
+                        <div style="font-size: 20px; font-weight: 700;">94%</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 5px;">Histórico de tratamentos</div>
+                        <div style="font-size: 20px; font-weight: 700;">78%</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 5px;">Justificativa para medicamento</div>
+                        <div style="font-size: 20px; font-weight: 700;">65%</div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 5px;">Referências bibliográficas</div>
+                        <div style="font-size: 20px; font-weight: 700;">32%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Correlação entre Qualidade da Evidência e Resultado -->
+            <div class="section-title"><i class="fas fa-chart-bar"></i> Correlação: Evidência Médica vs. Resultado Judicial</div>
+            
+            <div style="margin-bottom: 30px;">
+                <div style="display: grid; grid-template-columns: 60px auto; gap: 10px;">
+                    <div class="axis-label vertical">Qualidade da Evidência Médica</div>
+                    
+                    <div style="display: grid; grid-template-rows: repeat(5, 1fr); gap: 10px;">
+                        <div class="correlation-grid">
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.9);">92%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.85);">88%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.8);">82%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.75);">78%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.7);">72%</div>
+                        </div>
+                        <div class="correlation-grid">
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.8);">84%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.75);">78%</div>
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.7);">72%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.7);">65%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.65);">58%</div>
+                        </div>
+                        <div class="correlation-grid">
+                            <div class="correlation-cell" style="background-color: rgba(220, 53, 69, 0.7);">75%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.75);">68%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.65);">62%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.6);">55%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.55);">48%</div>
+                        </div>
+                        <div class="correlation-grid">
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.65);">65%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.6);">58%</div>
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.55);">52%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.6);">45%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.55);">38%</div>
+                        </div>
+                        <div class="correlation-grid">
+                            <div class="correlation-cell" style="background-color: rgba(255, 193, 7, 0.55);">55%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.6);">48%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.55);">42%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.5);">35%</div>
+                            <div class="correlation-cell" style="background-color: rgba(40, 167, 69, 0.45);">28%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="axis-label">Crítica ao Rol ANS</div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: var(--gray-color);">
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 12px; height: 12px; background-color: rgba(220, 53, 69, 0.8); margin-right: 5px;"></div>
+                        <span>Alta Probabilidade de Deferimento (>70%)</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 12px; height: 12px; background-color: rgba(255, 193, 7, 0.7); margin-right: 5px;"></div>
+                        <span>Média Probabilidade (40-70%)</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 12px; height: 12px; background-color: rgba(40, 167, 69, 0.5); margin-right: 5px;"></div>
+                        <span>Baixa Probabilidade (<40%)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Especialidades Médicas -->
+            <div class="grid-2" style="margin-top: 30px;">
+                <div>
+                    <div class="section-title"><i class="fas fa-user-md"></i> Especialidades Médicas</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Oncologia</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #0066CC; width: 27%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">27% (211)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Reumatologia</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #3399FF; width: 22%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">22% (172)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Neurologia</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #66B2FF; width: 15%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">15% (117)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Oftalmologia</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #99CCFF; width: 12%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">12% (94)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Gastroenterologia</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #CCE5FF; width: 10%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">10% (78)</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 160px; font-weight: bold;">Outras</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 20px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #E6F0FF; width: 14%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 80px; text-align: right; margin-left: 10px; font-weight: bold;">14% (110)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="section-title"><i class="fas fa-pills"></i> Impacto de Tratamentos Prévios</div>
+                    <div class="chart-container">
+                        <div style="width: 100%;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 220px; font-weight: bold;">Falha terapêutica documentada</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #dc3545; width: 85%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">85%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 220px; font-weight: bold;">Falta de resposta parcial</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #dc3545; width: 72%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">72%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 220px; font-weight: bold;">Efeitos adversos graves</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #ffc107; width: 68%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">68%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 220px; font-weight: bold;">Progressão da doença</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #ffc107; width: 65%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">65%</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0px;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 220px; font-weight: bold;">Sem tratamento prévio</div>
+                                    <div style="flex-grow: 1; background-color: #f0f0f0; height: 25px; border-radius: 4px; overflow: hidden;">
+                                        <div style="background-color: #28a745; width: 42%; height: 100%;"></div>
+                                    </div>
+                                    <div style="width: 50px; text-align: right; margin-left: 10px; font-weight: bold;">42%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recomendações Técnicas -->
+            <div class="section-title" style="margin-top: 30px;"><i class="fas fa-microscope"></i> Recomendações Técnicas</div>
+            
+            <div class="grid-3">
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Protocolos Técnicos</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Desenvolver diretrizes internas para medicamentos biológicos baseados em evidências</li>
+                        <li class="recommendation-item">Mapear alternativas terapêuticas para os 10 medicamentos mais judicializados</li>
+                        <li class="recommendation-item">Estabelecer critérios técnicos para avaliação de off-label</li>
+                        <li class="recommendation-item">Criar banco de laudos técnicos para contestações específicas</li>
+                    </ul>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Segunda Opinião Médica</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Implantar programa de segunda opinião para casos de alto custo (>R$50mil)</li>
+                        <li class="recommendation-item">Estabelecer rede de especialistas por patologia para análise técnica</li>
+                        <li class="recommendation-item">Manter médicos assistentes credenciados em processos judiciais</li>
+                        <li class="recommendation-item">Desenvolver sistema de análise rápida de prescrições (24h)</li>
+                    </ul>
+                </div>
+                
+                <div class="recommendation-card">
+                    <h3 class="recommendation-title">Análise de Evidências</h3>
+                    <ul class="recommendation-list">
+                        <li class="recommendation-item">Focar em medicamentos oncológicos com baixa evidência científica</li>
+                        <li class="recommendation-item">Manter biblioteca atualizada de estudos clínicos para contestações</li>
+                        <li class="recommendation-item">Alinhar estratégia de evidências com critérios da Lei 14.454/2022</li>
+                        <li class="recommendation-item">Desenvolver matriz de decisão baseada em qualidade da evidência</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Principais Medicamentos por Patologia -->
+            <div class="prediction-card" style="margin-top: 30px;">
+                <h3 class="prediction-title"><i class="fas fa-capsules"></i> Medicamentos e Patologias de Alto Impacto</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 10px; opacity: 0.9;">Por Taxa de Deferimento</h4>
+                        <table style="width: 100%; border-collapse: collapse; color: white;">
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                <th style="text-align: left; padding: 5px 10px;">Medicamento</th>
+                                <th style="text-align: left; padding: 5px 10px;">Patologia</th>
+                                <th style="text-align: right; padding: 5px 10px;">Taxa</th>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: 5px 10px;">Adalimumabe</td>
+                                <td style="padding: 5px 10px;">Espondilite anquilosante</td>
+                                <td style="padding: 5px 10px; text-align: right;">90%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: 5px 10px;">Rituximabe</td>
+                                <td style="padding: 5px 10px;">Leucemia linfocítica</td>
+                                <td style="padding: 5px 10px; text-align: right;">82%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1
