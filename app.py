@@ -1209,7 +1209,7 @@ if panel == 'Preços':
 
     # Inicializar session state
     if 'clientes' not in st.session_state:
-        st.session_state.clientes = []
+        st.session_state.clientes = {}
 
     # Sidebar para navegação
     with st.sidebar:
@@ -1334,8 +1334,15 @@ if panel == 'Preços':
             nome_cliente = f"Cliente {cliente_num} - {tipo_selecionado}"
             
             # Remove cliente anterior se existir
-            st.session_state.clientes = [(n, s) for n, s in st.session_state.clientes if not n.startswith(f"Cliente {cliente_num}")]
-            st.session_state.clientes.append((nome_cliente, simulacao))
+            # st.session_state.clientes = [(n, s) for n, s in st.session_state.clientes if not n.startswith(f"Cliente {cliente_num}")]
+            # st.session_state.clientes.append((nome_cliente, simulacao))
+            if cliente_num in st.session_state.clientes:
+                del st.session_state.clientes[cliente_num]
+            
+            st.session_state.clientes[cliente_num] = {
+                "nome": nome_cliente,
+                "simulacao": simulacao
+            }
             
             # Mostrar resultado
             st.markdown('<div class="result-card">', unsafe_allow_html=True)
@@ -1369,12 +1376,13 @@ if panel == 'Preços':
             # Tabela comparativa
             df_comparativo = pd.DataFrame([
                 {
-                    "Cliente": nome.replace("Cliente ", "").replace(" - ", "\n"),
-                    "Total Mensal": sim["Total"],
-                    "Total Anual": sim["Total"] * 12,
-                    "Módulos Ativos": len([k for k, v in sim.items() if k != "Total" and isinstance(v, (int, float)) and v > 0])
+                    "Cliente": data["nome"].replace("Cliente ", "").replace(" - ", "\n"),
+                    "Total Mensal": data["simulacao"]["Total"],
+                    "Total Anual": data["simulacao"]["Total"] * 12,
+                    "Módulos Ativos": len([k for k, v in data["simulacao"].items() 
+                                        if k != "Total" and isinstance(v, (int, float)) and v > 0])
                 }
-                for nome, sim in st.session_state.clientes
+                for client_id, data in st.session_state.clientes.items()
             ])
             
             st.dataframe(df_comparativo, use_container_width=True)
@@ -1409,7 +1417,11 @@ if panel == 'Preços':
                 
                 if st.button("📥 Gerar PDF", type="primary"):
                     try:
-                        pdf = criar_pdf_melhorado(st.session_state.clientes)
+                        # pdf = criar_pdf_melhorado(st.session_state.clientes)
+                        pdf = criar_pdf_melhorado([
+                            (data["nome"], data["simulacao"])
+                            for data in st.session_state.clientes.values()
+                        ])
                         
                         # Criar buffer para o PDF
                         pdf_buffer = BytesIO()
