@@ -14,7 +14,7 @@ from fpdf import FPDF
 from io import BytesIO
 import base64
 
-st.set_page_config(layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(layout="wide")
 
 # Função para carregar e preprocessar os dados
 @st.cache_data
@@ -37,7 +37,7 @@ unimed_df, pmc_df = load_data()
 
 # Navegação
 st.sidebar.title('Navegação')
-panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira', 'Relatórios', 'Preços'])
+panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira', 'Relatórios'])
 
 
 if panel == 'Análise Geral':
