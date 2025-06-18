@@ -914,557 +914,557 @@ if panel == 'Relatórios':
     st.components.v1.html(html_content, height=800, scrolling=True)
     
 
-if panel == 'Preços':    
-    # CSS customizado com as cores da MEEDI
-    st.markdown("""
-    <style>
-        /* Cores da marca MEEDI */
-        :root {
-            --ocean-main: #1C09D3;
-            --ocean-dark: #020619;
-            --ocean-medium: #130E75;
-            --ocean-light: #4264F4;
-            --ocean-lighter: #44B8F2;
-            --glacial-main: #5EEAE6;
-            --glacial-light: #ABF3F1;
-            --glacial-lighter: #E7FAFA;
-            --sprout-main: #70F977;
-            --sprout-dark: #18771C;
-            --sprout-medium: #35BE3C;
-            --sprout-light: #A1FCAC;
-            --sprout-lighter: #CEFFDE;
-            --gravity-dark: #3F4254;
-            --gravity-medium: #7D7E8D;
-            --gravity-light: #BBBCC4;
-            --gravity-lighter: #FAFCFC;
-        }
+# if panel == 'Preços':    
+#     # CSS customizado com as cores da MEEDI
+#     st.markdown("""
+#     <style>
+#         /* Cores da marca MEEDI */
+#         :root {
+#             --ocean-main: #1C09D3;
+#             --ocean-dark: #020619;
+#             --ocean-medium: #130E75;
+#             --ocean-light: #4264F4;
+#             --ocean-lighter: #44B8F2;
+#             --glacial-main: #5EEAE6;
+#             --glacial-light: #ABF3F1;
+#             --glacial-lighter: #E7FAFA;
+#             --sprout-main: #70F977;
+#             --sprout-dark: #18771C;
+#             --sprout-medium: #35BE3C;
+#             --sprout-light: #A1FCAC;
+#             --sprout-lighter: #CEFFDE;
+#             --gravity-dark: #3F4254;
+#             --gravity-medium: #7D7E8D;
+#             --gravity-light: #BBBCC4;
+#             --gravity-lighter: #FAFCFC;
+#         }
         
-        /* Estilização geral */
-        .main .block-container {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
+#         /* Estilização geral */
+#         .main .block-container {
+#             padding-top: 2rem;
+#             padding-bottom: 2rem;
+#         }
         
-        /* Header customizado */
-        .main-header {
-            background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: white;
-            box-shadow: 0 4px 15px rgba(28, 9, 211, 0.3);
-        }
+#         /* Header customizado */
+#         .main-header {
+#             background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
+#             padding: 2rem;
+#             border-radius: 15px;
+#             margin-bottom: 2rem;
+#             text-align: center;
+#             color: white;
+#             box-shadow: 0 4px 15px rgba(28, 9, 211, 0.3);
+#         }
         
-        /* Cards dos módulos */
-        .module-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--ocean-main);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-            transition: transform 0.2s ease;
-        }
+#         /* Cards dos módulos */
+#         .module-card {
+#             background: white;
+#             padding: 1.5rem;
+#             border-radius: 10px;
+#             border-left: 4px solid var(--ocean-main);
+#             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+#             margin-bottom: 1rem;
+#             transition: transform 0.2s ease;
+#         }
         
-        .module-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
+#         .module-card:hover {
+#             transform: translateY(-2px);
+#             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+#         }
         
-        /* Card de resultado */
-        .result-card {
-            background: linear-gradient(135deg, var(--glacial-lighter) 0%, white 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 2px solid var(--glacial-main);
-            margin: 1rem 0;
-            box-shadow: 0 4px 15px rgba(94, 234, 230, 0.2);
-        }
+#         /* Card de resultado */
+#         .result-card {
+#             background: linear-gradient(135deg, var(--glacial-lighter) 0%, white 100%);
+#             padding: 2rem;
+#             border-radius: 15px;
+#             border: 2px solid var(--glacial-main);
+#             margin: 1rem 0;
+#             box-shadow: 0 4px 15px rgba(94, 234, 230, 0.2);
+#         }
         
-        /* Métricas customizadas */
-        .metric-container {
-            background: var(--sprout-lighter);
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid var(--sprout-light);
-        }
+#         /* Métricas customizadas */
+#         .metric-container {
+#             background: var(--sprout-lighter);
+#             padding: 1rem;
+#             border-radius: 10px;
+#             text-align: center;
+#             border: 2px solid var(--sprout-light);
+#         }
         
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--sprout-dark);
-        }
+#         .metric-value {
+#             font-size: 2rem;
+#             font-weight: bold;
+#             color: var(--sprout-dark);
+#         }
         
-        .metric-label {
-            color: var(--gravity-dark);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
+#         .metric-label {
+#             color: var(--gravity-dark);
+#             font-size: 0.9rem;
+#             margin-top: 0.5rem;
+#         }
         
-        /* Botões customizados */
-        .stButton > button {
-            background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(28, 9, 211, 0.3);
-        }
+#         /* Botões customizados */
+#         .stButton > button {
+#             background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
+#             color: white;
+#             border: none;
+#             border-radius: 8px;
+#             padding: 0.5rem 1.5rem;
+#             font-weight: 600;
+#             transition: all 0.3s ease;
+#             box-shadow: 0 2px 10px rgba(28, 9, 211, 0.3);
+#         }
         
-        .stButton > button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(28, 9, 211, 0.4);
-        }
+#         .stButton > button:hover {
+#             transform: translateY(-2px);
+#             box-shadow: 0 4px 20px rgba(28, 9, 211, 0.4);
+#         }
         
-        /* Sidebar */
-        .sidebar .sidebar-content {
-            background: var(--gravity-lighter);
-        }
+#         /* Sidebar */
+#         .sidebar .sidebar-content {
+#             background: var(--gravity-lighter);
+#         }
         
-        /* Tabelas */
-        .dataframe {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+#         /* Tabelas */
+#         .dataframe {
+#             border-radius: 10px;
+#             overflow: hidden;
+#             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+#         }
         
-        /* Alert boxes */
-        .success-box {
-            background: var(--sprout-lighter);
-            border: 2px solid var(--sprout-main);
-            border-radius: 10px;
-            padding: 1rem;
-            color: var(--sprout-dark);
-        }
+#         /* Alert boxes */
+#         .success-box {
+#             background: var(--sprout-lighter);
+#             border: 2px solid var(--sprout-main);
+#             border-radius: 10px;
+#             padding: 1rem;
+#             color: var(--sprout-dark);
+#         }
         
-        .info-box {
-            background: var(--glacial-lighter);
-            border: 2px solid var(--glacial-main);
-            border-radius: 10px;
-            padding: 1rem;
-            color: var(--ocean-dark);
-        }
-    </style>
-    """, unsafe_allow_html=True)
+#         .info-box {
+#             background: var(--glacial-lighter);
+#             border: 2px solid var(--glacial-main);
+#             border-radius: 10px;
+#             padding: 1rem;
+#             color: var(--ocean-dark);
+#         }
+#     </style>
+#     """, unsafe_allow_html=True)
 
-    # Header principal
-    st.markdown("""
-    <div class="main-header">
-        <h1>🧮 Simulador Interativo de Contratos</h1>
-        <h3>Plataforma MEEDI</h3>
-        <p>Configure seus módulos e obtenha estimativas precisas de contratos</p>
-    </div>
-    """, unsafe_allow_html=True)
+#     # Header principal
+#     st.markdown("""
+#     <div class="main-header">
+#         <h1>🧮 Simulador Interativo de Contratos</h1>
+#         <h3>Plataforma MEEDI</h3>
+#         <p>Configure seus módulos e obtenha estimativas precisas de contratos</p>
+#     </div>
+#     """, unsafe_allow_html=True)
 
-    def calcular_simulacao(
-        tipo, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto_selfservice,
-        incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
-        incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
-        suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
-    ):
-        total = 0
-        breakdown = {}
+#     def calcular_simulacao(
+#         tipo, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto_selfservice,
+#         incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
+#         incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
+#         suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
+#     ):
+#         total = 0
+#         breakdown = {}
 
-        # Regras base
-        pacientes = processos // 6 if tipo not in ["Tribunal", "Distribuidora"] else 0
-        uso_ia = processos < 7500 and incluir_ia
+#         # Regras base
+#         pacientes = processos // 6 if tipo not in ["Tribunal", "Distribuidora"] else 0
+#         uso_ia = processos < 7500 and incluir_ia
 
-        # Módulos opcionais
-        if incluir_judicializacao:
-            valor = 75000 if tipo != "Distribuidora" else 10000
-            breakdown["Judicialização"] = valor
-            total += valor
+#         # Módulos opcionais
+#         if incluir_judicializacao:
+#             valor = 75000 if tipo != "Distribuidora" else 10000
+#             breakdown["Judicialização"] = valor
+#             total += valor
 
-        if incluir_leilao:
-            valor = 10000
-            breakdown["Leilão"] = valor
-            total += valor
+#         if incluir_leilao:
+#             valor = 10000
+#             breakdown["Leilão"] = valor
+#             total += valor
 
-        if incluir_orcamento:
-            valor = 10000
-            breakdown["Orçamento"] = valor
-            total += valor
+#         if incluir_orcamento:
+#             valor = 10000
+#             breakdown["Orçamento"] = valor
+#             total += valor
 
-        if incluir_portal:
-            valor = qtd_pacientes_portal * 10
-            breakdown["Portal do Paciente"] = valor
-            total += valor
+#         if incluir_portal:
+#             valor = qtd_pacientes_portal * 10
+#             breakdown["Portal do Paciente"] = valor
+#             total += valor
 
-        if incluir_rcpj:
-            valor = qtd_pacientes_rcpj * 10
-            breakdown["RCPJ"] = valor
-            total += valor
+#         if incluir_rcpj:
+#             valor = qtd_pacientes_rcpj * 10
+#             breakdown["RCPJ"] = valor
+#             total += valor
 
-        if uso_ia:
-            valor = processos * 100
-            breakdown["IA Preditiva"] = valor
-            total += valor
+#         if uso_ia:
+#             valor = processos * 100
+#             breakdown["IA Preditiva"] = valor
+#             total += valor
 
-        if incluir_farmacia:
-            valor = 20000
-            breakdown["Farmácia Alto Custo"] = valor
-            total += valor
+#         if incluir_farmacia:
+#             valor = 20000
+#             breakdown["Farmácia Alto Custo"] = valor
+#             total += valor
 
-        if incluir_homecare:
-            valor = qtd_pacientes_homecare * 50
-            breakdown["Home Care"] = valor
-            total += valor
+#         if incluir_homecare:
+#             valor = qtd_pacientes_homecare * 50
+#             breakdown["Home Care"] = valor
+#             total += valor
 
-        if incluir_auditoria:
-            valor = 45000
-            breakdown["Auditoria"] = valor
-            total += valor
+#         if incluir_auditoria:
+#             valor = 45000
+#             breakdown["Auditoria"] = valor
+#             total += valor
 
-        if incluir_cadastro:
-            valor = 15000
-            breakdown["Cadastro de Produtos"] = valor
-            total += valor
+#         if incluir_cadastro:
+#             valor = 15000
+#             breakdown["Cadastro de Produtos"] = valor
+#             total += valor
 
-        # Suporte
-        modulos_suporte = ["Judicialização", "Leilão", "Orçamento", "Farmácia Alto Custo", "Auditoria", "Cadastro de Produtos"]
-        base_suporte = sum(breakdown.get(k, 0) for k in modulos_suporte)
+#         # Suporte
+#         modulos_suporte = ["Judicialização", "Leilão", "Orçamento", "Farmácia Alto Custo", "Auditoria", "Cadastro de Produtos"]
+#         base_suporte = sum(breakdown.get(k, 0) for k in modulos_suporte)
 
-        if suporte_tipo == "5x8":
-            suporte_valor = 0.125 * base_suporte
-            breakdown["Suporte 5x8"] = suporte_valor
-            total += suporte_valor
-        elif suporte_tipo == "24x7":
-            suporte_valor = 0.25 * base_suporte
-            breakdown["Suporte 24x7"] = suporte_valor
-            total += suporte_valor
+#         if suporte_tipo == "5x8":
+#             suporte_valor = 0.125 * base_suporte
+#             breakdown["Suporte 5x8"] = suporte_valor
+#             total += suporte_valor
+#         elif suporte_tipo == "24x7":
+#             suporte_valor = 0.25 * base_suporte
+#             breakdown["Suporte 24x7"] = suporte_valor
+#             total += suporte_valor
 
-        if desconto_selfservice:
-            desconto_valor = total * 0.3
-            breakdown["Desconto Self-service"] = -desconto_valor
-            total *= 0.7
+#         if desconto_selfservice:
+#             desconto_valor = total * 0.3
+#             breakdown["Desconto Self-service"] = -desconto_valor
+#             total *= 0.7
 
-        breakdown["Total"] = round(total, 2)
-        return breakdown
+#         breakdown["Total"] = round(total, 2)
+#         return breakdown
 
-    def criar_pdf_melhorado(clientes_data):
-        """Cria PDF com melhor formatação e gráficos"""
-        pdf = FPDF()
-        pdf.add_page()
+#     def criar_pdf_melhorado(clientes_data):
+#         """Cria PDF com melhor formatação e gráficos"""
+#         pdf = FPDF()
+#         pdf.add_page()
         
-        # Header
-        pdf.set_font("Arial", "B", 20)
-        pdf.set_text_color(28, 9, 211)  # Ocean main color
-        pdf.cell(0, 15, "SIMULADOR DE CONTRATOS MEEDI", ln=True, align="C")
+#         # Header
+#         pdf.set_font("Arial", "B", 20)
+#         pdf.set_text_color(28, 9, 211)  # Ocean main color
+#         pdf.cell(0, 15, "SIMULADOR DE CONTRATOS MEEDI", ln=True, align="C")
         
-        pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(63, 66, 84)  # Gravity dark
-        pdf.cell(0, 10, "Relatorio Comparativo de Estimativas", ln=True, align="C")
-        pdf.ln(10)
+#         pdf.set_font("Arial", "", 12)
+#         pdf.set_text_color(63, 66, 84)  # Gravity dark
+#         pdf.cell(0, 10, "Relatorio Comparativo de Estimativas", ln=True, align="C")
+#         pdf.ln(10)
         
-        # Dados dos clientes
-        for i, (nome, simulacao) in enumerate(clientes_data):
-            if i > 0:
-                pdf.add_page()
+#         # Dados dos clientes
+#         for i, (nome, simulacao) in enumerate(clientes_data):
+#             if i > 0:
+#                 pdf.add_page()
             
-            # Nome do cliente
-            pdf.set_font("Arial", "B", 16)
-            pdf.set_text_color(28, 9, 211)
-            pdf.cell(0, 12, nome.encode('latin-1', 'replace').decode('latin-1'), ln=True)
-            pdf.ln(5)
+#             # Nome do cliente
+#             pdf.set_font("Arial", "B", 16)
+#             pdf.set_text_color(28, 9, 211)
+#             pdf.cell(0, 12, nome.encode('latin-1', 'replace').decode('latin-1'), ln=True)
+#             pdf.ln(5)
             
-            # Total em destaque
-            pdf.set_font("Arial", "B", 14)
-            pdf.set_text_color(24, 119, 28)  # Sprout dark
-            total = simulacao.get("Total", 0)
-            pdf.cell(0, 10, f"Total Mensal: R$ {total:,.2f}".replace(',', '.'), ln=True)
-            pdf.ln(5)
+#             # Total em destaque
+#             pdf.set_font("Arial", "B", 14)
+#             pdf.set_text_color(24, 119, 28)  # Sprout dark
+#             total = simulacao.get("Total", 0)
+#             pdf.cell(0, 10, f"Total Mensal: R$ {total:,.2f}".replace(',', '.'), ln=True)
+#             pdf.ln(5)
             
-            # Detalhamento
-            pdf.set_font("Arial", "", 11)
-            pdf.set_text_color(63, 66, 84)
+#             # Detalhamento
+#             pdf.set_font("Arial", "", 11)
+#             pdf.set_text_color(63, 66, 84)
             
-            for modulo, valor in simulacao.items():
-                if modulo != "Total":
-                    if isinstance(valor, (int, float)):
-                        texto = f"- {modulo}: R$ {valor:,.2f}".replace(',', '.')
-                        pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
-                    else:
-                        texto = f"- {modulo}: {valor}"
-                        pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
+#             for modulo, valor in simulacao.items():
+#                 if modulo != "Total":
+#                     if isinstance(valor, (int, float)):
+#                         texto = f"- {modulo}: R$ {valor:,.2f}".replace(',', '.')
+#                         pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
+#                     else:
+#                         texto = f"- {modulo}: {valor}"
+#                         pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
             
-            pdf.ln(10)
+#             pdf.ln(10)
         
-        # Footer do PDF
-        pdf.ln(5)
-        pdf.set_font("Arial", "I", 10)
-        pdf.set_text_color(125, 126, 141)  # Gravity medium
-        pdf.cell(0, 10, "Desenvolvido pela Ray Inteligencia Artificial", ln=True, align="C")
+#         # Footer do PDF
+#         pdf.ln(5)
+#         pdf.set_font("Arial", "I", 10)
+#         pdf.set_text_color(125, 126, 141)  # Gravity medium
+#         pdf.cell(0, 10, "Desenvolvido pela Ray Inteligencia Artificial", ln=True, align="C")
         
-        return pdf
+#         return pdf
 
-    def download_pdf(pdf_buffer, filename):
-        """Cria link de download para o PDF"""
-        b64 = base64.b64encode(pdf_buffer.getvalue()).decode()
-        href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}">📥 Baixar PDF</a>'
-        return href
+#     def download_pdf(pdf_buffer, filename):
+#         """Cria link de download para o PDF"""
+#         b64 = base64.b64encode(pdf_buffer.getvalue()).decode()
+#         href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}">📥 Baixar PDF</a>'
+#         return href
 
-    # Inicializar session state
-    if 'clientes' not in st.session_state:
-        st.session_state.clientes = {}
+#     # Inicializar session state
+#     if 'clientes' not in st.session_state:
+#         st.session_state.clientes = {}
 
-    # Sidebar para navegação
-    with st.sidebar:
-        st.markdown("### 🎯 Opções")
-        tab_selected = st.radio("Selecione:", ["Configurar Clientes", "Comparativo", "Exportar"])
+#     # Sidebar para navegação
+#     with st.sidebar:
+#         st.markdown("### 🎯 Opções")
+#         tab_selected = st.radio("Selecione:", ["Configurar Clientes", "Comparativo", "Exportar"])
         
-        st.markdown("### 📊 Resumo Rápido")
-        if st.session_state.clientes:
-            total_geral = sum([sim["Total"] for _, sim in st.session_state.clientes])
-            st.metric("Total Geral Mensal", f"R$ {total_geral:,.2f}")
-            st.metric("Clientes Configurados", len(st.session_state.clientes))
+#         st.markdown("### 📊 Resumo Rápido")
+#         if st.session_state.clientes:
+#             total_geral = sum([sim["Total"] for _, sim in st.session_state.clientes])
+#             st.metric("Total Geral Mensal", f"R$ {total_geral:,.2f}")
+#             st.metric("Clientes Configurados", len(st.session_state.clientes))
 
-    if tab_selected == "Configurar Clientes":
-        # Seletor de cliente
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            cliente_num = st.selectbox("Selecione o cliente para configurar:", [1, 2, 3, 4, 5])
-        with col2:
-            if st.button("🗑️ Limpar Todos"):
-                st.session_state.clientes = []
-                st.rerun()
+#     if tab_selected == "Configurar Clientes":
+#         # Seletor de cliente
+#         col1, col2 = st.columns([3, 1])
+#         with col1:
+#             cliente_num = st.selectbox("Selecione o cliente para configurar:", [1, 2, 3, 4, 5])
+#         with col2:
+#             if st.button("🗑️ Limpar Todos"):
+#                 st.session_state.clientes = []
+#                 st.rerun()
 
-        st.markdown(f"### 🧾 Configuração do Cliente {cliente_num}")
+#         st.markdown(f"### 🧾 Configuração do Cliente {cliente_num}")
         
-        # Tipo de cliente com cards visuais
-        st.markdown("#### 🏢 Tipo de Cliente")
-        cols = st.columns(4)
-        tipos = ["Tribunal", "Plano de Saúde", "Secretaria de Saúde", "Distribuidora"]
-        tipo_icons = ["⚖️", "🏥", "🏛️", "📦"]
+#         # Tipo de cliente com cards visuais
+#         st.markdown("#### 🏢 Tipo de Cliente")
+#         cols = st.columns(4)
+#         tipos = ["Tribunal", "Plano de Saúde", "Secretaria de Saúde", "Distribuidora"]
+#         tipo_icons = ["⚖️", "🏥", "🏛️", "📦"]
         
-        tipo_selecionado = st.selectbox("Tipo:", tipos, key=f"tipo_{cliente_num}")
+#         tipo_selecionado = st.selectbox("Tipo:", tipos, key=f"tipo_{cliente_num}")
         
-        # Parâmetros baseados no tipo
-        col1, col2 = st.columns(2)
+#         # Parâmetros baseados no tipo
+#         col1, col2 = st.columns(2)
         
-        with col1:
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("#### 📊 Parâmetros Principais")
+#         with col1:
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("#### 📊 Parâmetros Principais")
             
-            if tipo_selecionado == "Tribunal":
-                processos = st.number_input("Processos por Ano", min_value=0, value=10000, key=f"proc_{cliente_num}")
-                varas = st.number_input("Quantidade de Varas", min_value=0, value=20, key=f"varas_{cliente_num}")
-                valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=50000000.0, key=f"valor_{cliente_num}")
-                beneficiarios = habitantes = 0
+#             if tipo_selecionado == "Tribunal":
+#                 processos = st.number_input("Processos por Ano", min_value=0, value=10000, key=f"proc_{cliente_num}")
+#                 varas = st.number_input("Quantidade de Varas", min_value=0, value=20, key=f"varas_{cliente_num}")
+#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=50000000.0, key=f"valor_{cliente_num}")
+#                 beneficiarios = habitantes = 0
                 
-            elif tipo_selecionado == "Plano de Saúde":
-                beneficiarios = st.number_input("Número de Beneficiários", min_value=0, value=100000, key=f"benef_{cliente_num}")
-                processos = beneficiarios // 10
-                valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=80000000.0, key=f"valor_{cliente_num}")
-                varas = habitantes = 0
-                st.info(f"Processos estimados: {processos:,}")
+#             elif tipo_selecionado == "Plano de Saúde":
+#                 beneficiarios = st.number_input("Número de Beneficiários", min_value=0, value=100000, key=f"benef_{cliente_num}")
+#                 processos = beneficiarios // 10
+#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=80000000.0, key=f"valor_{cliente_num}")
+#                 varas = habitantes = 0
+#                 st.info(f"Processos estimados: {processos:,}")
                 
-            elif tipo_selecionado == "Secretaria de Saúde":
-                habitantes = st.number_input("Número de Habitantes", min_value=0, value=2000000, key=f"hab_{cliente_num}")
-                processos = habitantes // 50
-                valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=60000000.0, key=f"valor_{cliente_num}")
-                varas = beneficiarios = 0
-                st.info(f"Processos estimados: {processos:,}")
+#             elif tipo_selecionado == "Secretaria de Saúde":
+#                 habitantes = st.number_input("Número de Habitantes", min_value=0, value=2000000, key=f"hab_{cliente_num}")
+#                 processos = habitantes // 50
+#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=60000000.0, key=f"valor_{cliente_num}")
+#                 varas = beneficiarios = 0
+#                 st.info(f"Processos estimados: {processos:,}")
                 
-            elif tipo_selecionado == "Distribuidora":
-                processos = st.number_input("Processos Participados", min_value=0, value=1000, key=f"proc_dist_{cliente_num}")
-                varas = valor_judicializado = beneficiarios = habitantes = 0
+#             elif tipo_selecionado == "Distribuidora":
+#                 processos = st.number_input("Processos Participados", min_value=0, value=1000, key=f"proc_dist_{cliente_num}")
+#                 varas = valor_judicializado = beneficiarios = habitantes = 0
             
-            st.markdown('</div>', unsafe_allow_html=True)
+#             st.markdown('</div>', unsafe_allow_html=True)
         
-        with col2:
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("#### 💰 Configurações Gerais")
-            desconto = st.checkbox("Desconto Self-service (30%)", key=f"desc_{cliente_num}")
-            suporte_tipo = st.radio("Tipo de Suporte", ["Nenhum", "5x8", "24x7"], key=f"sup_{cliente_num}")
-            suporte_tipo = suporte_tipo if suporte_tipo != "Nenhum" else None
-            st.markdown('</div>', unsafe_allow_html=True)
+#         with col2:
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("#### 💰 Configurações Gerais")
+#             desconto = st.checkbox("Desconto Self-service (30%)", key=f"desc_{cliente_num}")
+#             suporte_tipo = st.radio("Tipo de Suporte", ["Nenhum", "5x8", "24x7"], key=f"sup_{cliente_num}")
+#             suporte_tipo = suporte_tipo if suporte_tipo != "Nenhum" else None
+#             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Módulos organizados em cards
-        st.markdown("#### 🧩 Módulos Disponíveis")
+#         # Módulos organizados em cards
+#         st.markdown("#### 🧩 Módulos Disponíveis")
         
-        # Módulos principais
-        col1, col2 = st.columns(2)
+#         # Módulos principais
+#         col1, col2 = st.columns(2)
         
-        with col1:
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("**⚖️ Módulos Jurídicos**")
-            incluir_judicializacao = st.checkbox("Judicialização", value=True, key=f"mod_jud_{cliente_num}")
-            incluir_leilao = st.checkbox("Leilão", key=f"mod_leilao_{cliente_num}")
-            incluir_orcamento = st.checkbox("Orçamento", key=f"mod_orc_{cliente_num}")
-            incluir_auditoria = st.checkbox("Auditoria", key=f"mod_aud_{cliente_num}")
-            st.markdown('</div>', unsafe_allow_html=True)
+#         with col1:
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("**⚖️ Módulos Jurídicos**")
+#             incluir_judicializacao = st.checkbox("Judicialização", value=True, key=f"mod_jud_{cliente_num}")
+#             incluir_leilao = st.checkbox("Leilão", key=f"mod_leilao_{cliente_num}")
+#             incluir_orcamento = st.checkbox("Orçamento", key=f"mod_orc_{cliente_num}")
+#             incluir_auditoria = st.checkbox("Auditoria", key=f"mod_aud_{cliente_num}")
+#             st.markdown('</div>', unsafe_allow_html=True)
             
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("**🔬 Módulos Técnicos**")
-            incluir_ia = st.checkbox("IA Preditiva", value=True, key=f"mod_ia_{cliente_num}")
-            incluir_cadastro = st.checkbox("Cadastro de Produtos", key=f"mod_cadastro_{cliente_num}")
-            st.markdown('</div>', unsafe_allow_html=True)
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("**🔬 Módulos Técnicos**")
+#             incluir_ia = st.checkbox("IA Preditiva", value=True, key=f"mod_ia_{cliente_num}")
+#             incluir_cadastro = st.checkbox("Cadastro de Produtos", key=f"mod_cadastro_{cliente_num}")
+#             st.markdown('</div>', unsafe_allow_html=True)
         
-        with col2:
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("**👥 Módulos de Pacientes**")
-            incluir_portal = st.checkbox("Portal do Paciente", key=f"mod_portal_{cliente_num}")
-            qtd_pacientes_portal = st.number_input("Nº Pacientes Portal", min_value=0, value=100, key=f"pac_portal_{cliente_num}") if incluir_portal else 0
+#         with col2:
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("**👥 Módulos de Pacientes**")
+#             incluir_portal = st.checkbox("Portal do Paciente", key=f"mod_portal_{cliente_num}")
+#             qtd_pacientes_portal = st.number_input("Nº Pacientes Portal", min_value=0, value=100, key=f"pac_portal_{cliente_num}") if incluir_portal else 0
             
-            incluir_rcpj = st.checkbox("RCPJ", key=f"mod_rcpj_{cliente_num}")
-            qtd_pacientes_rcpj = st.number_input("Nº Usuários RCPJ", min_value=0, value=100, key=f"pac_rcpj_{cliente_num}") if incluir_rcpj else 0
-            st.markdown('</div>', unsafe_allow_html=True)
+#             incluir_rcpj = st.checkbox("RCPJ", key=f"mod_rcpj_{cliente_num}")
+#             qtd_pacientes_rcpj = st.number_input("Nº Usuários RCPJ", min_value=0, value=100, key=f"pac_rcpj_{cliente_num}") if incluir_rcpj else 0
+#             st.markdown('</div>', unsafe_allow_html=True)
             
-            st.markdown('<div class="module-card">', unsafe_allow_html=True)
-            st.markdown("**🏥 Módulos de Saúde**")
-            incluir_farmacia = st.checkbox("Farmácia Alto Custo", key=f"mod_farmacia_{cliente_num}")
-            incluir_homecare = st.checkbox("Home Care", key=f"mod_homecare_{cliente_num}")
-            qtd_pacientes_homecare = st.number_input("Nº Pacientes Home Care", min_value=0, value=10, key=f"pac_home_{cliente_num}") if incluir_homecare else 0
-            st.markdown('</div>', unsafe_allow_html=True)
+#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
+#             st.markdown("**🏥 Módulos de Saúde**")
+#             incluir_farmacia = st.checkbox("Farmácia Alto Custo", key=f"mod_farmacia_{cliente_num}")
+#             incluir_homecare = st.checkbox("Home Care", key=f"mod_homecare_{cliente_num}")
+#             qtd_pacientes_homecare = st.number_input("Nº Pacientes Home Care", min_value=0, value=10, key=f"pac_home_{cliente_num}") if incluir_homecare else 0
+#             st.markdown('</div>', unsafe_allow_html=True)
 
-        # Botão de cálculo
-        if st.button(f"💡 Calcular Preço - Cliente {cliente_num}", type="primary"):
-            simulacao = calcular_simulacao(
-                tipo_selecionado, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto,
-                incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
-                incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
-                suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
-            )
+#         # Botão de cálculo
+#         if st.button(f"💡 Calcular Preço - Cliente {cliente_num}", type="primary"):
+#             simulacao = calcular_simulacao(
+#                 tipo_selecionado, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto,
+#                 incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
+#                 incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
+#                 suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
+#             )
             
-            # Atualizar lista de clientes
-            nome_cliente = f"Cliente {cliente_num} - {tipo_selecionado}"
+#             # Atualizar lista de clientes
+#             nome_cliente = f"Cliente {cliente_num} - {tipo_selecionado}"
             
-            # Remove cliente anterior se existir
-            # st.session_state.clientes = [(n, s) for n, s in st.session_state.clientes if not n.startswith(f"Cliente {cliente_num}")]
-            # st.session_state.clientes.append((nome_cliente, simulacao))
-            if cliente_num in st.session_state.clientes:
-                del st.session_state.clientes[cliente_num]
+#             # Remove cliente anterior se existir
+#             # st.session_state.clientes = [(n, s) for n, s in st.session_state.clientes if not n.startswith(f"Cliente {cliente_num}")]
+#             # st.session_state.clientes.append((nome_cliente, simulacao))
+#             if cliente_num in st.session_state.clientes:
+#                 del st.session_state.clientes[cliente_num]
             
-            st.session_state.clientes[cliente_num] = {
-                "nome": nome_cliente,
-                "simulacao": simulacao
-            }
+#             st.session_state.clientes[cliente_num] = {
+#                 "nome": nome_cliente,
+#                 "simulacao": simulacao
+#             }
             
-            # Mostrar resultado
-            st.markdown('<div class="result-card">', unsafe_allow_html=True)
-            st.markdown("### 💼 Resultado da Simulação")
+#             # Mostrar resultado
+#             st.markdown('<div class="result-card">', unsafe_allow_html=True)
+#             st.markdown("### 💼 Resultado da Simulação")
             
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {simulacao["Total"]:,.2f}</div><div class="metric-label">Total Mensal</div></div>', unsafe_allow_html=True)
+#             col1, col2 = st.columns(2)
+#             with col1:
+#                 st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {simulacao["Total"]:,.2f}</div><div class="metric-label">Total Mensal</div></div>', unsafe_allow_html=True)
             
-            with col2:
-                total_anual = simulacao["Total"] * 12
-                st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {total_anual:,.2f}</div><div class="metric-label">Total Anual</div></div>', unsafe_allow_html=True)
+#             with col2:
+#                 total_anual = simulacao["Total"] * 12
+#                 st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {total_anual:,.2f}</div><div class="metric-label">Total Anual</div></div>', unsafe_allow_html=True)
             
-            # Breakdown detalhado
-            st.markdown("#### 📋 Detalhamento por Módulo")
-            df_breakdown = pd.DataFrame([
-                {"Módulo": k, "Valor Mensal": f"R$ {v:,.2f}" if isinstance(v, (int, float)) else str(v)}
-                for k, v in simulacao.items() if k != "Total"
-            ])
-            st.dataframe(df_breakdown, use_container_width=True)
+#             # Breakdown detalhado
+#             st.markdown("#### 📋 Detalhamento por Módulo")
+#             df_breakdown = pd.DataFrame([
+#                 {"Módulo": k, "Valor Mensal": f"R$ {v:,.2f}" if isinstance(v, (int, float)) else str(v)}
+#                 for k, v in simulacao.items() if k != "Total"
+#             ])
+#             st.dataframe(df_breakdown, use_container_width=True)
             
-            st.markdown('</div>', unsafe_allow_html=True)
-            st.success("✅ Simulação calculada e salva com sucesso!")
+#             st.markdown('</div>', unsafe_allow_html=True)
+#             st.success("✅ Simulação calculada e salva com sucesso!")
 
-    elif tab_selected == "Comparativo":
-        st.markdown("### 📊 Comparativo de Clientes")
+#     elif tab_selected == "Comparativo":
+#         st.markdown("### 📊 Comparativo de Clientes")
         
-        if not st.session_state.clientes:
-            st.info("Nenhum cliente configurado ainda. Vá para 'Configurar Clientes' para começar.")
-        else:
-            # Tabela comparativa
-            df_comparativo = pd.DataFrame([
-                {
-                    "Cliente": data["nome"].replace("Cliente ", "").replace(" - ", "\n"),
-                    "Total Mensal": data["simulacao"]["Total"],
-                    "Total Anual": data["simulacao"]["Total"] * 12,
-                    "Módulos Ativos": len([k for k, v in data["simulacao"].items() 
-                                        if k != "Total" and isinstance(v, (int, float)) and v > 0])
-                }
-                for client_id, data in st.session_state.clientes.items()
-            ])
+#         if not st.session_state.clientes:
+#             st.info("Nenhum cliente configurado ainda. Vá para 'Configurar Clientes' para começar.")
+#         else:
+#             # Tabela comparativa
+#             df_comparativo = pd.DataFrame([
+#                 {
+#                     "Cliente": data["nome"].replace("Cliente ", "").replace(" - ", "\n"),
+#                     "Total Mensal": data["simulacao"]["Total"],
+#                     "Total Anual": data["simulacao"]["Total"] * 12,
+#                     "Módulos Ativos": len([k for k, v in data["simulacao"].items() 
+#                                         if k != "Total" and isinstance(v, (int, float)) and v > 0])
+#                 }
+#                 for client_id, data in st.session_state.clientes.items()
+#             ])
             
-            st.dataframe(df_comparativo, use_container_width=True)
+#             st.dataframe(df_comparativo, use_container_width=True)
             
-            # Gráfico comparativo
-            if len(st.session_state.clientes) > 1:
-                fig = px.bar(
-                    df_comparativo, 
-                    x="Cliente", 
-                    y="Total Mensal",
-                    title="Comparativo de Valores Mensais",
-                    color="Total Mensal",
-                    color_continuous_scale=["#E7FAFA", "#1C09D3"]
-                )
-                fig.update_layout(
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    paper_bgcolor="rgba(0,0,0,0)"
-                )
-                st.plotly_chart(fig, use_container_width=True)
+#             # Gráfico comparativo
+#             if len(st.session_state.clientes) > 1:
+#                 fig = px.bar(
+#                     df_comparativo, 
+#                     x="Cliente", 
+#                     y="Total Mensal",
+#                     title="Comparativo de Valores Mensais",
+#                     color="Total Mensal",
+#                     color_continuous_scale=["#E7FAFA", "#1C09D3"]
+#                 )
+#                 fig.update_layout(
+#                     plot_bgcolor="rgba(0,0,0,0)",
+#                     paper_bgcolor="rgba(0,0,0,0)"
+#                 )
+#                 st.plotly_chart(fig, use_container_width=True)
 
-    elif tab_selected == "Exportar":
-        st.markdown("### 📥 Exportar Relatórios")
+#     elif tab_selected == "Exportar":
+#         st.markdown("### 📥 Exportar Relatórios")
         
-        if not st.session_state.clientes:
-            st.info("Nenhum cliente configurado para exportar.")
-        else:
-            col1, col2 = st.columns(2)
+#         if not st.session_state.clientes:
+#             st.info("Nenhum cliente configurado para exportar.")
+#         else:
+#             col1, col2 = st.columns(2)
             
-            with col1:
-                st.markdown("#### 📄 Relatório PDF")
-                st.write("Gere um relatório completo em PDF com todos os clientes configurados.")
+#             with col1:
+#                 st.markdown("#### 📄 Relatório PDF")
+#                 st.write("Gere um relatório completo em PDF com todos os clientes configurados.")
                 
-                if st.button("📥 Gerar PDF", type="primary"):
-                    try:
-                        # pdf = criar_pdf_melhorado(st.session_state.clientes)
-                        pdf = criar_pdf_melhorado([
-                            (data["nome"], data["simulacao"])
-                            for data in st.session_state.clientes.values()
-                        ])
+#                 if st.button("📥 Gerar PDF", type="primary"):
+#                     try:
+#                         # pdf = criar_pdf_melhorado(st.session_state.clientes)
+#                         pdf = criar_pdf_melhorado([
+#                             (data["nome"], data["simulacao"])
+#                             for data in st.session_state.clientes.values()
+#                         ])
                         
-                        # Criar buffer para o PDF
-                        pdf_buffer = BytesIO()
-                        pdf_string = pdf.output(dest='S')
-                        pdf_buffer.write(pdf_string.encode('latin-1', 'replace'))
-                        pdf_buffer.seek(0)
+#                         # Criar buffer para o PDF
+#                         pdf_buffer = BytesIO()
+#                         pdf_string = pdf.output(dest='S')
+#                         pdf_buffer.write(pdf_string.encode('latin-1', 'replace'))
+#                         pdf_buffer.seek(0)
                         
-                        # Criar link de download
-                        st.download_button(
-                            label="📥 Baixar Relatório PDF",
-                            data=pdf_buffer.getvalue(),
-                            file_name="relatorio_contratos_meedi.pdf",
-                            mime="application/pdf"
-                        )
+#                         # Criar link de download
+#                         st.download_button(
+#                             label="📥 Baixar Relatório PDF",
+#                             data=pdf_buffer.getvalue(),
+#                             file_name="relatorio_contratos_meedi.pdf",
+#                             mime="application/pdf"
+#                         )
                         
-                        st.success("✅ PDF gerado com sucesso!")
+#                         st.success("✅ PDF gerado com sucesso!")
                         
-                    except Exception as e:
-                        st.error(f"Erro ao gerar PDF: {str(e)}")
+#                     except Exception as e:
+#                         st.error(f"Erro ao gerar PDF: {str(e)}")
             
-            with col2:
-                st.markdown("#### 📊 Dados CSV")
-                st.write("Exporte os dados em formato CSV para análises externas.")
+#             with col2:
+#                 st.markdown("#### 📊 Dados CSV")
+#                 st.write("Exporte os dados em formato CSV para análises externas.")
                 
-                if st.button("📊 Gerar CSV"):
-                    # Criar DataFrame para export
-                    data_export = []
-                    for nome, sim in st.session_state.clientes:
-                        for modulo, valor in sim.items():
-                            data_export.append({
-                                "Cliente": nome,
-                                "Módulo": modulo,
-                                "Valor": valor if isinstance(valor, (int, float)) else str(valor)
-                            })
+#                 if st.button("📊 Gerar CSV"):
+#                     # Criar DataFrame para export
+#                     data_export = []
+#                     for nome, sim in st.session_state.clientes:
+#                         for modulo, valor in sim.items():
+#                             data_export.append({
+#                                 "Cliente": nome,
+#                                 "Módulo": modulo,
+#                                 "Valor": valor if isinstance(valor, (int, float)) else str(valor)
+#                             })
                     
-                    df_export = pd.DataFrame(data_export)
-                    csv = df_export.to_csv(index=False)
+#                     df_export = pd.DataFrame(data_export)
+#                     csv = df_export.to_csv(index=False)
                     
-                    st.download_button(
-                        label="📊 Baixar Dados CSV",
-                        data=csv,
-                        file_name="dados_contratos_meedi.csv",
-                        mime="text/csv"
-                    )
+#                     st.download_button(
+#                         label="📊 Baixar Dados CSV",
+#                         data=csv,
+#                         file_name="dados_contratos_meedi.csv",
+#                         mime="text/csv"
+#                     )
                     
-                    st.success("✅ CSV preparado para download!")
+#                     st.success("✅ CSV preparado para download!")
