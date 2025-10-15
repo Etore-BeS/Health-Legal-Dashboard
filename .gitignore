@@ -13,6 +13,8 @@ unimed_atualizado.csv
 unimed_atualizado_cleaned.csv
 pmc_2015_2024.csv
 transform.ipynb
+public_natjus_silver_export_*.jsonl
+public_natjus_silver_export_*.parquet
 
 # Distribution / packaging
 .Python
