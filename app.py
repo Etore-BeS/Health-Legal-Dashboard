@@ -10,11 +10,12 @@ import json
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import boto3
+import io
 
 if os.getenv('ENV') == 'dev':
-    S3_KEY = 'public_natjus_silver_export_2025-10-14_162219.jsonl'
+    S3_KEY = 'public_natjus_silver_export_2025-10-14_162219.parquet'
 else:
-    S3_KEY = 'legaldash_data/df_optimized.jsonl'
+    S3_KEY = 'legaldash_data/df_optimized.parquet'
 
 
 
@@ -38,20 +39,30 @@ def load_data():
     return unimed_df, pmc_df
 
 # --- Data Loading and Caching ---
-@st.cache_data
-def load_natjus_data(file_path):
-    """Loads and parses the JSONL data."""
-    if os.getenv('ENV') == 'dev':
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = [json.loads(line) for line in f]
-    else:
-        s3 = boto3.client('s3')
-        obj = s3.get_object(Bucket='meedijud-coleta-raw', Key=S3_KEY)
-        data = [json.loads(line) for line in obj['Body'].read().decode('utf-8').splitlines()]
-    df = pd.json_normalize(data)
-    # Convert date column to datetime
-    df['par_data_emissao'] = pd.to_datetime(df['par_data_emissao'])
+@st.cache_data(show_spinner=False)
+def load_natjus_data(file_path: str, columns=None):
+    # ... your existing local/S3 read ...
+    df = pd.read_parquet(file_path, engine="pyarrow", columns=columns) if os.getenv("ENV") == "dev" else \
+         pd.read_parquet(f"s3://meedijud-coleta-raw/{S3_KEY}", engine="pyarrow", columns=columns)
+
+    # Normalize datetime
+    if "par_data_emissao" in df.columns:
+        # Convert to datetime; coerce bad values to NaT
+        df["par_data_emissao"] = pd.to_datetime(df["par_data_emissao"], errors="coerce", utc=True)
+        # If you want America/Sao_Paulo local time for display:
+        try:
+            df["par_data_emissao_local"] = df["par_data_emissao"].dt.tz_convert("America/Sao_Paulo")
+        except Exception:
+            # If already naive, localize first
+            df["par_data_emissao_local"] = (
+                df["par_data_emissao"]
+                .dt.tz_localize("UTC", nonexistent="shift_forward", ambiguous="NaT")
+                .dt.tz_convert("America/Sao_Paulo")
+            )
+        # Precompute display string (fast and avoids .strftime later)
+        df["par_data_emissao_str"] = df["par_data_emissao_local"].dt.strftime("%d/%m/%Y")
     return df
+
 
 # Helper function for styled metric-like display
 def styled_metric(column, label, value, font_size="1.2rem", label_size="0.8rem"):
@@ -948,7 +959,7 @@ if panel == 'Relatórios':
 if panel == 'Análise Natjus':
         # --- Load Data ---
     try:
-        df = load_natjus_data('public_natjus_silver_export_2025-10-14_162219.jsonl')
+        df = load_natjus_data('public_natjus_silver_export_2025-10-14_162219.parquet')
     except FileNotFoundError:
         st.error("The data file 'sample-2025-10-14_62926.json' was not found. Please make sure it's in the same directory as the app.")
 
