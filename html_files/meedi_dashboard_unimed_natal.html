@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Unimed Natal - Análise de Medicamentos de Alto Custo</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #f8b133; /* Amarelo Unimed */
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --gray-light: #f5f5f5;
+            --purple-color: #6f42c1;
+            --pink-color: #e83e8c;
+            --teal-color: #20c997;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 15px 20px;
+        }
+        
+        .kpi-card {
+            text-align: center;
+            padding: 15px;
+            height: 100%;
+        }
+        
+        .kpi-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .kpi-subtitle {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--gray-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: 600;
+            background-color: transparent;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .highlight-box {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .highlight-primary {
+            background-color: rgba(0, 92, 185, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .highlight-secondary {
+            background-color: rgba(0, 168, 89, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .highlight-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .highlight-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .highlight-success {
+            background-color: rgba(25, 135, 84, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .highlight-purple {
+            background-color: rgba(111, 66, 193, 0.1);
+            border-left: 4px solid var(--purple-color);
+        }
+        
+        .saving-pill {
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 5px;
+            margin-right: 3px;
+        }
+        
+        .saving-high {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: var(--success-color);
+        }
+        
+        .trend-up {
+            color: var(--danger-color);
+        }
+        
+        .trend-down {
+            color: var(--success-color);
+        }
+        
+        .trend-stable {
+            color: var(--warning-color);
+        }
+        
+        /* Custom badges for categorias */
+        .badge-categoria {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-oncologico {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .badge-doencasraras {
+            background-color: rgba(111, 66, 193, 0.1);
+            color: var(--purple-color);
+        }
+        
+        .badge-imunobiologico {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .badge-neurologico {
+            background-color: rgba(13, 202, 240, 0.1);
+            color: var(--info-color);
+        }
+        
+        .badge-outro {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--gray-color);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <h1 class="display-5 fw-bold mb-0">
+                        <i class="fas fa-clinic-medical me-2"></i> Dashboard Unimed Natal
+                    </h1>
+                    <p class="lead mb-0">Gestão Estratégica de Medicamentos de Alto Custo | 19/05/2025</p>
+                </div>
+                <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                    <span class="badge rounded-pill bg-light text-dark p-2 me-2">
+                        <i class="fas fa-pills me-1"></i> 703 Processos com Medicamentos
+                    </span>
+                    <span class="badge rounded-pill bg-light text-success p-2">
+                        <i class="fas fa-chart-pie me-1"></i> R$ 176,5M Economia Potencial
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="kpi-icon" style="color: var(--danger-color);">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-title">Impacto Financeiro Anual</div>
+                    <div class="kpi-value">R$ 531,3 milhões</div>
+                    <div class="kpi-subtitle">
+                        <span class="badge bg-danger">R$ 756 mil por processo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="kpi-icon" style="color: var(--purple-color);">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="kpi-title">Doenças Raras</div>
+                    <div class="kpi-value">R$ 253,7 milhões</div>
+                    <div class="kpi-subtitle">
+                        <span class="badge bg-purple">47,8% do impacto total</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="kpi-icon" style="color: var(--secondary-color);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="kpi-title">Economia Potencial</div>
+                    <div class="kpi-value">R$ 176,5 milhões</div>
+                    <div class="kpi-subtitle">
+                        <span class="badge bg-success">33,2% de redução</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card">
+                    <div class="kpi-icon" style="color: var(--warning-color);">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="kpi-title">Taxa de Deferimento</div>
+                    <div class="kpi-value">89,2%</div>
+                    <div class="kpi-subtitle">
+                        <span class="badge bg-warning">2.199 processos deferidos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Tabs -->
+        <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="medicamentos-tab" data-bs-toggle="tab" data-bs-target="#medicamentos" type="button" role="tab" aria-controls="medicamentos" aria-selected="true">
+                    <i class="fas fa-pills me-1"></i> Medicamentos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="doencas-tab" data-bs-toggle="tab" data-bs-target="#doencas" type="button" role="tab" aria-controls="doencas" aria-selected="false">
+                    <i class="fas fa-heartbeat me-1"></i> Doenças
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="temporal-tab" data-bs-toggle="tab" data-bs-target="#temporal" type="button" role="tab" aria-controls="temporal" aria-selected="false">
+                    <i class="fas fa-calendar-alt me-1"></i> Análise Temporal
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="economia-tab" data-bs-toggle="tab" data-bs-target="#economia" type="button" role="tab" aria-controls="economia" aria-selected="false">
+                    <i class="fas fa-hand-holding-usd me-1"></i> Oportunidades de Economia
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabsContent">
+            <!-- Tab 1: Medicamentos -->
+            <div class="tab-pane fade show active" id="medicamentos" role="tabpanel" aria-labelledby="medicamentos-tab">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar me-2"></i> Top 10 Medicamentos por Impacto Financeiro
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="topMedicamentosChart"></canvas>
+                                </div>
+                                <div class="highlight-box highlight-danger mt-3">
+                                    <p><strong>Análise de concentração:</strong> Os 10 medicamentos acima representam 13,8% do total de processos, mas respondem por 67,2% do impacto financeiro (R$ 357,0 milhões). Apenas os 2 primeiros (Spinraza e Opdivo) somam R$ 150,7 milhões, equivalentes a 28,4% do total.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-funnel-dollar me-2"></i> Características dos Top 5
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Medicamento</th>
+                                                <th>Categoria</th>
+                                                <th>Valor Anual</th>
+                                                <th>Deferimento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Spinraza</td>
+                                                <td><span class="badge-categoria badge-doencasraras">Doenças Raras</span></td>
+                                                <td>R$ 2,0M</td>
+                                                <td>95,8%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Opdivo</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>R$ 850,2K</td>
+                                                <td>89,2%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Keytruda</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>R$ 637,5K</td>
+                                                <td>87,8%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tecentriq</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>R$ 739,5K</td>
+                                                <td>93,3%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ocrevus</td>
+                                                <td><span class="badge-categoria badge-neurologico">Neurológico</span></td>
+                                                <td>R$ 157,2K</td>
+                                                <td>88,4%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="highlight-box highlight-purple mt-3">
+                                    <h6 class="mb-2"><i class="fas fa-lightbulb me-2"></i>Insights:</h6>
+                                    <ul class="mb-0 ps-3">
+                                        <li>Medicamentos oncológicos representam 3 dos 5 principais itens</li>
+                                        <li>Taxa de deferimento superior a 87% em todos os casos</li>
+                                        <li>Spinraza tem valor 12,7x maior que Ocrevus</li>
+                                        <li>Doenças raras têm maior taxa de deferimento (95,8%)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-table me-2"></i> Detalhamento dos Medicamentos de Alto Impacto
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th rowspan="2">Medicamento</th>
+                                                <th rowspan="2">Princípio Ativo</th>
+                                                <th rowspan="2">Categoria</th>
+                                                <th colspan="2" class="text-center">Processos</th>
+                                                <th colspan="2" class="text-center">Impacto Financeiro</th>
+                                                <th rowspan="2">Tratamentos/Ano</th>
+                                                <th rowspan="2">Tendência</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Quantidade</th>
+                                                <th>% do Total</th>
+                                                <th>Valor Total (R$ milhões)</th>
+                                                <th>% do Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Spinraza</strong></td>
+                                                <td>Nusinersena</td>
+                                                <td><span class="badge-categoria badge-doencasraras">Doenças Raras</span></td>
+                                                <td>48</td>
+                                                <td>1,9%</td>
+                                                <td>95,4</td>
+                                                <td>18,0%</td>
+                                                <td>4 doses/ano</td>
+                                                <td class="trend-up"><i class="fas fa-arrow-up"></i> Crescente</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Opdivo</strong></td>
+                                                <td>Nivolumabe</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>65</td>
+                                                <td>2,6%</td>
+                                                <td>55,3</td>
+                                                <td>10,4%</td>
+                                                <td>26 doses/ano</td>
+                                                <td class="trend-up"><i class="fas fa-arrow-up"></i> Crescente</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Keytruda</strong></td>
+                                                <td>Pembrolizumabe</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>82</td>
+                                                <td>3,3%</td>
+                                                <td>52,3</td>
+                                                <td>9,8%</td>
+                                                <td>17 doses/ano</td>
+                                                <td class="trend-up"><i class="fas fa-arrow-up"></i> Crescente</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Tecentriq</strong></td>
+                                                <td>Atezolizumabe</td>
+                                                <td><span class="badge-categoria badge-oncologico">Oncológico</span></td>
+                                                <td>60</td>
+                                                <td>2,4%</td>
+                                                <td>44,6</td>
+                                                <td>8,4%</td>
+                                                <td>17 doses/ano</td>
+                                                <td class="trend-up"><i class="fas fa-arrow-up"></i> Crescente</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Zolgensma</strong></td>
+                                                <td>Onasemnogeno Abeparvoveque</td>
+                                                <td><span class="badge-categoria badge-doencasraras">Doenças Raras</span></td>
+                                                <td>7</td>
+                                                <td>0,3%</td>
+                                                <td>34,5</td>
+                                                <td>6,5%</td>
+                                                <td>Dose única</td>
+                                                <td class="trend-stable"><i class="fas fa-arrows-alt-h"></i> Estável</td>
+                                            </tr>
+                                            <tr class="table-light">
+                                                <td colspan="3"><strong>Total Top 10</strong></td>
+                                                <td><strong>350</strong></td>
+                                                <td><strong>14,2%</strong></td>
+                                                <td><strong>357,0</strong></td>
+                                                <td><strong>67,2%</strong></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                            <tr class="table-light">
+                                                <td colspan="3"><strong>Outros Medicamentos</strong></td>
+                                                <td><strong>353</strong></td>
+                                                <td><strong>14,3%</strong></td>
+                                                <td><strong>174,3</strong></td>
+                                                <td><strong>32,8%</strong></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Doenças -->
+            <div class="tab-pane fade" id="doencas" role="tabpanel" aria-labelledby="doencas-tab">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-pie me-2"></i> Distribuição do Impacto Financeiro por Categoria
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="impactoCategoriasChart"></canvas>
+                                </div>
+                                <div class="highlight-box highlight-danger mt-3">
+                                    <p><strong>Concentração de impacto:</strong> Doenças raras e oncológicas somam 90,9% do impacto financeiro total, apesar de representarem 60,1% dos processos com medicamentos. Esta desproporção é explicada pelo custo médio significativamente maior dos tratamentos para estas condições.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-balance-scale-right me-2"></i> Valor Médio por Categoria
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="valorMedioCategoriaChart"></canvas>
+                                </div>
+                                <div class="highlight-box highlight-danger mt-3">
+                                    <p><strong>Disparidade de custos:</strong> O valor médio anual para tratamentos de doenças raras (R$ 2,85 milhões) é aproximadamente 4,2 vezes maior que tratamentos oncológicos (R$ 687,5 mil) e mais de 33 vezes maior que o grupo "Outros medicamentos" (R$ 85 mil). Esta disparidade extrema explica por que apenas 89 processos (12,7% do total) respondem por quase metade do impacto financeiro total (47,8%).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-heartbeat me-2"></i> Detalhamento por Tipo de Doença
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Categoria/Doença</th>
+                                                <th>Processos</th>
+                                                <th>% do Total</th>
+                                                <th>Impacto (R$ milhões)</th>
+                                                <th>% do Impacto</th>
+                                                <th>Valor Médio</th>
+                                                <th>Principais Medicamentos</th>
+                                                <th>Taxa de Deferimento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Oncológicos -->
+                                            <tr class="table-danger">
+                                                <td colspan="8"><strong><i class="fas fa-disease me-2"></i>ONCOLÓGICOS</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Câncer de Pulmão</td>
+                                                <td>76</td>
+                                                <td>3,1%</td>
+                                                <td>58,9</td>
+                                                <td>11,1%</td>
+                                                <td>R$ 775 mil</td>
+                                                <td>Keytruda, Opdivo, Tecentriq</td>
+                                                <td>92,1%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Câncer Colorretal</td>
+                                                <td>52</td>
+                                                <td>2,1%</td>
+                                                <td>36,4</td>
+                                                <td>6,9%</td>
+                                                <td>R$ 700 mil</td>
+                                                <td>Avastin, Erbitux</td>
+                                                <td>88,5%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Câncer de Mama</td>
+                                                <td>45</td>
+                                                <td>1,8%</td>
+                                                <td>29,3</td>
+                                                <td>5,5%</td>
+                                                <td>R$ 651 mil</td>
+                                                <td>Perjeta, Kadcyla</td>
+                                                <td>91,1%</td>
+                                            </tr>
+                                            
+                                            <!-- Doenças Raras -->
+                                            <tr class="table-purple">
+                                                <td colspan="8"><strong><i class="fas fa-dna me-2"></i>DOENÇAS RARAS</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atrofia Muscular Espinhal</td>
+                                                <td>54</td>
+                                                <td>2,2%</td>
+                                                <td>129,6</td>
+                                                <td>24,4%</td>
+                                                <td>R$ 2,4 milhões</td>
+                                                <td>Spinraza, Zolgensma</td>
+                                                <td>96,3%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mucopolissacaridoses</td>
+                                                <td>16</td>
+                                                <td>0,6%</td>
+                                                <td>48,3</td>
+                                                <td>9,1%</td>
+                                                <td>R$ 3,0 milhões</td>
+                                                <td>Vimizim, Elaprase</td>
+                                                <td>93,8%</td>
+                                            </tr>
+                                            
+                                            <!-- Neurológicos -->
+                                            <tr class="table-info">
+                                                <td colspan="8"><strong><i class="fas fa-brain me-2"></i>NEUROLÓGICOS</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Esclerose Múltipla</td>
+                                                <td>53</td>
+                                                <td>2,2%</td>
+                                                <td>9,8</td>
+                                                <td>1,8%</td>
+                                                <td>R$ 185 mil</td>
+                                                <td>Ocrevus, Tysabri</td>
+                                                <td>90,6%</td>
+                                            </tr>
+                                            
+                                            <!-- Imunobiológicos -->
+                                            <tr class="table-warning">
+                                                <td colspan="8"><strong><i class="fas fa-shield-virus me-2"></i>IMUNOBIOLÓGICOS</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Artrite Reumatoide</td>
+                                                <td>45</td>
+                                                <td>1,8%</td>
+                                                <td>9,5</td>
+                                                <td>1,8%</td>
+                                                <td>R$ 211 mil</td>
+                                                <td>Humira, Enbrel</td>
+                                                <td>86,7%</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td><strong>TOTAL</strong></td>
+                                                <td><strong>703</strong></td>
+                                                <td><strong>28,5%</strong></td>
+                                                <td><strong>531,3</strong></td>
+                                                <td><strong>100%</strong></td>
+                                                <td><strong>R$ 756 mil</strong></td>
+                                                <td>-</td>
+                                                <td><strong>89,2%</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Análise Temporal -->
+            <div class="tab-pane fade" id="temporal" role="tabpanel" aria-labelledby="temporal-tab">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line me-2"></i> Evolução Trimestral de Processos (2023-2025)
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="evolucaoProcessosChart"></canvas>
+                                </div>
+                                <div class="highlight-box highlight-warning mt-3">
+                                    <p><strong>Tendência geral:</strong> Observa-se um crescimento persistente no número de novos processos, com aumento de 42% entre Q1/2023 e Q1/2025. O crescimento é particularmente acentuado em oncológicos (+53%) e doenças raras (+86%), enquanto os imunobiológicos apresentam crescimento mais moderado (+21%).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-calendar-alt me-2"></i> Crescimento Anual por Categoria
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Categoria</th>
+                                                <th>2023</th>
+                                                <th>2024</th>
+                                                <th>2025 (Proj.)</th>
+                                                <th>CAGR</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Oncológicos</td>
+                                                <td>118</td>
+                                                <td>152</td>
+                                                <td>187</td>
+                                                <td class="text-danger">+25,9%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Doenças Raras</td>
+                                                <td>24</td>
+                                                <td>38</td>
+                                                <td>57</td>
+                                                <td class="text-danger">+54,1%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Imunobiológicos</td>
+                                                <td>62</td>
+                                                <td>72</td>
+                                                <td>83</td>
+                                                <td class="text-warning">+15,7%</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td><strong>Total</strong></td>
+                                                <td><strong>250</strong></td>
+                                                <td><strong>317</strong></td>
+                                                <td><strong>390</strong></td>
+                                                <td class="text-danger"><strong>+24,9%</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="highlight-box highlight-primary mt-3">
+                                    <h6 class="mb-2"><i class="fas fa-lightbulb me-2"></i>Insights:</h6>
+                                    <ul class="mb-0 ps-3">
+                                        <li>Taxa de crescimento anual composta de 24,9% no total de processos</li>
+                                        <li>Doenças raras com o maior crescimento (54,1%)</li>
+                                        <li>Crescimento sustentado em todas as categorias</li>
+                                        <li>Projeção de 390 novos processos em 2025</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-dollar-sign me-2"></i> Evolução do Impacto Financeiro
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="evolucaoFinanceiraChart"></canvas>
+                                </div>
+                                <div class="highlight-box highlight-danger mt-3">
+                                    <p><strong>Crescimento acelerado:</strong> O impacto financeiro cresceu a uma taxa superior ao aumento do número de processos (37,2% vs. 24,9% CAGR), indicando que não apenas o volume está aumentando, mas também o custo médio por processo. Este fenômeno é explicado pelo maior crescimento proporcional em categorias de alto custo, como doenças raras.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <i class="fas fa-search-dollar me-2"></i> Medicamentos com Maior Crescimento
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Medicamento</th>
+                                                <th>Categoria</th>
+                                                <th>Crescimento</th>
+                                                <th>Impacto Adicional</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Spinraza</td>
+                                                <td>Doenças Raras</td>
+                                                <td class="text-danger">+100%</td>
+                                                <td>R$ 28,0 milhões</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Opdivo</td>
+                                                <td>Oncológico</td>
+                                                <td class="text-danger">+56,5%</td>
+                                                <td>R$ 11,1 milhões</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tecentriq</td>
+                                                <td>Oncológico</td>
+                                                <td class="text-danger">+52,4%</td>
+                                                <td>R$ 8,1 milhões</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ocrevus</td>
+                                                <td>Neurológico</td>
+                                                <td class="text-danger">+50,0%</td>
+                                                <td>R$ 1,3 milhões</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Elaprase</td>
+                                                <td>Doenças Raras</td>
+                                                <td class="text-danger">+150%</td>
+                                                <td>R$ 8,1 milhões</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="highlight-box highlight-warning mt-3">
+                                    <h6 class="mb-2"><i class="fas fa-exclamation-triangle me-2"></i>Projeção 2025-2026:</h6>
+                                    <p class="mb-0">Aumento estimado de 48-61% no volume destes 5 medicamentos nos próximos 12 meses, representando impacto adicional de R$ 75,4-92,8 milhões.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Oportunidades de Economia -->
+            <div class="tab-pane fade" id="economia" role="tabpanel" aria-labelledby="economia-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-pie me-2"></i> Potencial de Economia por Estratégia
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="chart-container">
+                                            <canvas id="economiaEstrategiasChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="highlight-box highlight-success">
+                                            <h5 class="mb-3"><i class="fas fa-trophy me-2"></i>Resumo do Potencial de Economia</h5>
+                                            <p>A implementação das estratégias recomendadas pode gerar uma economia estimada de <strong>R$ 176,5 milhões (33,2% do impacto anual)</strong> em um período de 12 meses.</p>
+                                            <div class="table-responsive mt-3">
+                                                <table class="table table-sm">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Estratégia</th>
+                                                            <th>Economia (R$ milhões)</th>
+                                                            <th>% do Total</th>
+                                                            <th>ROI</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Central Nacional Doenças Raras</td>
+                                                            <td>63,4</td>
+                                                            <td>11,9%</td>
+                                                            <td>1.320%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Centro de Infusão Próprio</td>
+                                                            <td>45,8</td>
+                                                            <td>8,6%</td>
+                                                            <td>890%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Programa de Negociação Direta</td>
+                                                            <td>37,2</td>
+                                                            <td>7,0%</td>
+                                                            <td>2.480%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Programa de Gestão Farmacêutica</td>
+                                                            <td>19,1</td>
+                                                            <td>3,6%</td>
+                                                            <td>1.590%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Núcleo Especializado Jurídico</td>
+                                                            <td>11,0</td>
+                                                            <td>2,1%</td>
+                                                            <td>760%</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot class="table-success">
+                                                        <tr>
+                                                            <td><strong>Total</strong></td>
+                                                            <td><strong>176,5</strong></td>
+                                                            <td><strong>33,2%</strong></td>
+                                                            <td><strong>1.240%</strong></td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <!-- Estratégia 1: Central Nacional Doenças Raras -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-purple text-white">
+                                <i class="fas fa-capsules me-2"></i> Estratégia 1: Central Nacional Doenças Raras
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-5">
+                                        <div class="chart-container" style="height: 200px;">
+                                            <canvas id="estrategia1Chart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="highlight-box highlight-purple h-100">
+                                            <h6 class="mb-2">Economia Estimada:</h6>
+                                            <h4 class="mb-3">R$ 63,4 milhões (11,9%)</h4>
+                                            <p class="mb-0"><strong>ROI:</strong> 1.320%</p>
+                                            <p class="mb-0"><strong>Prazo:</strong> 6-12 meses</p>
+                                            <p class="mb-0"><strong>Complexidade:</strong> Alta</p>
+                                            <p class="mb-0"><strong>Investimento:</strong> R$ 4,8 milhões</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="text-purple"><i class="fas fa-clipboard-list me-2"></i>Componentes da Estratégia:</h6>
+                                        <ul>
+                                            <li><strong>Centralização nacional:</strong> Criação de entidade especializada dentro do Sistema Unimed para centralização da negociação, compra e gestão de medicamentos para doenças raras.</li>
+                                            <li><strong>Acordos de risco compartilhado:</strong> Contratos com laboratórios onde parte do pagamento está condicionada a resultados clínicos específicos, com devolução parcial do valor em caso de não-resposta.</li>
+                                            <li><strong>Gestão integrada de casos:</strong> Equipe multidisciplinar (médico, farmacêutico, enfermeiro) para acompanhamento contínuo, otimização de doses e avaliação de resposta.</li>
+                                        </ul>
+                                        <h6 class="text-purple mt-3"><i class="fas fa-chart-line me-2"></i>Potencial por Medicamento:</h6>
+                                        <div>
+                                            <span class="saving-pill saving-high">Spinraza: R$ 23,8M</span>
+                                            <span class="saving-pill saving-high">Zolgensma: R$ 10,4M</span>
+                                            <span class="saving-pill saving-high">Vimizim: R$ 7,6M</span>
+                                            <span class="saving-pill saving-high">Elaprase: R$ 6,5M</span>
+                                            <span class="saving-pill saving-high">Outros: R$ 15,1M</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Estratégia 2: Centro de Infusão Próprio -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <i class="fas fa-hospital-alt me-2"></i> Estratégia 2: Centro de Infusão Próprio
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-5">
+                                        <div class="chart-container" style="height: 200px;">
+                                            <canvas id="estrategia2Chart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="highlight-box highlight-danger h-100">
+                                            <h6 class="mb-2">Economia Estimada:</h6>
+                                            <h4 class="mb-3">R$ 45,8 milhões (8,6%)</h4>
+                                            <p class="mb-0"><strong>ROI:</strong> 890%</p>
+                                            <p class="mb-0"><strong>Prazo:</strong> 4-8 meses</p>
+                                            <p class="mb-0"><strong>Complexidade:</strong> Média-Alta</p>
+                                            <p class="mb-0"><strong>Investimento:</strong> R$ 5,2 milhões</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="text-danger"><i class="fas fa-clipboard-list me-2"></i>Componentes da Estratégia:</h6>
+                                        <ul>
+                                            <li><strong>Centro de Infusão Próprio:</strong> Implementação de estrutura dedicada para administração de medicamentos endovenosos, eliminando a margem hospitalar de 25-40%.</li>
+                                            <li><strong>Gestão de estoques centralizada:</strong> Administração e fracionamento de medicamentos para redução de desperdício e otimização de vials.</li>
+                                            <li><strong>Protocolos padronizados:</strong> Definição de protocolos de administração específicos por medicamento, baseados nas melhores práticas clínicas.</li>
+                                        </ul>
+                                        <h6 class="text-danger mt-3"><i class="fas fa-chart-line me-2"></i>Potencial por Categoria:</h6>
+                                        <div>
+                                            <span class="saving-pill saving-high">Oncológicos: R$ 25,2M</span>
+                                            <span class="saving-pill saving-high">Doenças Raras: R$ 12,7M</span>
+                                            <span class="saving-pill saving-high">Imunobiológicos: R$ 4,5M</span>
+                                            <span class="saving-pill saving-high">Neurológicos: R$ 2,5M</span>
+                                            <span class="saving-pill saving-high">Outros: R$ 0,9M</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-project-diagram me-2"></i> Cronograma de Implementação e Resultados Esperados
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="chart-container">
+                                            <canvas id="implementacaoChart"></canvas>
+                                        </div>
+                                        <div class="highlight-box highlight-primary mt-3">
+                                            <p><strong>Abordagem faseada:</strong> A implementação escalonada permite resultados rápidos enquanto estruturas mais complexas são desenvolvidas. A projeção indica economia acumulada de R$ 176,5 milhões em 12 meses, com primeiros resultados significativos já no terceiro mês (R$ 32,5 milhões).</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="highlight-box highlight-success mb-3">
+                                            <h5><i class="fas fa-tasks me-2"></i>Cronograma de Implementação</h5>
+                                            <table class="table table-sm">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Fase</th>
+                                                        <th>Estratégias</th>
+                                                        <th>Prazo</th>
+                                                        <th>Economia Projetada</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>Fase 1</strong></td>
+                                                        <td>Núcleo Jurídico e Negociação Direta</td>
+                                                        <td>1-3 meses</td>
+                                                        <td>R$ 48,2 milhões</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Fase 2</strong></td>
+                                                        <td>Gestão Farmacêutica e piloto do Centro de Infusão</td>
+                                                        <td>4-6 meses</td>
+                                                        <td>+ R$ 52,7 milhões</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Fase 3</strong></td>
+                                                        <td>Central Doenças Raras e expansão do Centro de Infusão</td>
+                                                        <td>7-12 meses</td>
+                                                        <td>+ R$ 75,6 milhões</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="highlight-box highlight-warning">
+                                            <h5><i class="fas fa-exclamation-triangle me-2"></i>Fatores Críticos de Sucesso</h5>
+                                            <ul>
+                                                <li><strong>Apoio da alta direção:</strong> Suporte decisivo da presidência e diretoria da Unimed Natal para investimentos iniciais</li>
+                                                <li><strong>Equipe especializada:</strong> Formação de time com expertise em negociação farmacêutica, gestão clínica e judicialização</li>
+                                                <li><strong>Integração com Sistema Unimed:</strong> Articulação com outras Unimeds para estratégias conjuntas, especialmente para doenças raras</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Dashboard Unimed Natal - Gestão Estratégica de Medicamentos de Alto Custo | v1.0</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações comuns para gráficos
+            Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            
+            // Cores
+            const colors = {
+                primary: '#005cb9',
+                secondary: '#00a859',
+                success: '#198754',
+                danger: '#dc3545',
+                warning: '#ffc107',
+                info: '#0dcaf0',
+                purple: '#6f42c1',
+                pink: '#e83e8c',
+                teal: '#20c997',
+                gray: '#6c757d'
+            };
+            
+            // === GRÁFICO: Top 10 Medicamentos ===
+            const topMedicamentosCtx = document.getElementById('topMedicamentosChart').getContext('2d');
+            new Chart(topMedicamentosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Spinraza', 'Opdivo', 'Keytruda', 'Tecentriq', 'Zolgensma', 'Vimizim', 'Elaprase', 'Yervoy', 'Ocrevus', 'Soliris'],
+                    datasets: [{
+                        label: 'Impacto Financeiro (R$ milhões)',
+                        data: [95.4, 55.3, 52.3, 44.6, 34.5, 25.2, 21.6, 16.2, 8.2, 3.7],
+                        backgroundColor: [
+                            colors.purple, colors.danger, colors.danger, 
+                            colors.danger, colors.purple, colors.purple, 
+                            colors.purple, colors.danger, colors.info, 
+                            colors.purple
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Impacto por Categorias ===
+            const impactoCategoriasCtx = document.getElementById('impactoCategoriasChart').getContext('2d');
+            new Chart(impactoCategoriasCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Doenças Raras', 'Oncológicos', 'Imunobiológicos', 'Neurológicos', 'Outros'],
+                    datasets: [{
+                        data: [253.7, 229.0, 30.1, 14.1, 4.4],
+                        backgroundColor: [
+                            colors.purple, colors.danger, colors.warning, 
+                            colors.info, colors.gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Valor Médio por Categoria ===
+            const valorMedioCategoriaCtx = document.getElementById('valorMedioCategoriaChart').getContext('2d');
+            new Chart(valorMedioCategoriaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Doenças Raras', 'Oncológicos', 'Neurológicos', 'Imunobiológicos', 'Outros'],
+                    datasets: [{
+                        label: 'Valor Médio (R$ mil)',
+                        data: [2850, 687.5, 205, 188, 85],
+                        backgroundColor: [
+                            colors.purple, colors.danger, colors.info, 
+                            colors.warning, colors.gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Evolução Processos ===
+            const evolucaoProcessosCtx = document.getElementById('evolucaoProcessosChart').getContext('2d');
+            new Chart(evolucaoProcessosCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025'],
+                    datasets: [
+                        {
+                            label: 'Oncológicos',
+                            data: [28, 29, 30, 31, 35, 37, 39, 41, 43],
+                            borderColor: colors.danger,
+                            backgroundColor: 'transparent',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Doenças Raras',
+                            data: [5, 6, 6, 7, 8, 9, 10, 11, 13],
+                            borderColor: colors.purple,
+                            backgroundColor: 'transparent',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Imunobiológicos',
+                            data: [15, 15, 16, 16, 17, 18, 18, 19, 19],
+                            borderColor: colors.warning,
+                            backgroundColor: 'transparent',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Evolução Financeira ===
+            const evolucaoFinanceiraCtx = document.getElementById('evolucaoFinanceiraChart').getContext('2d');
+            new Chart(evolucaoFinanceiraCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025 (Proj.)'],
+                    datasets: [{
+                        label: 'Impacto Financeiro (R$ milhões)',
+                        data: [260, 356, 486],
+                        borderColor: colors.danger,
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Economia por Estratégias ===
+            const economiaEstrategiasCtx = document.getElementById('economiaEstrategiasChart').getContext('2d');
+            new Chart(economiaEstrategiasCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Central Doenças Raras', 'Centro de Infusão', 'Negociação Direta', 'Gestão Farmacêutica', 'Núcleo Jurídico'],
+                    datasets: [{
+                        label: 'Economia (R$ milhões)',
+                        data: [63.4, 45.8, 37.2, 19.1, 11.0],
+                        backgroundColor: [
+                            colors.purple, colors.danger, colors.success, 
+                            colors.info, colors.warning
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Estratégia 1 ===
+            const estrategia1Ctx = document.getElementById('estrategia1Chart').getContext('2d');
+            new Chart(estrategia1Ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Spinraza', 'Zolgensma', 'Vimizim', 'Elaprase', 'Outros'],
+                    datasets: [{
+                        data: [23.8, 10.4, 7.6, 6.5, 15.1],
+                        backgroundColor: [
+                            colors.purple, colors.danger, colors.warning,
+                            colors.info, colors.gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Estratégia 2 ===
+            const estrategia2Ctx = document.getElementById('estrategia2Chart').getContext('2d');
+            new Chart(estrategia2Ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Oncológicos', 'Doenças Raras', 'Imunobio.', 'Neuro.', 'Outros'],
+                    datasets: [{
+                        data: [25.2, 12.7, 4.5, 2.5, 0.9],
+                        backgroundColor: [
+                            colors.danger, colors.purple, colors.warning,
+                            colors.info, colors.gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // === GRÁFICO: Implementação ===
+            const implementacaoCtx = document.getElementById('implementacaoChart').getContext('2d');
+            new Chart(implementacaoCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6', 'Mês 7', 'Mês 8', 'Mês 9', 'Mês 10', 'Mês 11', 'Mês 12'],
+                    datasets: [{
+                        label: 'Economia Acumulada (R$ milhões)',
+                        data: [11.5, 22.8, 32.5, 48.2, 67.5, 100.9, 116.3, 132.4, 146.8, 158.7, 168.2, 176.5],
+                        borderColor: colors.success,
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

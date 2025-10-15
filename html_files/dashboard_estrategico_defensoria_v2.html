@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard MEEDI - Estratégico Defensoria</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --meedi-primary: #1e3a8a;
+            --meedi-secondary: #3b82f6;
+            --meedi-accent: #10b981;
+            --meedi-success: #059669;
+            --meedi-warning: #d97706;
+            --meedi-danger: #dc2626;
+            --meedi-light: #f8fafc;
+            --meedi-dark: #1f2937;
+            --executive-gold: #f59e0b;
+            --executive-dark: #111827;
+            --executive-light: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--executive-dark) 0%, #1f2937 100%);
+            color: #f9fafb;
+            line-height: 1.6;
+        }
+
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 45px;
+            height: 45px;
+            margin-right: 12px;
+        }
+
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 2px;
+        }
+
+        .cell-1 { background: #60a5fa; }
+        .cell-2 { background: #34d399; }
+        .cell-3 { background: #fbbf24; }
+        .cell-4 { background: #a78bfa; }
+        .cell-5 { background: #f87171; }
+        .cell-6 { background: #06b6d4; }
+        .cell-7 { background: #8b5cf6; }
+        .cell-8 { background: #10b981; }
+        .cell-9 { background: #f59e0b; }
+
+        .header {
+            background: linear-gradient(135deg, var(--executive-dark) 0%, var(--executive-light) 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid var(--executive-gold);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            color: #d1d5db;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, var(--executive-gold), #d97706);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .strategic-summary {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(55, 65, 81, 0.8));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--executive-gold);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--executive-gold);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: #d1d5db;
+            margin-top: 0.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(245, 158, 11, 0.4);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.2);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--executive-gold), #d97706);
+        }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            color: var(--executive-gold);
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--executive-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f9fafb;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #9ca3af;
+        }
+
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .risk-container {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .risk-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--executive-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .risk-item {
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .risk-high {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .risk-low {
+            background: rgba(5, 150, 105, 0.2);
+            border-color: rgba(5, 150, 105, 0.3);
+        }
+
+        .risk-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-label {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--executive-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 400px;
+        }
+
+        .timeline-container {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(55, 65, 81, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--executive-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--executive-gold);
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--executive-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-action {
+            font-weight: 600;
+            color: #f9fafb;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-item {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--executive-gold);
+        }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            color: #d1d5db;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .risk-matrix {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-title h1 {
+                font-size: 2rem;
+            }
+            
+            .summary-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="meedi-logo">
+                <div class="meedi-logo-cell cell-1"></div>
+                <div class="meedi-logo-cell cell-2"></div>
+                <div class="meedi-logo-cell cell-3"></div>
+                <div class="meedi-logo-cell cell-4"></div>
+                <div class="meedi-logo-cell cell-5"></div>
+                <div class="meedi-logo-cell cell-6"></div>
+                <div class="meedi-logo-cell cell-7"></div>
+                <div class="meedi-logo-cell cell-8"></div>
+                <div class="meedi-logo-cell cell-9"></div>
+            </div>
+            <div class="header-title">
+                <h1><i class="fas fa-chess"></i> Dashboard Estratégico</h1>
+                <p>Gestão de Riscos & Performance Executiva | Defensoria Pública</p>
+            </div>
+            <button class="print-btn" onclick="window.print()">
+                <i class="fas fa-print"></i> Relatório
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Resumo Estratégico -->
+        <div class="strategic-summary">
+            <div class="summary-title">
+                <i class="fas fa-rocket"></i>
+                Resumo Executivo
+            </div>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <div class="summary-value">49.3%</div>
+                    <div class="summary-label">Taxa de Sucesso</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">R$ 801K</div>
+                    <div class="summary-label">Valor em Disputa</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">94.6%</div>
+                    <div class="summary-label">Concentração STJ</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">63.6%</div>
+                    <div class="summary-label">Probabilidade Média</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs Estratégicos -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="metric-value">A-</div>
+                <div class="metric-title">Score de Performance</div>
+                <div class="metric-change">Taxa de sucesso acima da média nacional</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="metric-value">+25%</div>
+                <div class="metric-title">Crescimento Projetado</div>
+                <div class="metric-change">Tendência baseada em dados históricos</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="metric-value">R$ 480K</div>
+                <div class="metric-title">Economia Potencial</div>
+                <div class="metric-change">Estratégias de otimização implementadas</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="metric-value">4-7</div>
+                <div class="metric-title">Meses ROI</div>
+                <div class="metric-change">Prazo de retorno sobre investimento</div>
+            </div>
+        </div>
+
+        <!-- Matriz de Risco -->
+        <div class="risk-matrix">
+            <div class="risk-container">
+                <div class="risk-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Matriz de Risco Processual
+                </div>
+                <div class="risk-grid">
+                    <div class="risk-item risk-high">
+                        <div class="risk-value" style="color: #fca5a5;">153</div>
+                        <div class="risk-label">Alto Risco<br>(Indeferidos)</div>
+                    </div>
+                    <div class="risk-item risk-medium">
+                        <div class="risk-value" style="color: var(--executive-gold);">54</div>
+                        <div class="risk-label">Médio Risco<br>(Pendentes)</div>
+                    </div>
+                    <div class="risk-item risk-low">
+                        <div class="risk-value" style="color: #34d399;">201</div>
+                        <div class="risk-label">Baixo Risco<br>(Deferidos)</div>
+                    </div>
+                    <div class="risk-item risk-medium">
+                        <div class="risk-value" style="color: var(--executive-gold);">R$ 22K</div>
+                        <div class="risk-label">Valor Médio<br>por Processo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-container">
+                <div class="risk-title">
+                    <i class="fas fa-chart-pie"></i>
+                    KPIs de Monitoramento
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-item">
+                        <div class="kpi-value">384</div>
+                        <div class="kpi-label">Habeas Corpus</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">13</div>
+                        <div class="kpi-label">Agravos</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">4</div>
+                        <div class="kpi-label">Recursos Especiais</div>
+                    </div>
+                    <div class="kpi-item">
+                        <div class="kpi-value">7</div>
+                        <div class="kpi-label">Outros</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Probabilidades -->
+        <div class="chart-container">
+            <div class="chart-title">
+                <i class="fas fa-chart-area"></i>
+                Distribuição de Probabilidades de Êxito
+            </div>
+            <div class="chart-canvas">
+                <canvas id="probabilityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Timeline de Ações Estratégicas -->
+        <div class="timeline-container">
+            <div class="timeline-title">
+                <i class="fas fa-road"></i>
+                Roadmap Estratégico - Próximos 12 Meses
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-action">Fase 1: Auditoria de Processos Pendentes</div>
+                    <div class="timeline-description">Análise detalhada dos 54 processos pendentes para identificar gargalos e oportunidades de aceleração</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-action">Fase 2: Otimização de Fluxos</div>
+                    <div class="timeline-description">Implementação de sistema de alertas e automação para melhorar tempo de resposta</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-action">Fase 3: Capacitação Estratégica</div>
+                    <div class="timeline-description">Treinamento focado em casos de alta complexidade no STJ para elevar taxa de sucesso</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-action">Fase 4: Monitoramento e Ajustes</div>
+                    <div class="timeline-description">Implementação de dashboard de acompanhamento em tempo real com KPIs personalizados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico de Probabilidades
+        const probabilityCtx = document.getElementById('probabilityChart').getContext('2d');
+        new Chart(probabilityCtx, {
+            type: 'line',
+            data: {
+                labels: ['30%', '45%', '50%', '65%', '80%', '95%'],
+                datasets: [{
+                    label: 'Distribuição de Casos',
+                    data: [114, 39, 54, 37, 85, 116],
+                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                    borderColor: '#f59e0b',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#f59e0b',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.2)'
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.2)'
+                        },
+                        ticks: {
+                            color: '#d1d5db'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

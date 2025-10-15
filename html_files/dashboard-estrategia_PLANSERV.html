@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Estratégica - Judicialização de Medicamentos - PLANSERV</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .government-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .strategy-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .strategy-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .strategy-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin: 15px 0 10px;
+        }
+        
+        .strategy-content {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .action-steps {
+            margin: 20px 0;
+        }
+        
+        .action-step {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .action-step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .step-description {
+            font-size: 14px;
+            color: var(--secondary-color);
+        }
+        
+        .economy-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .economy-metric {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .economy-metric:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: var(--secondary-color);
+        }
+        
+        .risk-card {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--danger-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .risk-title {
+            font-weight: 600;
+            color: var(--danger-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .risk-title i {
+            margin-right: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .workflow-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .workflow-step {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .workflow-step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .workflow-step:before {
+            content: '';
+            position: absolute;
+            top: 35px;
+            left: 15px;
+            height: 100%;
+            width: 2px;
+            background-color: var(--accent-color);
+            z-index: 0;
+        }
+        
+        .workflow-step:last-child:before {
+            display: none;
+        }
+        
+        .workflow-icon {
+            background-color: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            z-index: 1;
+        }
+        
+        .workflow-content {
+            flex-grow: 1;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .workflow-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--info-color);
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left-color: var(--success-color);
+        }
+        
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-left-color: var(--warning-color);
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger-color);
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-title i {
+            margin-right: 8px;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .fixed-chart {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .bar-container {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .chart-label {
+            width: 30%;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: right;
+            padding-right: 15px;
+        }
+        
+        .chart-bar {
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            transition: width 1s ease;
+            min-width: 40px;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bar-value {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .next-steps-container {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .next-steps-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .next-steps-title i {
+            margin-right: 10px;
+            color: var(--info-color);
+        }
+        
+        .next-steps-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .next-steps-number {
+            background-color: var(--info-color);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .next-steps-content {
+            flex-grow: 1;
+        }
+        
+        .next-steps-content-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--info-color);
+        }
+        
+        .tab-container {
+            margin: 20px 0;
+        }
+        
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid var(--light-color);
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: var(--gray-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 36px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+        
+        .stat-accent-1 .stat-icon, .stat-accent-1 .stat-value {
+            color: var(--accent-color);
+        }
+        
+        .stat-accent-2 .stat-icon, .stat-accent-2 .stat-value {
+            color: var(--success-color);
+        }
+        
+        .stat-accent-3 .stat-icon, .stat-accent-3 .stat-value {
+            color: var(--warning-color);
+        }
+        
+        .stat-accent-4 .stat-icon, .stat-accent-4 .stat-value {
+            color: var(--danger-color);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* Botão de impressão */
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+            
+            section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <!-- Logo MEEDI -->
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise Estratégica para Redução de Custos em Judicialização - PLANSERV</div>
+                    <div class="header-date">Relatório Estratégico (PLANSERV)- 14/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="government-info">
+        Estratégias para Otimização de Recursos em Processos de Judicialização de Medicamentos
+    </div>
+
+    <main class="container">
+        <!-- Visão Estratégica Geral -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chess-king"></i> Visão Estratégica e Análise Comparativa</h2>
+            
+            <p>
+                Este relatório apresenta uma análise estratégica para redução de custos relacionados à judicialização de medicamentos, baseada nos dados dos Tribunais de Justiça analisados. O foco está em três cenários de intervenção: antes, durante e após a judicialização, com estratégias específicas para cada etapa.
+            </p>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-lightbulb"></i> Principais Insights dos Dados Analisados</div>
+                <p>A análise de 1.606 processos no TJBA e em outros tribunais revelou:</p>
+                <ul>
+                    <li><strong>Alta Taxa de Deferimento</strong>: 71,22% dos processos são deferidos, indicando alta probabilidade de sucesso nas ações judiciais</li>
+                    <li><strong>Valor Médio Elevado</strong>: R$166.562,60 por processo, com valor máximo chegando a R$48.480.000,00</li>
+                    <li><strong>Grande Concentração Regional</strong>: TJBA representa 95,7% dos processos analisados (1.537 casos)</li>
+                    <li><strong>Argumentos Jurídicos Eficazes</strong>: Processos com menção a "Tutela Urgencia" (340) e "CDC" (251) apresentam taxas de deferimento acima da média</li>
+                </ul>
+            </div>
+            
+            <div class="economy-metrics">
+                <div class="economy-metric">
+                    <div class="metric-label">Valor Anual Estimado</div>
+                    <div class="metric-value">R$ 267,5 milhões</div>
+                    <div class="metric-label">Total de processos</div>
+                </div>
+                <div class="economy-metric">
+                    <div class="metric-label">Taxa Média de Deferimento</div>
+                    <div class="metric-value">71,22%</div>
+                    <div class="metric-label">Processos concedidos</div>
+                </div>
+                <div class="economy-metric">
+                    <div class="metric-label">Custo Médio por Processo</div>
+                    <div class="metric-value">R$ 166,5 mil</div>
+                    <div class="metric-label">Valor médio individual</div>
+                </div>
+                <div class="economy-metric">
+                    <div class="metric-label">Economia Potencial</div>
+                    <div class="metric-value">R$ 72,2 milhões</div>
+                    <div class="metric-label">Implementação total</div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <div class="alert-title"><i class="fas fa-info-circle"></i> Potencial de Economia</div>
+                <p>Com base nos dados analisados, identificamos potencial de economia de até R$ 72,2 milhões anuais através da implementação combinada de estratégias de negociação prévia, otimização processual e prevenção de novos casos.</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição de Deferimentos</div>
+                    <canvas id="deferimentosChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição de Economia por Estratégia</div>
+                    <canvas id="economiaEstrategiaChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cenário 1: Antes da Judicialização -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-handshake"></i> Cenário 1: Antes da Judicialização</h2>
+            
+            <div class="strategy-card">
+                <div class="strategy-title"><i class="fas fa-bullseye"></i> Estratégia de Negociação Prévia</div>
+                
+                <p class="strategy-content">
+                    Com base na análise dos dados, identificamos que a principal oportunidade de economia está na negociação prévia de medicamentos com alta probabilidade de deferimento judicial (>75%). Esta abordagem proativa pode evitar não apenas os custos judiciais, mas também estabelecer preços mais vantajosos através de compras em escala.
+                </p>
+                
+                <div class="workflow-container">
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-search"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">1. Identificação de Casos Potenciais</div>
+                                <p>Implementar sistema de triagem que identifique solicitações administrativas com alto potencial de judicialização, baseado em critérios como: medicamento solicitado, patologia, histórico de tratamentos anteriores e presença de laudo médico detalhado.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-users"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">2. Comitê Técnico de Avaliação Rápida</div>
+                                <p>Criar comitês multidisciplinares com representantes médicos, farmacêuticos e jurídicos para avaliação expedita (máximo 15 dias) das solicitações triadas, classificando-as por probabilidade de deferimento judicial.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">3. Análise Custo-Benefício</div>
+                                <p>Realizar análise comparativa entre o custo de fornecimento administrativo vs. custo total esperado em caso de judicialização (incluindo despesas processuais, honorários e potencial bloqueio judicial).</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-handshake"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">4. Proposta de Acordo</div>
+                                <p>Para casos com probabilidade de deferimento superior a 75%, apresentar proposta formal de fornecimento administrativo, condicionada à assinatura de termo de compromisso pelo paciente para acompanhamento e reavaliação periódica.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Critério</th>
+                                <th>Probabilidade de Deferimento</th>
+                                <th>Abordagem Recomendada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Presença de "Tutela Urgencia" + Laudo médico completo</td>
+                                <td>86,18%</td>
+                                <td><span class="badge badge-success">Acordo Imediato</span></td>
+                            </tr>
+                            <tr>
+                                <td>Menção ao "CDC" com evidência de necessidade</td>
+                                <td>79,28%</td>
+                                <td><span class="badge badge-success">Acordo Imediato</span></td>
+                            </tr>
+                            <tr>
+                                <td>Processos com "Boa Fé" documentada</td>
+                                <td>75,92%</td>
+                                <td><span class="badge badge-success">Acordo Imediato</span></td>
+                            </tr>
+                            <tr>
+                                <td>Casos com "Gratuidade Justica"</td>
+                                <td>73,83%</td>
+                                <td><span class="badge badge-warning">Avaliação Individual</span></td>
+                            </tr>
+                            <tr>
+                                <td>Processos com menção a "Audiencia"</td>
+                                <td>69,91%</td>
+                                <td><span class="badge badge-warning">Avaliação Individual</span></td>
+                            </tr>
+                            <tr>
+                                <td>Casos com "Onus Prova"</td>
+                                <td>67,74%</td>
+                                <td><span class="badge badge-danger">Defesa Judicial</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-success">
+                    <div class="alert-title"><i class="fas fa-check-circle"></i> Economia Projetada</div>
+                    <p>Implementando a estratégia de negociação prévia para casos com probabilidade de deferimento superior a 75%, a economia projetada é de R$ 37,5 milhões anuais, representando 52% do potencial total de economia.</p>
+                </div>
+                
+                <div class="risk-card">
+                    <div class="risk-title"><i class="fas fa-exclamation-triangle"></i> Fatores de Risco</div>
+                    <ul>
+                        <li>Aumento no volume de solicitações administrativas após a implementação do programa</li>
+                        <li>Resistência de gestores por receio de criar "porta de entrada" alternativa ao SUS</li>
+                        <li>Dificuldades orçamentárias para aquisição antecipada de medicamentos de alto custo</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cenário 2: Durante o Processo Judicial -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-gavel"></i> Cenário 2: Durante o Processo Judicial</h2>
+            
+            <div class="strategy-card">
+                <div class="strategy-title"><i class="fas fa-balance-scale"></i> Estratégia de Otimização Processual</div>
+                
+                <p class="strategy-content">
+                    Quando o processo judicial já está em andamento, a abordagem deve focar em triagem eficiente e propostas de acordos judiciais para casos com alta probabilidade de deferimento, minimizando custos processuais e evitando bloqueios judiciais que elevam significativamente os valores.
+                </p>
+                
+                <div class="action-steps">
+                    <div class="action-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Sistema de Triagem Inteligente</div>
+                            <div class="step-description">
+                                Implementar algoritmo de análise preditiva que classifique os processos recebidos conforme probabilidade de deferimento, baseado no histórico de decisões judiciais por medicamento, órgão julgador e perfil do paciente.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Propostas de Acordo Judicial Padronizadas</div>
+                            <div class="step-description">
+                                Desenvolver modelos de acordos judiciais para diferentes categorias de medicamentos, com parâmetros claros de valores e condições, previamente aprovados pelas procuradorias.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Central de Monitoramento e Negociação</div>
+                            <div class="step-description">
+                                Criar equipe especializada para acompanhamento contínuo de processos e engajamento proativo com representantes legais dos pacientes, oferecendo acordos antes da decisão judicial.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Banco de Pareceres Técnicos</div>
+                            <div class="step-description">
+                                Manter repositório atualizado de pareceres técnicos sobre medicamentos frequentemente judicializados, incluindo evidências científicas e alternativas terapêuticas disponíveis no SUS.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Economia Estimada por Tipo de Intervenção Processual</div>
+                        <canvas id="economiaTipoChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Taxa de Sucesso de Acordos por Classe Processual</div>
+                        <canvas id="sucessoAcordosChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <div class="alert-title"><i class="fas fa-chart-line"></i> Economia Projetada</div>
+                    <p>Implementando a estratégia de otimização processual para casos já judicializados, a economia projetada é de R$ 21,7 milhões anuais (30% do total), considerando redução média de 25% nos custos por caso através de acordos judiciais e otimização de defesas.</p>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo de Intervenção</th>
+                                <th>Aplicabilidade</th>
+                                <th>Economia Média</th>
+                                <th>Viabilidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Acordos para medicamentos de alta complexidade</td>
+                                <td>40% dos processos</td>
+                                <td>30% por processo</td>
+                                <td><span class="badge badge-success">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>Acordos para medicamentos de média complexidade</td>
+                                <td>35% dos processos</td>
+                                <td>25% por processo</td>
+                                <td><span class="badge badge-success">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>Propostas de alternativas terapêuticas</td>
+                                <td>25% dos processos</td>
+                                <td>40% por processo</td>
+                                <td><span class="badge badge-warning">Média</span></td>
+                            </tr>
+                            <tr>
+                                <td>Otimização de defesas para casos de baixa probabilidade</td>
+                                <td>20% dos processos</td>
+                                <td>10% por processo</td>
+                                <td><span class="badge badge-danger">Baixa</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cenário 3: Após a Judicialização -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-history"></i> Cenário 3: Após a Judicialização</h2>
+            
+            <div class="strategy-card">
+                <div class="strategy-title"><i class="fas fa-recycle"></i> Estratégia de Prevenção de Casos Futuros</div>
+                
+                <p class="strategy-content">
+                    O aprendizado com casos já concluídos oferece oportunidades significativas para prevenir novas judicializações semelhantes, através da criação de protocolos específicos, incorporação proativa de medicamentos e diálogo institucional.
+                </p>
+                
+                <div class="grid-3">
+                    <div class="economy-metric">
+                        <div class="metric-label">Redução Projetada de Novos Casos</div>
+                        <div class="metric-value">20%</div>
+                        <div class="metric-label">Em 2 anos</div>
+                    </div>
+                    <div class="economy-metric">
+                        <div class="metric-label">Economia Acumulada</div>
+                        <div class="metric-value">R$ 13 milhões</div>
+                        <div class="metric-label">Anual</div>
+                    </div>
+                    <div class="economy-metric">
+                        <div class="metric-label">ROI Estimado</div>
+                        <div class="metric-value">430%</div>
+                        <div class="metric-label">Em 3 anos</div>
+                    </div>
+                </div>
+                
+                <div class="workflow-container">
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-database"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">1. Sistema de Inteligência Judicial</div>
+                                <p>Implementar plataforma para análise detalhada de todos os processos concluídos, identificando padrões de decisões judiciais por medicamento, órgão julgador e perfil clínico de pacientes.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-file-medical"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">2. Protocolos Específicos Baseados em Decisões</div>
+                                <p>Desenvolver protocolos clínicos especiais para medicamentos com alta taxa de deferimento judicial, estabelecendo critérios objetivos para fornecimento administrativo com base no histórico de decisões.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-capsules"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">3. Incorporação Proativa</div>
+                                <p>Priorizar a avaliação para incorporação de medicamentos com alto volume de judicialização e evidência científica consistente, considerando o custo-efetividade frente às despesas judiciais.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fas fa-university"></i></div>
+                            <div class="workflow-content">
+                                <div class="workflow-title">4. Fóruns de Diálogo Institucional</div>
+                                <p>Estabelecer fóruns permanentes com representantes do Judiciário, Ministério Público, Defensoria e gestores de saúde para alinhamento sobre critérios técnicos de avaliação e consensos terapêuticos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Relação Entre Frequência de Judicialização e Potencial de Economia</div>
+                    <canvas id="potencialEconomiaChart"></canvas>
+                </div>
+                
+                <div class="alert alert-info">
+                    <div class="alert-title"><i class="fas fa-info-circle"></i> Economia Projetada</div>
+                    <p>Com a implementação da estratégia de prevenção de casos futuros, a economia projetada é de R$ 13 milhões anuais (18% do total) inicialmente, com potencial crescente nos anos subsequentes à medida que os protocolos e incorporações são expandidos.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Plano de Implementação -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-tasks"></i> Plano de Implementação Integrado</h2>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-list-check"></i> Recomendações para Implementação</div>
+                <p>Para maximizar a eficácia das estratégias, sugere-se:</p>
+                <ol>
+                    <li>
+                        <strong>Priorização baseada em termos jurídicos:</strong>
+                        <ul>
+                            <li>Focar inicialmente em processos com "Tutela Urgencia" (86,18% de deferimento)</li>
+                            <li>Estabelecer fluxo específico para casos com menção ao "CDC" (79,28% de deferimento)</li>
+                            <li>Monitorar especialmente casos que mencionam "Boa Fé" (75,92% de deferimento)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Implementação faseada:</strong>
+                        <ul>
+                            <li>Fase 1 (0-6 meses): Negociação prévia para casos prioritários</li>
+                            <li>Fase 2 (3-9 meses): Sistema de triagem para processos em andamento</li>
+                            <li>Fase 3 (6-12 meses): Protocolos específicos para casos de alta recorrência</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Análise de efetividade:</strong>
+                        <ul>
+                            <li>Dashboard para acompanhamento em tempo real da economia gerada</li>
+                            <li>Indicadores de desempenho por estratégia e tipo de processo</li>
+                            <li>Relatórios trimestrais de impacto orçamentário</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="grid-2">
+                <div>
+                    <div class="chart-title">Cronograma de Implementação</div>
+                    <div class="chart-container">
+                        <canvas id="cronogramaChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-title">Economia Acumulada Projetada (R$ milhões)</div>
+                    <div class="chart-container">
+                        <canvas id="economiaAcumuladaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-success">
+                <div class="alert-title"><i class="fas fa-check-circle"></i> Impacto Financeiro Total</div>
+                <p>O impacto financeiro total da implementação de todas as estratégias é estimado em R$ 72,2 milhões anuais, representando uma redução de 27% no custo total de judicialização de medicamentos.</p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Estratégia</th>
+                            <th>Prazo de Implementação</th>
+                            <th>Investimento Inicial</th>
+                            <th>Economia Anual</th>
+                            <th>ROI (3 anos)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Negociação Prévia</td>
+                            <td>3-6 meses</td>
+                            <td>R$ 2,8 milhões</td>
+                            <td>R$ 37,5 milhões</td>
+                            <td>1340%</td>
+                        </tr>
+                        <tr>
+                            <td>Otimização Processual</td>
+                            <td>4-8 meses</td>
+                            <td>R$ 3,2 milhões</td>
+                            <td>R$ 21,7 milhões</td>
+                            <td>678%</td>
+                        </tr>
+                        <tr>
+                            <td>Prevenção de Casos Futuros</td>
+                            <td>8-12 meses</td>
+                            <td>R$ 3,0 milhões</td>
+                            <td>R$ 13,0 milhões</td>
+                            <td>430%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td>12 meses (completo)</td>
+                            <td>R$ 9,0 milhões</td>
+                            <td>R$ 72,2 milhões</td>
+                            <td>802%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert alert-warning">
+                <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Fatores Críticos de Sucesso</div>
+                <ul>
+                    <li>Comprometimento da alta administração com a implementação integrada</li>
+                    <li>Estabelecimento de métricas claras e acompanhamento sistemático dos resultados</li>
+                    <li>Diálogo contínuo e transparente com atores do sistema judiciário</li>
+                    <li>Capacitação adequada das equipes envolvidas em cada etapa do processo</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Próximos Passos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-arrow-right"></i> Próximos Passos Sugeridos</h2>
+            
+            <div class="next-steps-container">
+                <div class="next-steps-title"><i class="fas fa-route"></i> Aprofundamento da Análise</div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">1</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Análise por Classe Processual Específica</div>
+                        <p>Desenvolver estratégias personalizadas para as 5 principais classes processuais, que representam 72,6% do total.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">2</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Estudo de correlação entre argumentos jurídicos e decisões</div>
+                        <p>Identificar padrões específicos de decisões baseados na combinação de termos jurídicos presentes nos processos.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">3</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Expansão da análise para outros tribunais</div>
+                        <p>Incluir mais tribunais para identificar padrões regionais e possíveis diferenças nas taxas de deferimento.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">4</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Sistema integrado de monitoramento</div>
+                        <p>Desenvolver plataforma centralizada para acompanhamento em tempo real das estratégias implementadas e resultados obtidos.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <div class="alert-title"><i class="fas fa-info-circle"></i> Conclusão</div>
+                <p>Esta análise apresenta um panorama abrangente para tomada de decisão estratégica, com potencial de gerar economia significativa para os cofres públicos, além de melhorar o acesso dos pacientes a tratamentos necessários através de vias administrativas mais eficientes.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Análise Estratégica para Redução de Custos v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            
+            // Gráfico de Distribuição de Deferimentos
+            const deferimentosCtx = document.getElementById('deferimentosChart').getContext('2d');
+            new Chart(deferimentosCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deferidos', 'Indeferidos', 'Pendentes/Outros'],
+                    datasets: [{
+                        data: [245, 99, 1262],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Distribuição de Economia por Estratégia
+            const economiaEstrategiaCtx = document.getElementById('economiaEstrategiaChart').getContext('2d');
+            new Chart(economiaEstrategiaCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Negociação Prévia', 'Otimização Processual', 'Prevenção de Casos Futuros'],
+                    datasets: [{
+                        data: [37.5, 21.7, 13.0],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(243, 156, 18, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(243, 156, 18, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value} milhões (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Economia Estimada por Tipo de Intervenção Processual
+            const economiaTipoCtx = document.getElementById('economiaTipoChart').getContext('2d');
+            new Chart(economiaTipoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Alta complexidade', 'Média complexidade', 'Alternativas terapêuticas', 'Otimização de defesas'],
+                    datasets: [{
+                        label: 'Economia (R$ milhões)',
+                        data: [9.8, 6.2, 4.5, 1.2],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Economia: R$ ${context.raw} milhões`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Milhões (R$)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Taxa de Sucesso de Acordos por Classe Processual
+            const sucessoAcordosCtx = document.getElementById('sucessoAcordosChart').getContext('2d');
+            new Chart(sucessoAcordosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['PROC. COMUM', 'JUIZADO ESP.', 'EXEC. FISCAL', 'CUMPRIMENTO', 'AGRAVO'],
+                    datasets: [{
+                        label: 'Taxa de Sucesso de Acordos (%)',
+                        data: [65, 58, 42, 75, 55],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(52, 152, 219, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(52, 152, 219, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Taxa de Sucesso (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Potencial de Economia
+            const potencialEconomiaCtx = document.getElementById('potencialEconomiaChart').getContext('2d');
+            new Chart(potencialEconomiaCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Medicamentos',
+                        data: [
+                            { x: 120, y: 8.5 },
+                            { x: 85, y: 6.2 },
+                            { x: 65, y: 4.8 },
+                            { x: 52, y: 3.9 },
+                            { x: 43, y: 3.1 },
+                            { x: 38, y: 2.8 },
+                            { x: 30, y: 2.2 },
+                            { x: 25, y: 1.8 },
+                            { x: 22, y: 1.6 },
+                            { x: 18, y: 1.3 },
+                            { x: 15, y: 1.1 },
+                            { x: 12, y: 0.9 }
+                        ],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1,
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Frequência: ${context.raw.x} processos, Economia: R$ ${context.raw.y} milhões`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Frequência de Judicialização (processos/ano)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Potencial de Economia (R$ milhões)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Cronograma de Implementação
+            const cronogramaCtx = document.getElementById('cronogramaChart').getContext('2d');
+            new Chart(cronogramaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Negociação Prévia', 'Otimização Processual', 'Prevenção Futura'],
+                    datasets: [{
+                        label: 'Duração (meses)',
+                        data: [6, 8, 12],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(243, 156, 18, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(243, 156, 18, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Meses'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Economia Acumulada Projetada
+            const economiaAcumuladaCtx = document.getElementById('economiaAcumuladaChart').getContext('2d');
+            new Chart(economiaAcumuladaCtx, {
+                type: 'line',
+                data: {
+                    labels: ['6 meses', '12 meses', '18 meses', '24 meses', '30 meses', '36 meses'],
+                    datasets: [{
+                        label: 'Economia Acumulada (R$ milhões)',
+                        data: [18.0, 72.2, 144.4, 216.6, 288.8, 361.0],
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Economia: R$ ${context.raw} milhões`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Milhões (R$)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

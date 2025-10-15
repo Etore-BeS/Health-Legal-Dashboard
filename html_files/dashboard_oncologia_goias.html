@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Oncologia - Judicialização Goiás</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #7c3aed;
+            --secondary-color: #a855f7;
+            --accent-color: #ec4899;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --light-color: #faf5ff;
+            --dark-color: #1f2937;
+            --gray-color: #6b7280;
+            --cancer-pink: #ff69b4;
+            --hope-gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #ede9fe 100%);
+            color: #374151;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="15" cy="15" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="35" cy="25" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="55" cy="10" r="2.5" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="85" cy="5" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: sparkle 15s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .oncology-symbol {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--cancer-pink) 0%, var(--hope-gold) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.4);
+            font-size: 32px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 25px 0;
+            background: linear-gradient(135deg, white 0%, var(--light-color) 100%);
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 4px solid var(--accent-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .organization-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cancer-pink), var(--primary-color), var(--hope-gold));
+        }
+        
+        main {
+            padding: 40px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.1);
+            padding: 40px;
+            margin-bottom: 35px;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 20px;
+            color: var(--accent-color);
+            font-size: 36px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, var(--light-color) 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.15);
+            padding: 35px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25);
+        }
+        
+        .metric-icon {
+            font-size: 52px;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .metric-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metric-title {
+            font-size: 18px;
+            color: var(--gray-color);
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+        
+        .metric-change {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        
+        .metric-change.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+            color: var(--success-color);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .metric-change.warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.15), rgba(180, 83, 9, 0.15));
+            color: var(--warning-color);
+            border: 2px solid rgba(217, 119, 6, 0.3);
+        }
+        
+        .metric-change.danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(185, 28, 28, 0.15));
+            color: var(--danger-color);
+            border: 2px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .metric-change.info {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(168, 85, 247, 0.15));
+            color: var(--primary-color);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .chart-container {
+            margin: 35px 0;
+            position: relative;
+            height: 500px;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .chart-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+            box-shadow: 0 15px 50px rgba(124, 58, 237, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 30deg,
+                rgba(255,255,255,0.1) 30deg 60deg
+            );
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .highlight-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-title i {
+            margin-right: 15px;
+            font-size: 30px;
+        }
+        
+        .highlight-content {
+            position: relative;
+            z-index: 2;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 20px 18px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(236, 72, 153, 0.05));
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        
+        .drug-card {
+            background: linear-gradient(135deg, #ffffff 0%, var(--light-color) 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.1);
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .drug-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+        }
+        
+        .drug-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .drug-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .drug-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: var(--success-color);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(180, 83, 9, 0.2));
+            color: var(--warning-color);
+            border: 2px solid rgba(217, 119, 6, 0.3);
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2));
+            color: var(--danger-color);
+            border: 2px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(168, 85, 247, 0.2));
+            color: var(--primary-color);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            font-size: 26px;
+        }
+        
+        .print-button:hover {
+            transform: scale(1.2);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.6);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                margin-top: 20px;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .metric-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="oncology-symbol">🎗️</div>
+                    <div class="logo-text">ONCOLOGIA</div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Dashboard de Medicamentos Oncológicos</div>
+                    <div class="header-subtitle">Judicialização da Saúde - Goiás</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Análise Especializada em Medicamentos Oncológicos - Sistema Judiciário de Goiás | 25/05/2025
+    </div>
+
+    <main class="container">
+        <!-- Visão Geral Oncológica -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-microscope"></i> Panorama da Oncologia Judicializada</h2>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-pills"></i></div>
+                    <div class="metric-value">32</div>
+                    <div class="metric-title">Processos Oncológicos</div>
+                    <div class="metric-change danger">Medicamentos identificados</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="metric-value">739</div>
+                    <div class="metric-title">Tratamentos Oncológicos</div>
+                    <div class="metric-change warning">22,8% dos tratamentos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-heartbeat"></i></div>
+                    <div class="metric-value">85%</div>
+                    <div class="metric-title">Taxa de Sucesso Estimada</div>
+                    <div class="metric-change success">Alta urgência médica</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                    <div class="metric-value">95%</div>
+                    <div class="metric-title">Probabilidade Média</div>
+                    <div class="metric-change info">Casos críticos</div>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-star"></i> Insights Oncológicos</div>
+                <div class="highlight-content">
+                    <p><strong>Cenário Crítico:</strong> Os medicamentos oncológicos representam o maior desafio na judicialização da saúde, com 739 tratamentos demandados (22,8% do total) e alta urgência terapêutica.</p>
+                    <br>
+                    <p><strong>Perfil dos Medicamentos:</strong> Predominam os imunoterápicos de última geração (Pembrolizumab, Rituximab) e anticorpos monoclonais (Bevacizumab, Cetuximab), com custos elevados e evidência científica robusta.</p>
+                    <br>
+                    <p><strong>Taxa de Deferimento:</strong> Estimativa de 85% de sucesso devido à urgência oncológica e falta de alternativas terapêuticas eficazes no SUS.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Medicamentos Específicos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-pills"></i> Medicamentos Oncológicos Detalhados</h2>
+            
+            <div class="drug-card">
+                <div class="drug-name">Pembrolizumab (Keytruda®)</div>
+                <div class="drug-info">
+                    <div class="drug-detail">
+                        <span><strong>Processos:</strong></span>
+                        <span>10 casos</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Indicação:</strong></span>
+                        <span>Melanoma, Câncer de Pulmão</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Classe:</strong></span>
+                        <span>Inibidor PD-1</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Custo Estimado:</strong></span>
+                        <span class="badge badge-danger">R$ 15.000/mês</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drug-card">
+                <div class="drug-name">Rituximab (MabThera®)</div>
+                <div class="drug-info">
+                    <div class="drug-detail">
+                        <span><strong>Processos:</strong></span>
+                        <span>10 casos</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Indicação:</strong></span>
+                        <span>Linfoma, Leucemia</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Classe:</strong></span>
+                        <span>Anticorpo Monoclonal</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Custo Estimado:</strong></span>
+                        <span class="badge badge-danger">R$ 8.000/ciclo</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drug-card">
+                <div class="drug-name">Bevacizumab (Avastin®)</div>
+                <div class="drug-info">
+                    <div class="drug-detail">
+                        <span><strong>Processos:</strong></span>
+                        <span>6 casos</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Indicação:</strong></span>
+                        <span>Câncer Colorretal, Pulmão</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Classe:</strong></span>
+                        <span>Anti-VEGF</span>
+                    </div>
+                    <div class="drug-detail">
+                        <span><strong>Custo Estimado:</strong></span>
+                        <span class="badge badge-warning">R$ 12.000/mês</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="drug-card">
+                    <div class="drug-name">Cetuximab (Erbitux®)</div>
+                    <div class="drug-info">
+                        <div class="drug-detail">
+                            <span><strong>Processos:</strong></span>
+                            <span>3 casos</span>
+                        </div>
+                        <div class="drug-detail">
+                            <span><strong>Indicação:</strong></span>
+                            <span>Câncer Colorretal</span>
+                        </div>
+                        <div class="drug-detail">
+                            <span><strong>Custo:</strong></span>
+                            <span class="badge badge-warning">R$ 6.000/mês</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="drug-card">
+                    <div class="drug-name">Trastuzumab (Herceptin®)</div>
+                    <div class="drug-info">
+                        <div class="drug-detail">
+                            <span><strong>Processos:</strong></span>
+                            <span>3 casos</span>
+                        </div>
+                        <div class="drug-detail">
+                            <span><strong>Indicação:</strong></span>
+                            <span>Câncer de Mama HER2+</span>
+                        </div>
+                        <div class="drug-detail">
+                            <span><strong>Custo:</strong></span>
+                            <span class="badge badge-warning">R$ 5.500/mês</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise por Tipo de Câncer -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-dna"></i> Distribuição por Tipo de Câncer</h2>
+            
+            <div class="chart-container">
+                <div class="chart-title">Medicamentos por Tipo de Câncer</div>
+                <canvas id="tiposCancerChart"></canvas>
+            </div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Frequência de Medicamentos</div>
+                    <canvas id="frequenciaMedicamentosChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Comparativo de Custos Estimados</div>
+                    <canvas id="custosComparativoChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise de Impacto Financeiro -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-dollar-sign"></i> Impacto Financeiro</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="metric-value">R$ 2,8M</div>
+                    <div class="metric-title">Custo Anual Estimado</div>
+                    <div class="metric-change danger">32 tratamentos ativos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div class="metric-value">R$ 87.500</div>
+                    <div class="metric-title">Custo Médio por Paciente</div>
+                    <div class="metric-change warning">Por ano de tratamento</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-trending-up"></i></div>
+                    <div class="metric-value">35%</div>
+                    <div class="metric-title">Crescimento Esperado</div>
+                    <div class="metric-change info">Próximos 2 anos</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Projeção de Custos por Medicamento (12 meses)</div>
+                <canvas id="projecaoCustosChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Recomendações Estratégicas -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> Recomendações para Medicamentos Oncológicos</h2>
+            
+            <div class="grid-2">
+                <div class="drug-card">
+                    <div class="drug-name"><i class="fas fa-shield-alt"></i> Para Gestores de Saúde</div>
+                    <ul style="margin-top: 15px; line-height: 1.8;">
+                        <li><strong>Priorização Clínica:</strong> Estabelecer protocolo específico para medicamentos oncológicos</li>
+                        <li><strong>Comissão Especializada:</strong> Criar comitê oncológico para avaliação técnica</li>
+                        <li><strong>Parcerias:</strong> Negociar com laboratórios preços especiais para o Estado</li>
+                        <li><strong>Centros de Referência:</strong> Concentrar tratamentos em unidades especializadas</li>
+                        <li><strong>Monitoramento:</strong> Acompanhar desfechos clínicos e custo-efetividade</li>
+                    </ul>
+                </div>
+                
+                <div class="drug-card">
+                    <div class="drug-name"><i class="fas fa-gavel"></i> Para Advocacia Especializada</div>
+                    <ul style="margin-top: 15px; line-height: 1.8;">
+                        <li><strong>Documentação Robusta:</strong> Laudos oncológicos detalhados e atualizados</li>
+                        <li><strong>Urgência Médica:</strong> Enfatizar prognóstico e janela terapêutica</li>
+                        <li><strong>Evidências Científicas:</strong> Incluir estudos clínicos e guidelines internacionais</li>
+                        <li><strong>Precedentes:</strong> Referenciar casos similares deferidos</li>
+                        <li><strong>Alternativas:</strong> Demonstrar ineficácia de opções disponíveis no SUS</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-exclamation-triangle"></i> Alerta Estratégico</div>
+                <div class="highlight-content">
+                    <p><strong>Crescimento Exponencial:</strong> O número de demandas judiciais por medicamentos oncológicos tende a crescer 35% nos próximos 2 anos, impulsionado pelo envelhecimento populacional e lançamento de novos imunoterápicos.</p>
+                    <br>
+                    <p><strong>Custo Total Projetado:</strong> Estima-se um impacto financeiro de R$ 2,8 milhões anuais apenas com os 32 casos identificados, podendo chegar a R$ 5 milhões com o crescimento esperado.</p>
+                    <br>
+                    <p><strong>Recomendação Urgente:</strong> Implementar protocolo estadual para medicamentos oncológicos de alto custo com avaliação técnica centralizada e critérios objetivos de elegibilidade.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Comparativo com Protocolos SUS -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-balance-scale"></i> Comparativo com Protocolos SUS</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Status no SUS</th>
+                            <th>PCDT Vigente</th>
+                            <th>Justificativa Judicial</th>
+                            <th>Taxa de Deferimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pembrolizumab</strong></td>
+                            <td><span class="badge badge-warning">Avaliação CONITEC</span></td>
+                            <td>Não incorporado</td>
+                            <td>Falta de alternativa eficaz</td>
+                            <td><span class="badge badge-success">90%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rituximab</strong></td>
+                            <td><span class="badge badge-success">Incorporado</span></td>
+                            <td>PCDT Linfoma</td>
+                            <td>Indicação não coberta</td>
+                            <td><span class="badge badge-success">85%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bevacizumab</strong></td>
+                            <td><span class="badge badge-danger">Não incorporado</span></td>
+                            <td>Sem PCDT</td>
+                            <td>Evidência científica</td>
+                            <td><span class="badge badge-warning">75%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cetuximab</strong></td>
+                            <td><span class="badge badge-danger">Não incorporado</span></td>
+                            <td>Sem PCDT</td>
+                            <td>Refratariedade</td>
+                            <td><span class="badge badge-warning">70%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trastuzumab</strong></td>
+                            <td><span class="badge badge-success">Incorporado</span></td>
+                            <td>PCDT Mama</td>
+                            <td>Critérios adicionais</td>
+                            <td><span class="badge badge-success">95%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Dashboard Oncológico - Judicialização da Saúde</p>
+            <p>Secretaria de Estado da Saúde de Goiás | Análise Especializada em Medicamentos Oncológicos</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6b7280';
+            
+            // Cores temáticas oncológicas
+            const colors = {
+                primary: '#7c3aed',
+                secondary: '#a855f7',
+                accent: '#ec4899',
+                success: '#10b981',
+                warning: '#f59e0b',
+                danger: '#ef4444',
+                pink: '#ff69b4',
+                gold: '#ffd700',
+                purple: '#8b5cf6'
+            };
+            
+            // Gráfico de Tipos de Câncer
+            const tiposCancerCtx = document.getElementById('tiposCancerChart').getContext('2d');
+            new Chart(tiposCancerCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Melanoma', 'Câncer de Pulmão', 'Linfoma', 'Leucemia', 'Câncer Colorretal', 'Câncer de Mama'],
+                    datasets: [{
+                        label: 'Número de Medicamentos',
+                        data: [10, 10, 10, 10, 9, 3],
+                        backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                        borderColor: colors.primary,
+                        borderWidth: 3,
+                        pointBackgroundColor: colors.accent,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 12
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Frequência
+            const frequenciaMedicamentosCtx = document.getElementById('frequenciaMedicamentosChart').getContext('2d');
+            new Chart(frequenciaMedicamentosCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pembrolizumab', 'Rituximab', 'Bevacizumab', 'Cetuximab', 'Trastuzumab'],
+                    datasets: [{
+                        data: [10, 10, 6, 3, 3],
+                        backgroundColor: [
+                            colors.primary,
+                            colors.accent,
+                            colors.purple,
+                            colors.warning,
+                            colors.success
+                        ],
+                        borderWidth: 4,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Custos Comparativo
+            const custosComparativoCtx = document.getElementById('custosComparativoChart').getContext('2d');
+            new Chart(custosComparativoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pembrolizumab', 'Bevacizumab', 'Rituximab', 'Cetuximab', 'Trastuzumab'],
+                    datasets: [{
+                        label: 'Custo Mensal (R$ mil)',
+                        data: [15, 12, 8, 6, 5.5],
+                        backgroundColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.primary,
+                            colors.secondary,
+                            colors.success
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 2,
+                        borderColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.primary,
+                            colors.secondary,
+                            colors.success
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value + 'k';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Projeção de Custos
+            const projecaoCustosCtx = document.getElementById('projecaoCustosChart').getContext('2d');
+            new Chart(projecaoCustosCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Pembrolizumab',
+                            data: [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150],
+                            borderColor: colors.danger,
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Rituximab',
+                            data: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+                            borderColor: colors.primary,
+                            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Bevacizumab',
+                            data: [72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72],
+                            borderColor: colors.warning,
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Custo Mensal (R$ mil)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

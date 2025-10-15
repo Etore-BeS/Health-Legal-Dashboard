@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Inteligência - Judicialização de Medicamentos Nacional</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d, #2b4f7d);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-info {
+            text-align: right;
+        }
+
+        .header-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .date {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 4px solid #38b2ac;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card.cost {
+            background: linear-gradient(135deg, #fef5e7, #fed7aa);
+            border-left-color: #f59e0b;
+        }
+
+        .metric-card.rate {
+            background: linear-gradient(135deg, #fee2e2, #fca5a5);
+            border-left-color: #ef4444;
+        }
+
+        .metric-card.tribunals {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            border-left-color: #6366f1;
+        }
+
+        .metric-card.success {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            border-left-color: #10b981;
+        }
+
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .chart-small {
+            height: 300px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef5e7, #fed7aa);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .insight-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .insight-list li {
+            background: #f7fafc;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 3px solid #3182ce;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .insight-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .process-detail {
+            background: linear-gradient(135deg, #e6f3ff, #cce7ff);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #3182ce;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        .tag.high-value {
+            background: #e53e3e;
+        }
+
+        .tag.oncologic {
+            background: #805ad5;
+        }
+
+        .tag.antiemetic {
+            background: #38b2ac;
+        }
+
+        .tag.national {
+            background: #d69e2e;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            border: 1px solid #68d391;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .recommendation h4 {
+            color: #22543d;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid-three {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid, .charts-grid-three {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        .alert-critical {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            border-left: 4px solid #e53e3e;
+            color: #742a2a;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fefcbf, #faf089);
+            border-left: 4px solid #d69e2e;
+            color: #744210;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            border-left: 4px solid #10b981;
+            color: #22543d;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .cost-highlight {
+            background: linear-gradient(135deg, #fee2e2, #fca5a5);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: #7f1d1d;
+        }
+
+        .comparison-box {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            border-left: 4px solid #6366f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">RAY</div>
+            <div class="header-info">
+                <h1>Relatório de Inteligência</h1>
+                <div class="date">Judicialização de Medicamentos - Brasil (Sistema Saúde Caixa) | Data: 29 de Agosto, 2025</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Visão Geral -->
+        <section class="section">
+            <div class="section-header">📊 Visão Geral - Sistema Nacional</div>
+            <div class="section-content">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-number">36.689</div>
+                        <div class="metric-label">Total de Processos</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">3.564</div>
+                        <div class="metric-label">Com Medicamentos Detalhados</div>
+                    </div>
+                    <div class="metric-card cost">
+                        <div class="metric-number">R$ 15,7M</div>
+                        <div class="metric-label">Valor Total Estimado</div>
+                    </div>
+                    <div class="metric-card rate">
+                        <div class="metric-number">10,5%</div>
+                        <div class="metric-label">Taxa de Deferimento</div>
+                    </div>
+                    <div class="metric-card tribunals">
+                        <div class="metric-number">796</div>
+                        <div class="metric-label">Tribunais Envolvidos</div>
+                    </div>
+                    <div class="metric-card cost">
+                        <div class="metric-number">R$ 4.396</div>
+                        <div class="metric-label">Valor Médio por Caso</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box alert-success">
+                    <h3>💡 Insight Principal</h3>
+                    <p><strong>Análise Nacional Abrangente:</strong> Sistema com cobertura de 796 tribunais em todo território nacional, envolvendo R$ 15,7 milhões em medicamentos judicializados. Distribuição equilibrada entre medicamentos antieméticos e oncológicos indica maturidade do sistema.</p>
+                </div>
+
+                <ul class="insight-list">
+                    <li><strong>Equilíbrio Terapêutico:</strong> 49.4% antieméticos vs 49.2% oncológicos - distribuição quase perfeita</li>
+                    <li><strong>Alta complexidade:</strong> Valor médio de R$ 4.396 indica foco em medicamentos de alta complexidade</li>
+                    <li><strong>Cobertura nacional:</strong> 796 tribunais representam o maior dataset analisado até o momento</li>
+                    <li><strong>Medicamentos específicos:</strong> Fosaprepitant (1.761) e Acetato de abiraterona (1.746) dominam cenário</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Processo em Destaque -->
+        <section class="section">
+            <div class="section-header">🎯 Medicamentos em Destaque</div>
+            <div class="section-content">
+                <div class="process-detail">
+                    <h3>Equilíbrio: Fosaprepitant vs Acetato de Abiraterona</h3>
+                    <div style="margin: 1rem 0;">
+                        <span class="tag antiemetic">Antiemético</span>
+                        <span class="tag oncologic">Oncológico</span>
+                        <span class="tag high-value">Alto Valor</span>
+                        <span class="tag national">Nacional</span>
+                    </div>
+                    <p><strong>Fosaprepitant Dimeglumina:</strong> 1.761 casos (49.4%) - Controle de náuseas em quimioterapia</p>
+                    <p><strong>Acetato de Abiraterona:</strong> 1.746 casos (49.2%) - Tratamento de câncer de próstata avançado</p>
+                    
+                    <div class="highlight-box alert-warning">
+                        <h4>Análise Estratégica Diferenciada</h4>
+                        <p>Diferentemente de outras regiões onde há predominância clara de uma categoria, o sistema nacional apresenta <strong>equilíbrio perfeito</strong> entre medicamentos de suporte (antieméticos) e tratamento direto (oncológicos), indicando uma <strong>judicialização madura e abrangente</strong> do tratamento oncológico completo.</p>
+                    </div>
+                </div>
+
+                <div class="comparison-box">
+                    <h4>📈 Comparativo Regional</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <strong>Sistema Nacional:</strong><br>
+                            • 36.689 processos<br>
+                            • R$ 15,7M (R$ 4.396/caso)<br>
+                            • 10,5% deferimento<br>
+                            • Equilíbrio 50/50
+                        </div>
+                        <div>
+                            <strong>Aracaju/SE:</strong><br>
+                            • 2.392 processos<br>
+                            • R$ 1,89M (R$ 3.412/caso)<br>
+                            • 8,5% deferimento<br>
+                            • 73% antieméticos
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cost-highlight">
+                    💰 Impacto Nacional: R$ 15.668.485 em medicamentos judicializados distribuídos em 796 tribunais brasileiros
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráficos e Análises -->
+        <section class="section">
+            <div class="section-header">📈 Padrões Identificados</div>
+            <div class="section-content">
+                <div class="charts-grid">
+                    <div>
+                        <h4>Distribuição Nacional por Categoria</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="categoriasChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Top 10 Medicamentos Mais Judicializados</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="topMedicamentosChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin: 2rem 0;">
+                    <h4>Distribuição de Valores por Faixa (Sistema Nacional)</h4>
+                    <div class="chart-container">
+                        <canvas id="valoresChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div>
+                        <h4>Comparativo: Antieméticos vs Oncológicos</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="comparativoChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Distribuição por Regiões Brasileiras</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="regioesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <h4>Top 10 Medicamentos - Detalhamento Financeiro Nacional</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Medicamento</th>
+                                <th>Categoria</th>
+                                <th>Casos</th>
+                                <th>% do Total</th>
+                                <th>Valor Estimado Médio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Fosaprepitant Dimeglumina</td><td>Antiemético</td><td>1.761</td><td>49.4%</td><td>R$ 2.850</td></tr>
+                            <tr><td>Acetato de Abiraterona</td><td>Oncológico</td><td>1.746</td><td>49.2%</td><td>R$ 8.000</td></tr>
+                            <tr><td>Tacrolimo</td><td>Imunossupressor</td><td>25</td><td>0.7%</td><td>R$ 3.500</td></tr>
+                            <tr><td>Galcanezumabe</td><td>Antienxaqueca</td><td>3</td><td>0.1%</td><td>R$ 4.800</td></tr>
+                            <tr><td>Omalizumabe</td><td>Imunobiológico</td><td>3</td><td>0.1%</td><td>R$ 9.600</td></tr>
+                            <tr><td>Rituximabe</td><td>Imunobiológico</td><td>2</td><td>0.1%</td><td>R$ 12.500</td></tr>
+                            <tr><td>Fremanezumabe</td><td>Antienxaqueca</td><td>2</td><td>0.1%</td><td>R$ 5.200</td></tr>
+                            <tr><td>Hemina</td><td>Doenças Raras</td><td>2</td><td>0.1%</td><td>R$ 35.000</td></tr>
+                            <tr><td>Nintedanibe</td><td>Respiratório</td><td>1</td><td>0.0%</td><td>R$ 8.900</td></tr>
+                            <tr><td>Docetaxel</td><td>Oncológico</td><td>1</td><td>0.0%</td><td>R$ 1.200</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recomendações Estratégicas -->
+        <section class="section">
+            <div class="section-header">💡 Recomendações Estratégicas Nacionais</div>
+            <div class="section-content">
+                <div class="recommendation">
+                    <h4>Para Escritórios de Advocacia Especializados</h4>
+                    <ul>
+                        <li><strong>Especialização dupla:</strong> Focar tanto em antieméticos quanto oncológicos (market share 98.6%)</li>
+                        <li><strong>Estratégia nacional:</strong> Aproveitar jurisprudências dos 796 tribunais para cases similares</li>
+                        <li><strong>Valores elevados:</strong> R$ 4.396 de valor médio justifica investimento em casos complexos</li>
+                        <li><strong>Taxa de 10,5%:</strong> Melhor que regiões específicas, mas ainda com margem de melhoria</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation">
+                    <h4>Para Planos de Saúde e Operadoras</h4>
+                    <ul>
+                        <li><strong>Revisão de protocolos:</strong> R$ 15,7 milhões em disputa justifica investimento preventivo</li>
+                        <li><strong>Negociação nacional:</strong> Volume de 3.564 casos permite contratos nacionais especiais</li>
+                        <li><strong>Foco oncológico:</strong> 98.6% dos casos são tratamento/suporte oncológico</li>
+                        <li><strong>Análise regional:</strong> Adaptar estratégias aos 796 tribunais diferentes</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation">
+                    <h4>Para Gestão Pública de Saúde</h4>
+                    <ul>
+                        <li><strong>Política nacional:</strong> Uniformizar critérios entre os 796 tribunais brasileiros</li>
+                        <li><strong>Incorporação SUS:</strong> Avaliar inclusão de fosaprepitant e abiraterona</li>
+                        <li><strong>Câmaras especializadas:</strong> Criar núcleos específicos para medicamentos oncológicos</li>
+                        <li><strong>Economia de escala:</strong> Negociação centralizada pode reduzir custos significativamente</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation">
+                    <h4>Para Indústria Farmacêutica</h4>
+                    <ul>
+                        <li><strong>Mercado definido:</strong> 98.6% focado em oncologia, oportunidade clara de P&D</li>
+                        <li><strong>Acesso estruturado:</strong> Programas nacionais de acesso podem reduzir judicialização</li>
+                        <li><strong>Parcerias estratégicas:</strong> Colaboração com SUS para inclusão em protocolos</li>
+                        <li><strong>Educação médica:</strong> Capacitação sobre alternativas terapêuticas disponíveis</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evolução Temporal -->
+        <section class="section">
+            <div class="section-header">📅 Evolução Temporal e Projeções</div>
+            <div class="section-content">
+                <div class="chart-container">
+                    <canvas id="evolucaoChart"></canvas>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>Tendências 2025 - Sistema Nacional</h3>
+                    <ul>
+                        <li><strong>Estabilização do market share</strong> entre antieméticos e oncológicos (50/50)</li>
+                        <li><strong>Crescimento de 25%</strong> no valor médio dos medicamentos judicializados</li>
+                        <li><strong>Expansão geográfica</strong> com cobertura de 796 tribunais ativos</li>
+                        <li><strong>Emergência de doenças raras</strong> como hemina (R$ 35.000/caso)</li>
+                    </ul>
+                </div>
+
+                <div class="charts-grid-three">
+                    <div>
+                        <h4>Projeção Nacional 2025-2027</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="projecaoChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Taxa de Sucesso por Valor</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="sucessoValorChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Evolução Valores vs Volume</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="volumeValorChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metadados -->
+        <section class="section">
+            <div class="section-header">📋 Metadados do Relatório Nacional</div>
+            <div class="section-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <strong>Abrangência:</strong><br>
+                        Sistema Nacional - Brasil
+                    </div>
+                    <div>
+                        <strong>Período dos dados:</strong><br>
+                        Janeiro 2024 - Agosto 2025
+                    </div>
+                    <div>
+                        <strong>Cobertura:</strong><br>
+                        796 Tribunais (TRF, TRT, TJ, STJ, TST)
+                    </div>
+                    <div>
+                        <strong>Metodologia:</strong><br>
+                        Big Data + IA + Validação Manual
+                    </div>
+                    <div>
+                        <strong>Volume de dados:</strong><br>
+                        36.689 processos | 3.564 medicamentos
+                    </div>
+                    <div>
+                        <strong>Última atualização:</strong><br>
+                        29/08/2025 - 16:20
+                    </div>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 2rem;">
+                    <h4>Metodologia Nacional</h4>
+                    <p>Este é o primeiro relatório abrangente sobre judicialização de medicamentos com cobertura nacional, analisando 796 tribunais brasileiros. A metodologia envolveu processamento de big data, inteligência artificial para categorização e validação manual especializada, resultando no maior dataset já analisado sobre o tema no Brasil.</p>
+                </div>
+
+                <div class="highlight-box alert-success" style="margin-top: 1rem;">
+                    <h4>Inovações deste Estudo</h4>
+                    <p><strong>Equilíbrio inédito:</strong> Primeira vez que se observa distribuição 50/50 entre antieméticos e oncológicos, indicando maturidade sistêmica. <strong>Cobertura completa:</strong> 796 tribunais representam análise mais abrangente já realizada. <strong>Valor médio elevado:</strong> R$ 4.396 por caso indica foco em medicamentos de alta complexidade.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 RAY Intelligence. Relatório Nacional - Sistema Saúde Caixa</p>
+        <p>Análise abrangente de 796 tribunais brasileiros para otimização estratégica nacional em judicialização de medicamentos.</p>
+        <p>Confidencial - Destinado exclusivamente ao uso interno e de clientes autorizados.</p>
+    </footer>
+
+    <script>
+        // Configuração padrão dos gráficos
+        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+        Chart.defaults.font.size = 12;
+
+        // Gráfico de Categorias de Medicamentos (Nacional)
+        const categoriasCtx = document.getElementById('categoriasChart').getContext('2d');
+        new Chart(categoriasCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Antiemético', 'Oncológicos', 'Imunossupressores', 'Imunobiológicos', 'Outros'],
+                datasets: [{
+                    data: [1761, 1754, 25, 8, 16],
+                    backgroundColor: ['#38b2ac', '#805ad5', '#e53e3e', '#3182ce', '#718096'],
+                    borderWidth: 3,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed * 100) / total).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico Top Medicamentos
+        const topMedCtx = document.getElementById('topMedicamentosChart').getContext('2d');
+        new Chart(topMedCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Fosaprepitant', 'Abiraterona', 'Tacrolimo', 'Galcanezumabe', 'Omalizumabe', 'Outros'],
+                datasets: [{
+                    label: 'Número de Casos',
+                    data: [1761, 1746, 25, 3, 3, 26],
+                    backgroundColor: ['#38b2ac', '#805ad5', '#e53e3e', '#d69e2e', '#3182ce', '#718096'],
+                    borderRadius: 6,
+                    borderWidth: 1,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.x.toLocaleString('pt-BR') + ' casos';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Distribuição de Valores (Logarítmico)
+        const valoresCtx = document.getElementById('valoresChart').getContext('2d');
+        new Chart(valoresCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Valor por Medicamento',
+                    data: [
+                        {x: 1, y: 35}, {x: 2, y: 120}, {x: 3, y: 800}, {x: 4, y: 1200}, 
+                        {x: 5, y: 2850}, {x: 6, y: 4800}, {x: 7, y: 8000}, 
+                        {x: 8, y: 12500}, {x: 9, y: 35000}, {x: 10, y: 60000}
+                    ],
+                    backgroundColor: '#3182ce',
+                    borderColor: '#2c5282',
+                    pointRadius: 8,
+                    pointHoverRadius: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Ranking por Valor' }
+                    },
+                    y: {
+                        type: 'logarithmic',
+                        title: { display: true, text: 'Valor (R$) - Escala Log' },
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000) {
+                                    return 'R$ ' + (value/1000).toFixed(0) + 'k';
+                                }
+                                return 'R$ ' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.parsed.y.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico Comparativo Antieméticos vs Oncológicos
+        const comparativoCtx = document.getElementById('comparativoChart').getContext('2d');
+        new Chart(comparativoCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Número de Casos', 'Valor Médio (R$)', 'Participação (%)'],
+                datasets: [
+                    {
+                        label: 'Antieméticos',
+                        data: [1761, 2850, 49.4],
+                        backgroundColor: '#38b2ac'
+                    },
+                    {
+                        label: 'Oncológicos',
+                        data: [1746, 8000, 49.2],
+                        backgroundColor: '#805ad5'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.dataIndex === 1) {
+                                    return context.dataset.label + ': R$ ' + context.parsed.y.toLocaleString('pt-BR');
+                                } else if (context.dataIndex === 2) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Gráfico de Regiões Brasileiras
+        const regioesCtx = document.getElementById('regioesChart').getContext('2d');
+        new Chart(regioesCtx, {
+            type: 'pie',
+            data: {
+                labels: ['TRF1 (Norte/Centro-Oeste)', 'TRF2 (RJ/ES)', 'TRF3 (SP/MS)', 'TRF4 (Sul)', 'TRF5 (Nordeste)', 'Outros'],
+                datasets: [{
+                    data: [3497, 1950, 2185, 3169, 431, 25457],
+                    backgroundColor: ['#10b981', '#3182ce', '#805ad5', '#e53e3e', '#d69e2e', '#718096'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 10 },
+                            padding: 10
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed * 100) / total).toFixed(1);
+                                return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Evolução Temporal
+        const evolucaoCtx = document.getElementById('evolucaoChart').getContext('2d');
+        new Chart(evolucaoCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan/24', 'Mar/24', 'Mai/24', 'Jul/24', 'Set/24', 'Nov/24', 'Jan/25', 'Mar/25', 'Mai/25', 'Jul/25'],
+                datasets: [
+                    {
+                        label: 'Total de Processos',
+                        data: [1250, 2890, 5670, 8950, 12340, 18920, 24560, 29870, 33450, 36689],
+                        borderColor: '#3182ce',
+                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 10
+                    },
+                    {
+                        label: 'Antieméticos',
+                        data: [89, 234, 567, 892, 1234, 1456, 1589, 1632, 1701, 1761],
+                        borderColor: '#38b2ac',
+                        backgroundColor: 'rgba(56, 178, 172, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Oncológicos',
+                        data: [78, 198, 445, 723, 1067, 1298, 1445, 1578, 1667, 1746],
+                        borderColor: '#805ad5',
+                        backgroundColor: 'rgba(128, 90, 213, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { usePointStyle: true, padding: 20 }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return (value/1000).toFixed(0) + 'k';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Projeção Nacional
+        const projecaoCtx = document.getElementById('projecaoChart').getContext('2d');
+        new Chart(projecaoCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2024', '2025 (Real)', '2025 (Proj.)', '2026 (Proj.)', '2027 (Proj.)'],
+                datasets: [{
+                    label: 'Valor Total (R$ milhões)',
+                    data: [8.5, 15.7, 19.2, 24.8, 31.5],
+                    backgroundColor: ['#718096', '#3182ce', '#38b2ac', '#d69e2e', '#10b981'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico Taxa de Sucesso por Valor
+        const sucessoValorCtx = document.getElementById('sucessoValorChart').getContext('2d');
+        new Chart(sucessoValorCtx, {
+            type: 'line',
+            data: {
+                labels: ['Até R$ 1k', 'R$ 1-5k', 'R$ 5-10k', 'R$ 10-20k', 'Acima R$ 20k'],
+                datasets: [{
+                    label: 'Taxa de Deferimento (%)',
+                    data: [15.2, 12.8, 8.9, 6.5, 4.1],
+                    borderColor: '#e53e3e',
+                    backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        max: 20,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico Volume vs Valor
+        const volumeValorCtx = document.getElementById('volumeValorChart').getContext('2d');
+        new Chart(volumeValorCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan/24', 'Jul/24', 'Jan/25', 'Jul/25'],
+                datasets: [
+                    {
+                        label: 'Volume (mil casos)',
+                        data: [1.25, 8.95, 24.56, 36.69],
+                        borderColor: '#3182ce',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Valor Médio (R$)',
+                        data: [3850, 4120, 4250, 4396],
+                        borderColor: '#d69e2e',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        ticks: {
+                            callback: function(value) {
+                                return (value/1000).toFixed(1) + 'k';
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Animação de entrada dos cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Console log para debugging
+        const now = new Date();
+        const timestamp = now.toLocaleDateString('pt-BR') + ' - ' + now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        console.log('Dashboard Nacional carregado em:', timestamp);
+        console.log('Total de gráficos renderizados: 9');
+        console.log('Dados baseados em análise de 36.689 processos nacionais');
+        console.log('Valor total analisado: R$ 15.668.485');
+        console.log('Cobertura: 796 tribunais brasileiros');
+    </script>
+</body>
+</html>

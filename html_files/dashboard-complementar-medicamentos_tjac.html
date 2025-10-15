@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Complementar - Medicamentos Judicializados</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1e3a8a;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #1e3a8a;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .stat-box.success {
+            border-left-color: #28a745;
+        }
+        
+        .stat-box.danger {
+            border-left-color: #dc3545;
+        }
+        
+        .stat-box.warning {
+            border-left-color: #ffc107;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .bar-chart {
+            margin: 20px 0;
+        }
+        
+        .bar-item {
+            margin-bottom: 10px;
+        }
+        
+        .bar-label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        
+        .bar-container {
+            background-color: #f0f0f0;
+            height: 25px;
+            width: calc(100% - 250px);
+            display: inline-block;
+            margin: 0 10px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .bar {
+            height: 100%;
+            background-color: #1e3a8a;
+        }
+        
+        .bar-value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .insight-card {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            border-top: 4px solid #1e3a8a;
+        }
+        
+        .insight-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1e3a8a;
+        }
+        
+        .pill-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .pill {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .pill.high {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .pill.medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .pill.low {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bar-label {
+                width: 150px;
+            }
+            
+            .bar-container {
+                width: calc(100% - 200px);
+            }
+            
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dashboard de Medicamentos Judicializados</h1>
+        <p>Análise de processos judiciais relacionados a medicamentos</p>
+    </div>
+
+    <div class="container">
+        <!-- Estatísticas Gerais de Medicamentos -->
+        <div class="card">
+            <div class="card-title">Estatísticas de Medicamentos Judicializados</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-title">Total de Processos</div>
+                    <div class="stat-value">782</div>
+                    <div class="stat-desc">Medicamentos identificados</div>
+                </div>
+                <div class="stat-box success">
+                    <div class="stat-title">Taxa de Deferimento</div>
+                    <div class="stat-value">68%</div>
+                    <div class="stat-desc">Liminares deferidas</div>
+                </div>
+                <div class="stat-box warning">
+                    <div class="stat-title">Valor Médio do Pedido</div>
+                    <div class="stat-value">R$ 56.400</div>
+                    <div class="stat-desc">Por processo</div>
+                </div>
+                <div class="stat-box danger">
+                    <div class="stat-title">Crescimento Anual</div>
+                    <div class="stat-value">24%</div>
+                    <div class="stat-desc">Aumento de novos processos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribuição por Tipo de Medicamento -->
+        <div class="card">
+            <div class="card-title">Distribuição por Tipo de Medicamento</div>
+            <div class="bar-chart">
+                <div class="bar-item">
+                    <span class="bar-label">Biológicos</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 42%;"></div>
+                    </div>
+                    <span class="bar-value">42%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Imunobiológicos</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 28%;"></div>
+                    </div>
+                    <span class="bar-value">28%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Quimioterápicos</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 18%;"></div>
+                    </div>
+                    <span class="bar-value">18%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Antipsicóticos</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 7%;"></div>
+                    </div>
+                    <span class="bar-value">7%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Outros</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 5%;"></div>
+                    </div>
+                    <span class="bar-value">5%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taxa de Sucesso por Condição Médica -->
+        <div class="card">
+            <div class="card-title">Taxa de Sucesso por Condição Médica</div>
+            <div class="bar-chart">
+                <div class="bar-item">
+                    <span class="bar-label">Câncer (C00-C97)</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 84%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">84%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Artrite (M05-M14)</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 76%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">76%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Esclerose (G35)</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 72%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">72%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Doença de Crohn (K50)</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 68%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">68%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Diabetes (E10-E14)</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 65%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">65%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análise Médica -->
+        <div class="card">
+            <div class="card-title">Análise Médica</div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Doença/Condição (CID)</th>
+                            <th>Medicamentos Judicializados</th>
+                            <th>Uso Off-Label</th>
+                            <th>Taxa de Sucesso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Câncer de Mama (C50)</td>
+                            <td>Trastuzumabe, Pertuzumabe, Ribociclibe</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">84%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Artrite Reumatoide (M05-M06)</td>
+                            <td>Adalimumabe, Etanercepte, Tocilizumabe</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">76%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Esclerose Múltipla (G35)</td>
+                            <td>Fingolimode, Natalizumabe, Ocrelizumabe</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">72%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Doença de Crohn (K50)</td>
+                            <td>Infliximabe, Adalimumabe, Vedolizumabe</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">68%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Psoríase (L40)</td>
+                            <td>Secuquinumabe, Ustequinumabe, Ixequizumabe</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">70%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Diabetes tipo 1 (E10)</td>
+                            <td>Insulinas análogas, Bomba de insulina</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-success">65%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Transtorno Bipolar (F31)</td>
+                            <td>Lurasidona, Cariprazina</td>
+                            <td><span class="badge badge-warning">Parcial (30%)</span></td>
+                            <td><span class="badge badge-warning">58%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fibromialgia (M79.7)</td>
+                            <td>Pregabalina, Duloxetina, Milnaciprana</td>
+                            <td><span class="badge badge-warning">Parcial (40%)</span></td>
+                            <td><span class="badge badge-warning">52%</span></td>
+                        </tr>
+                        <tr>
+                            <td>TDAH (F90)</td>
+                            <td>Venvanse, Concerta, Strattera</td>
+                            <td><span class="badge badge-success">Não (0%)</span></td>
+                            <td><span class="badge badge-warning">60%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Alzheimer (G30)</td>
+                            <td>Aducanumabe, Lecanemabe</td>
+                            <td><span class="badge badge-danger">Sim (100%)</span></td>
+                            <td><span class="badge badge-danger">25%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Análise Jurídica -->
+        <div class="card">
+            <div class="card-title">Análise Jurídica</div>
+            <div class="two-columns">
+                <div>
+                    <h3 style="color: #1e3a8a;">Fatores de Sucesso</h3>
+                    <div class="bar-chart">
+                        <div class="bar-item">
+                            <span class="bar-label">Laudos médicos detalhados</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 85%; background-color: #28a745;"></div>
+                            </div>
+                            <span class="bar-value">85%</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">Tratamentos anteriores</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 72%; background-color: #28a745;"></div>
+                            </div>
+                            <span class="bar-value">72%</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">Jurisprudência específica</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 58%; background-color: #28a745;"></div>
+                            </div>
+                            <span class="bar-value">58%</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">CID documentado</span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: 45%; background-color: #28a745;"></div>
+                            </div>
+                            <span class="bar-value">45%</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #1e3a8a;">Argumentação Eficaz</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Argumento</th>
+                                <th>Eficácia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Risco à vida ou à saúde</td>
+                                <td><span class="badge badge-success">Alta (87%)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Falha terapêutica documentada</td>
+                                <td><span class="badge badge-success">Alta (82%)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Evidências científicas robustas</td>
+                                <td><span class="badge badge-success">Alta (76%)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Prescrição de especialista</td>
+                                <td><span class="badge badge-success">Alta (74%)</span></td>
+                            </tr>
+                            <tr>
+                                <td>Registro na ANVISA</td>
+                                <td><span class="badge badge-success">Alta (70%)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análise Financeira -->
+        <div class="card">
+            <div class="card-title">Análise Financeira</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-title">Impacto Financeiro Total</div>
+                    <div class="stat-value">R$ 44,1 M</div>
+                    <div class="stat-desc">782 processos</div>
+                </div>
+                <div class="stat-box warning">
+                    <div class="stat-title">Custo Médio por Processo</div>
+                    <div class="stat-value">R$ 56.400</div>
+                    <div class="stat-desc">Média geral</div>
+                </div>
+                <div class="stat-box danger">
+                    <div class="stat-title">Custo Médio Oncológicos</div>
+                    <div class="stat-value">R$ 132.500</div>
+                    <div class="stat-desc">154 processos</div>
+                </div>
+                <div class="stat-box success">
+                    <div class="stat-title">Custo Médio Biológicos</div>
+                    <div class="stat-value">R$ 87.200</div>
+                    <div class="stat-desc">328 processos</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1e3a8a;">Projeção de Impacto Financeiro (2025-2026)</h3>
+                <div class="bar-chart">
+                    <div class="bar-item">
+                        <span class="bar-label">Cenário Atual</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 60%;"></div>
+                        </div>
+                        <span class="bar-value">R$ 44,1M</span>
+                    </div>
+                    <div class="bar-item">
+                        <span class="bar-label">Projeção Conservadora</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 75%;"></div>
+                        </div>
+                        <span class="bar-value">R$ 54,7M</span>
+                    </div>
+                    <div class="bar-item">
+                        <span class="bar-label">Projeção Agressiva</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 90%; background-color: #dc3545;"></div>
+                        </div>
+                        <span class="bar-value">R$ 68,2M</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1e3a8a;">Top 5 Medicamentos por Impacto Financeiro</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Quantidade de Processos</th>
+                            <th>Valor Anual por Paciente</th>
+                            <th>Impacto Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spinraza (Nusinersena)</td>
+                            <td>12</td>
+                            <td>R$ 1.120.000</td>
+                            <td>R$ 13,44 milhões</td>
+                        </tr>
+                        <tr>
+                            <td>Soliris (Eculizumabe)</td>
+                            <td>8</td>
+                            <td>R$ 980.000</td>
+                            <td>R$ 7,84 milhões</td>
+                        </tr>
+                        <tr>
+                            <td>Zolgensma (Onasemnogene)</td>
+                            <td>3</td>
+                            <td>R$ 2.100.000 (dose única)</td>
+                            <td>R$ 6,3 milhões</td>
+                        </tr>
+                        <tr>
+                            <td>Vimizim (Elosulfase alfa)</td>
+                            <td>5</td>
+                            <td>R$ 870.000</td>
+                            <td>R$ 4,35 milhões</td>
+                        </tr>
+                        <tr>
+                            <td>Cerdelga (Eliglustato)</td>
+                            <td>7</td>
+                            <td>R$ 580.000</td>
+                            <td>R$ 4,06 milhões</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Insights Estratégicos -->
+        <div class="card">
+            <div class="card-title">Insights Estratégicos</div>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-title">Prevenção de Judicialização</div>
+                    <p>Implementação de programas de acesso a medicamentos biológicos com monitoramento de eficácia pode reduzir em até 42% novos processos.</p>
+                    <div class="pill-container">
+                        <span class="pill high">Alto Impacto</span>
+                        <span class="pill">Médio Prazo</span>
+                        <span class="pill">Biológicos</span>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Protocolos Técnicos</div>
+                    <p>Elaboração de pareceres técnicos com evidências científicas para medicamentos oncológicos de alto custo reduz taxa de deferimento em 38%.</p>
+                    <div class="pill-container">
+                        <span class="pill high">Alto Impacto</span>
+                        <span class="pill">Curto Prazo</span>
+                        <span class="pill">Oncológicos</span>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Alternativas Terapêuticas</div>
+                    <p>Oferta de alternativas documentadas com evidência de eficácia equivalente reduz deferimentos em 65% dos casos, principalmente em doenças autoimunes.</p>
+                    <div class="pill-container">
+                        <span class="pill high">Alto Impacto</span>
+                        <span class="pill">Médio Prazo</span>
+                        <span class="pill">Imunobiológicos</span>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Uso Off-Label</div>
+                    <p>Contestação de prescrições off-label com base em ausência de evidências científicas teve sucesso em 75% dos casos, especialmente em tratamentos experimentais.</p>
+                    <div class="pill-container">
+                        <span class="pill medium">Médio Impacto</span>
+                        <span class="pill">Curto Prazo</span>
+                        <span class="pill">Diversos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; background-color: #f8f9fa; padding: 20px; border-radius: 5px;">
+                <h3 style="color: #1e3a8a; margin-top: 0;">Recomendações Estratégicas</h3>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Gestão Preventiva:</strong> Implementar programa de análise prévia de casos de alto custo, oferecendo alternativas terapêuticas antes da judicialização.</li>
+                    <li><strong>Fortalecimento Técnico:</strong> Desenvolver banco de pareceres técnicos por patologia, com evidências científicas atualizadas e alternativas disponíveis.</li>
+                    <li><strong>Uniformização de Conduta:</strong> Criar protocolos de contestação específicos por tipo de medicamento e condição, baseados nos fatores de sucesso identificados.</li>
+                    <li><strong>Programa Especial para Oncológicos:</strong> Desenvolver fluxo diferenciado para medicamentos oncológicos de alto custo, que apresentam maior taxa de deferimento.</li>
+                    <li><strong>Monitoramento Contínuo:</strong> Implementar sistema de acompanhamento de novos medicamentos aprovados pela ANVISA para antecipar potenciais judicializações.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color: #1e3a8a; color: white; text-align: center; padding: 20px; margin-top: 30px;">
+        <p>Dashboard de Análise de Medicamentos Judicializados</p>
+        <p>Dados analisados: 782 processos relacionados a medicamentos</p>
+    </div>
+</body>
+</html>

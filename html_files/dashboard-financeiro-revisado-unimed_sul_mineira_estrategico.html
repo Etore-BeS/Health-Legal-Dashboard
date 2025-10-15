@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Financeira e Riscos - Unimed Sul Mineira</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .metric-change.positive {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .metric-change.neutral {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray-color);
+        }
+        
+        .risk-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid;
+        }
+        
+        .risk-card.high {
+            border-left-color: var(--danger-color);
+        }
+        
+        .risk-card.medium {
+            border-left-color: var(--warning-color);
+        }
+        
+        .risk-card.low {
+            border-left-color: var(--success-color);
+        }
+        
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .risk-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .risk-level {
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .risk-level.high {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .risk-level.medium {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .risk-level.low {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .risk-impact {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .risk-impact-label {
+            font-size: 13px;
+            color: var(--gray-color);
+            margin-right: 10px;
+            width: 80px;
+        }
+        
+        .risk-impact-bar {
+            flex-grow: 1;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .risk-impact-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        .risk-impact-fill.high {
+            background-color: var(--danger-color);
+        }
+        
+        .risk-impact-fill.medium {
+            background-color: var(--warning-color);
+        }
+        
+        .risk-impact-fill.low {
+            background-color: var(--success-color);
+        }
+        
+        .risk-impact-value {
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 10px;
+            width: 40px;
+        }
+        
+        .risk-description {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--dark-color);
+        }
+        
+        .risk-mitigation {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--info-color);
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left-color: var(--success-color);
+        }
+        
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-left-color: var(--warning-color);
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger-color);
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-title i {
+            margin-right: 8px;
+        }
+        
+        .strategy-section {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .strategy-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* Progressão de Risco */
+        .risk-progression {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .risk-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .risk-step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            height: 3px;
+            background-color: #e0e0e0;
+            width: calc(100% - 30px);
+            top: 15px;
+            left: calc(50% + 15px);
+            z-index: 0;
+        }
+        
+        .risk-step.active:not(:last-child):after {
+            background-color: var(--primary-color);
+        }
+        
+        .risk-step-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: white;
+            z-index: 1;
+            margin-bottom: 8px;
+        }
+        
+        .risk-step.active .risk-step-icon {
+            background-color: var(--primary-color);
+        }
+        
+        .risk-step-label {
+            font-size: 12px;
+            color: var(--gray-color);
+            text-align: center;
+        }
+        
+        .risk-step.active .risk-step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Botão de impressão */
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+            
+            section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise Financeira e Riscos - Unimed Sul Mineira</div>
+                    <div class="header-date">Relatório Especializado - 15/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Avaliação de Impacto Financeiro e Estratégias de Mitigação de Riscos
+    </div>
+
+    <main class="container">
+        <!-- Visão Geral Financeira -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral Financeira</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="metric-value">R$ 58,22M</div>
+                    <div class="metric-title">Valor Total dos Processos</div>
+                    <div class="metric-change negative">28 processos ativos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="metric-value">R$ 47,64M</div>
+                    <div class="metric-title">Risco Financeiro Estimado</div>
+                    <div class="metric-change negative">81,82% de deferimento</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="metric-value">R$ 2,08M</div>
+                    <div class="metric-title">Valor Médio por Processo</div>
+                    <div class="metric-change negative">Valor máximo: R$ 22,47M</div>
+                </div>
+            </div>
+            
+            <div class="alert alert-danger">
+                <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Alerta Financeiro</div>
+                <p>O valor médio por processo (R$ 2,08 milhões) combinado com a alta taxa de deferimento (81,82%) apresenta um cenário de risco elevado, com potencial impacto significativo no fluxo de caixa operacional da Unimed Sul Mineira.</p>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise de Valores</div>
+                <p>A análise da distribuição de valores nos processos da Unimed Sul Mineira revela:</p>
+                <ul>
+                    <li><strong>Valor Máximo Significativo:</strong> Um único processo representa 38,6% do valor total em risco (R$ 22,47 milhões)</li>
+                    <li><strong>Alta Variabilidade:</strong> Observa-se grande variação entre os valores máximos e médios, indicando concentração de risco em poucos processos</li>
+                    <li><strong>Impacto Financeiro:</strong> O valor total em risco (R$ 58,22 milhões) representa um alto impacto potencial</li>
+                </ul>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Valores dos Processos</div>
+                <canvas id="distribuicaoValoresChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Análise de Risco Financeiro -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Análise de Risco Financeiro</h2>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Correlação entre Termos Jurídicos e Impacto Financeiro</div>
+                    <canvas id="termosImpactoChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição do Risco por Tribunal</div>
+                    <canvas id="riscoTribunalChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="risk-card high">
+                <div class="risk-header">
+                    <div class="risk-title">Risco de Processos com "Tutela Urgência"</div>
+                    <div class="risk-level high">Alto Risco</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Impacto Financeiro</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill high" style="width: 90%"></div>
+                    </div>
+                    <div class="risk-impact-value">90%</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Frequência</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill high" style="width: 32%"></div>
+                    </div>
+                    <div class="risk-impact-value">32%</div>
+                </div>
+                <div class="risk-description">
+                    <p>Os 9 processos que mencionam "Tutela Urgência" representam 32,14% do total e estão fortemente correlacionados com decisões favoráveis, aumentando significativamente o risco financeiro.</p>
+                </div>
+                <div class="risk-mitigation">
+                    <p>Estratégia de Mitigação: Priorizar a contestação técnica destes processos e desenvolver estratégias específicas para casos com este termo.</p>
+                </div>
+            </div>
+            
+            <div class="risk-card medium">
+                <div class="risk-header">
+                    <div class="risk-title">Risco de Processos com "CDC"</div>
+                    <div class="risk-level medium">Médio Risco</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Impacto Financeiro</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill medium" style="width: 75%"></div>
+                    </div>
+                    <div class="risk-impact-value">75%</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Frequência</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill medium" style="width: 29%"></div>
+                    </div>
+                    <div class="risk-impact-value">29%</div>
+                </div>
+                <div class="risk-description">
+                    <p>Os 8 processos que mencionam "CDC" (Código de Defesa do Consumidor) representam 28,57% do total e indicam tendência a decisões favoráveis aos beneficiários.</p>
+                </div>
+                <div class="risk-mitigation">
+                    <p>Estratégia de Mitigação: Revisão de contratos e implementação de processos administrativos em conformidade com o CDC.</p>
+                </div>
+            </div>
+            
+            <div class="risk-card medium">
+                <div class="risk-header">
+                    <div class="risk-title">Risco de Processos com "Gratuidade Justiça"</div>
+                    <div class="risk-level medium">Médio Risco</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Impacto Financeiro</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill medium" style="width: 70%"></div>
+                    </div>
+                    <div class="risk-impact-value">70%</div>
+                </div>
+                <div class="risk-impact">
+                    <div class="risk-impact-label">Frequência</div>
+                    <div class="risk-impact-bar">
+                        <div class="risk-impact-fill medium" style="width: 29%"></div>
+                    </div>
+                    <div class="risk-impact-value">29%</div>
+                </div>
+                <div class="risk-description">
+                    <p>Os 8 processos que mencionam "Gratuidade Justiça" representam 28,57% do total e indicam perfil específico de demandantes, com impacto nas estratégias de defesa.</p>
+                </div>
+                <div class="risk-mitigation">
+                    <p>Estratégia de Mitigação: Desenvolver abordagens específicas para este perfil de processo, com foco em resolução administrativa.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Projeções e Cenários -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-area"></i> Projeções e Cenários Financeiros</h2>
+            
+            <div class="alert alert-info">
+                <div class="alert-title"><i class="fas fa-info-circle"></i> Nota sobre Projeções</div>
+                <p>As projeções a seguir são baseadas nos dados reais dos 28 processos analisados, considerando a taxa de deferimento de 81,82% e o valor médio de R$ 2,08 milhões por processo.</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Projeção de Impacto Financeiro (12 meses)</div>
+                    <canvas id="projecaoImpactoChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Comparativo de Cenários de Intervenção</div>
+                    <canvas id="cenariosIntervencaoChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cenário</th>
+                            <th>Descrição</th>
+                            <th>Custo Estimado</th>
+                            <th>Economia Potencial</th>
+                            <th>ROI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cenário 1: Sem Intervenção</td>
+                            <td>Manutenção da abordagem atual sem estratégias específicas</td>
+                            <td>R$ 0</td>
+                            <td>R$ 0</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>Cenário 2: Intervenção Básica</td>
+                            <td>Implementação de programa básico de triagem e acordos para casos de alto risco</td>
+                            <td>R$ 1,1 milhões</td>
+                            <td>R$ 8,6 milhões</td>
+                            <td>782%</td>
+                        </tr>
+                        <tr>
+                            <td>Cenário 3: Intervenção Moderada</td>
+                            <td>Programa completo de triagem, acordos e revisão de contratos e procedimentos</td>
+                            <td>R$ 2,5 milhões</td>
+                            <td>R$ 15,2 milhões</td>
+                            <td>608%</td>
+                        </tr>
+                        <tr>
+                            <td>Cenário 4: Intervenção Completa</td>
+                            <td>Implementação integral de todas as estratégias recomendadas</td>
+                            <td>R$ 4,2 milhões</td>
+                            <td>R$ 23,8 milhões</td>
+                            <td>567%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert alert-success">
+                <div class="alert-title"><i class="fas fa-check-circle"></i> Cenário Recomendado</div>
+                <p>Recomenda-se a implementação do Cenário 3 (Intervenção Moderada), que oferece o melhor equilíbrio entre investimento necessário e retorno financeiro, com potencial de economia de R$ 15,2 milhões em 12 meses.</p>
+            </div>
+        </section>
+        
+        <!-- Estratégias de Mitigação de Riscos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-shield-alt"></i> Estratégias de Mitigação de Riscos Financeiros</h2>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-lightbulb"></i> Abordagem Estratégica</div>
+                <p>Com base na análise dos 28 processos da Unimed Sul Mineira, recomendamos uma estratégia de mitigação em três frentes.</p>
+            </div>
+            
+            <div class="risk-progression">
+                <div class="risk-step active">
+                    <div class="risk-step-icon">1</div>
+                    <div class="risk-step-label">Avaliação de Riscos</div>
+                </div>
+                <div class="risk-step active">
+                    <div class="risk-step-icon">2</div>
+                    <div class="risk-step-label">Priorização</div>
+                </div>
+                <div class="risk-step active">
+                    <div class="risk-step-icon">3</div>
+                    <div class="risk-step-label">Estratégia</div>
+                </div>
+                <div class="risk-step">
+                    <div class="risk-step-icon">4</div>
+                    <div class="risk-step-label">Implementação</div>
+                </div>
+                <div class="risk-step">
+                    <div class="risk-step-icon">5</div>
+                    <div class="risk-step-label">Monitoramento</div>
+                </div>
+            </div>
+            
+            <div class="grid-3">
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-gavel"></i> Estratégias Jurídicas</div>
+                    <ul>
+                        <li><strong>Análise por Termo:</strong> Desenvolver estratégias específicas para contestar casos com "Tutela Urgência" (9 processos)</li>
+                        <li><strong>Foco no TJMG:</strong> Concentrar esforços no TJMG, onde está a maioria dos processos</li>
+                        <li><strong>Procedimentos Comuns:</strong> Criar modelos de resposta específicos para Procedimentos Comuns Cíveis</li>
+                        <li><strong>Programa de Acordos:</strong> Estabelecer critérios para acordos em casos com alta probabilidade de deferimento</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-file-contract"></i> Estratégias Contratuais</div>
+                    <ul>
+                        <li><strong>Revisão de Contratos:</strong> Ajustar cláusulas frequentemente questionadas com base no CDC (8 processos)</li>
+                        <li><strong>Transparência:</strong> Aumentar clareza na comunicação sobre coberturas e exclusões</li>
+                        <li><strong>Procedimentos Internos:</strong> Revisão dos procedimentos de autorização de tratamentos</li>
+                        <li><strong>Negociação Prévia:</strong> Criar canais específicos para negociação antes da judicialização</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-chart-pie"></i> Estratégias Financeiras</div>
+                    <ul>
+                        <li><strong>Provisão Adequada:</strong> Ajustar provisões com base na taxa real de deferimento (81,82%)</li>
+                        <li><strong>Processo de Alto Valor:</strong> Tratamento especial para o processo de R$ 22,47 milhões</li>
+                        <li><strong>Monitoramento Contínuo:</strong> Sistema de acompanhamento e alerta para novos processos</li>
+                        <li><strong>Planejamento Financeiro:</strong> Incorporar cenários de risco no planejamento de fluxo de caixa</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Impacto Esperado das Estratégias de Mitigação</div>
+                <canvas id="impactoEstrategiasChart"></canvas>
+            </div>
+            
+            <div class="alert alert-info">
+                <div class="alert-title"><i class="fas fa-info-circle"></i> Economia Estimada</div>
+                <p>A implementação das estratégias recomendadas tem potencial de reduzir o impacto financeiro em até 50% em 24 meses, representando uma economia estimada de R$ 29,11 milhões no período.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Análise Financeira e Riscos para Unimed Sul Mineira v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            
+            // Gráfico de Distribuição de Valores
+            const distribuicaoValoresCtx = document.getElementById('distribuicaoValoresChart').getContext('2d');
+            new Chart(distribuicaoValoresCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Até R$ 500 mil', 'R$ 500 mil a R$ 2 milhões', 'R$ 2 milhões a R$ 5 milhões', 'R$ 5 milhões a R$ 10 milhões', 'Acima de R$ 10 milhões'],
+                    datasets: [{
+                        label: 'Número de Processos (Estimado)',
+                        data: [7, 9, 7, 3, 2],
+                        backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                        borderColor: 'rgba(0, 92, 185, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Valor Acumulado (R$ milhões)',
+                        data: [2.1, 9.5, 21.7, 43.2, 58.22],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Número de Processos'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Valor Acumulado (R$ milhões)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos e Impacto Financeiro
+            const termosImpactoCtx = document.getElementById('termosImpactoChart').getContext('2d');
+            new Chart(termosImpactoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tutela Urgência', 'CDC', 'Gratuidade Justiça', 'Ônus Prova', 'Audiência', 'Boa Fé'],
+                    datasets: [{
+                        label: 'Número de Ocorrências',
+                        data: [9, 8, 8, 5, 4, 3],
+                        backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                        borderColor: 'rgba(0, 92, 185, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Impacto Financeiro Estimado (%)',
+                        data: [90, 85, 75, 60, 50, 65],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Número de Ocorrências'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            max: 100,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Impacto Financeiro (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Risco por Tribunal
+            const riscoTribunalCtx = document.getElementById('riscoTribunalChart').getContext('2d');
+            new Chart(riscoTribunalCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['TJMG', 'STJ', 'TJBA', 'TRT3', 'TJES', 'Outros'],
+                    datasets: [{
+                        data: [60.8, 12.5, 10.7, 8.3, 5.2, 2.5],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(156, 39, 176, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}% do risco total`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Projeção de Impacto Financeiro
+            const projecaoImpactoCtx = document.getElementById('projecaoImpactoChart').getContext('2d');
+            new Chart(projecaoImpactoCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai'],
+                    datasets: [{
+                        label: 'Sem Intervenção',
+                        data: [47.64, 49.07, 50.54, 52.06, 53.62, 55.23, 56.88, 58.59, 60.35, 62.16, 64.02, 65.95],
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Com Estratégias de Mitigação',
+                        data: [47.64, 46.22, 44.83, 43.49, 42.18, 40.92, 39.69, 38.50, 37.35, 36.23, 35.14, 34.09],
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Impacto Financeiro (R$ milhões)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: R$ ${context.raw.toFixed(2)} milhões`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Cenários de Intervenção
+            const cenariosIntervencaoCtx = document.getElementById('cenariosIntervencaoChart').getContext('2d');
+            new Chart(cenariosIntervencaoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sem Intervenção', 'Intervenção Básica', 'Intervenção Moderada', 'Intervenção Completa'],
+                    datasets: [{
+                        label: 'Custo de Implementação (R$ milhões)',
+                        data: [0, 1.1, 2.5, 4.2],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Economia Projetada (R$ milhões)',
+                        data: [0, 8.6, 15.2, 23.8],
+                        backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Custo (R$ milhões)'
+                            },
+                            max: 5
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Economia (R$ milhões)'
+                            },
+                            max: 25
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: R$ ${context.raw} milhões`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Impacto das Estratégias
+            const impactoEstrategiasCtx = document.getElementById('impactoEstrategiasChart').getContext('2d');
+            new Chart(impactoEstrategiasCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Redução de Novos Processos', 'Sucesso em Acordos', 'Redução de Custos Processuais', 'Taxa de Deferimento', 'Valor Médio por Processo', 'Impacto no Fluxo de Caixa'],
+                    datasets: [{
+                        label: 'Curto Prazo (6 meses)',
+                        data: [20, 35, 30, 15, 10, 25],
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)'
+                    }, {
+                        label: 'Médio Prazo (12 meses)',
+                        data: [40, 55, 50, 35, 30, 45],
+                        backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(243, 156, 18, 1)'
+                    }, {
+                        label: 'Longo Prazo (24 meses)',
+                        data: [60, 70, 65, 55, 50, 65],
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(39, 174, 96, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}% de melhoria`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

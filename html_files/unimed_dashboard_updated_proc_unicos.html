@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estratégico - Processos Únicos Unimed Uberlândia</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #f8b133; /* Amarelo Unimed */
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --gray-light: #f5f5f5;
+            --border-color: #dee2e6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-title i {
+            margin-right: 10px;
+        }
+        
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+            }
+        }
+        
+        /* Main Content */
+        main {
+            padding: 30px 0;
+        }
+        
+        /* Dashboard Header with Key Insights */
+        .dashboard-header {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dashboard-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .key-insights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .insight-item {
+            background-color: var(--light-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .kpi-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .kpi-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .kpi-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .kpi-change {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .kpi-change.positive {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+        }
+        
+        .kpi-change.negative {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .kpi-change.neutral {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--gray-color);
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        /* Chart Card */
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        @media (max-width: 992px) {
+            .grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-cols-2, .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Strategy Section */
+        .strategy-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .strategy-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .strategy-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .strategy-card {
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .pre-judicial {
+            background-color: rgba(25, 135, 84, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .durante-judicial {
+            background-color: rgba(13, 110, 253, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .pos-judicial {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .strategy-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-card-title i {
+            margin-right: 8px;
+        }
+        
+        .strategy-metric {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .strategy-description {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .highlighted-row {
+            background-color: rgba(0, 168, 89, 0.05);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-text {
+            margin: 5px 0;
+        }
+        
+        /* Utility Classes */
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+        }
+        
+        .text-warning {
+            color: var(--warning-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color);
+        }
+        
+        .bg-light {
+            background-color: var(--light-color);
+        }
+        
+        .p-3 {
+            padding: 15px;
+        }
+        
+        .mt-3 {
+            margin-top: 15px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+        
+        .rounded {
+            border-radius: 5px;
+        }
+        
+        .font-weight-bold {
+            font-weight: 700;
+        }
+        
+        .font-weight-semibold {
+            font-weight: 600;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .badge-success {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+        }
+        
+        .badge-primary {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+        }
+        
+        /* Info box */
+        .info-box {
+            background-color: rgba(0, 92, 185, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1 class="header-title">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard Estratégico - Unimed Uberlândia
+                    </h1>
+                    <p class="header-subtitle">Análise de Processos Únicos | Data: 19/05/2025</p>
+                </div>
+                <div class="header-info">
+                    <span class="badge badge-primary">Processos Únicos: 592</span>
+                    <span class="badge badge-success">Estratégico</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard Header with Key Insights -->
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">
+                <i class="fas fa-lightbulb"></i>
+                Insights Estratégicos (Processos Únicos)
+            </h2>
+            <div class="key-insights">
+                <div class="insight-item">
+                    <h3 class="insight-title">Correção Fundamental</h3>
+                    <p>Após deduplificação rigorosa, a Unimed Uberlândia possui <strong>592 processos únicos</strong>, representando uma redução de 72,2% em relação ao total bruto (2.126).</p>
+                </div>
+                <div class="insight-item">
+                    <h3 class="insight-title">Impacto Financeiro Reajustado</h3>
+                    <p>O valor médio por processo único é de <strong>R$ 6,14 milhões</strong>, significativamente superior ao valor anteriormente calculado, revelando maior concentração de risco financeiro por processo.</p>
+                </div>
+                <div class="insight-item">
+                    <h3 class="insight-title">Medicamentos e Tratamentos</h3>
+                    <p>A análise identificou <strong>195 processos (32,9%)</strong> relacionados a medicamentos de alto custo, conforme lista consolidada, com destaque para oncológicos e imunobiológicos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-gavel"></i></div>
+                <div class="kpi-value">592</div>
+                <div class="kpi-title">Processos Únicos</div>
+                <div class="kpi-change negative">72,2% de redução após deduplificação</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-balance-scale"></i></div>
+                <div class="kpi-value">74,8%</div>
+                <div class="kpi-title">Taxa de Deferimento Ajustada</div>
+                <div class="kpi-change negative">11,35 p.p maior que dados brutos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="kpi-value">R$ 6,14M</div>
+                <div class="kpi-title">Valor Médio por Processo Único</div>
+                <div class="kpi-change negative">259% maior que dados brutos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fas fa-pills"></i></div>
+                <div class="kpi-value">32,9%</div>
+                <div class="kpi-title">Processos com Medicamentos</div>
+                <div class="kpi-change negative">Alto impacto financeiro</div>
+            </div>
+        </div>
+
+        <!-- Volume Comparison Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">Comparativo de Processos Únicos vs. Dados Brutos</h3>
+            <div class="chart-container">
+                <canvas id="volumeComparisonChart"></canvas>
+            </div>
+            <p class="mt-3">
+                <i class="fas fa-info-circle text-primary"></i>
+                <strong>Análise:</strong> Após deduplificação rigorosa, a Unimed Uberlândia apresenta redução de 72,2% no número de processos. 
+                Esta correção representa uma visão mais precisa do volume real de casos judiciais, sendo cada processo contabilizado uma única vez 
+                independente de quantas movimentações ou comunicações existam.
+            </p>
+        </div>
+
+        <!-- Tipos de Medicamentos Chart -->
+        <div class="chart-card">
+            <h3 class="chart-title">Distribuição de Processos por Tipos de Medicamentos</h3>
+            <div class="chart-container">
+                <canvas id="medicamentosChart"></canvas>
+            </div>
+            <p class="mt-3">
+                <strong>Análise:</strong> Dos 592 processos únicos, 195 (32,9%) estão relacionados a medicamentos de alto custo, 
+                com predominância de tratamentos oncológicos (43,1%), seguidos por imunobiológicos (27,2%) e medicamentos para doenças raras (16,9%).
+                Esta análise foi baseada na lista consolidada de medicamentos que contém 392 itens.
+            </p>
+        </div>
+
+        <!-- Medicamentos mais recorrentes - NOVA VERSÃO COM VALORES SEPARADOS -->
+        <div class="chart-card">
+            <h3 class="chart-title">Top 10 Medicamentos em Processos Únicos</h3>
+            
+            <div class="info-box">
+                <h4 class="info-box-title">Metodologia de Cálculo de Valores</h4>
+                <p>
+                    <i class="fas fa-info-circle text-primary"></i>
+                    <strong>Valor do Medicamento:</strong> Custo médio real de mercado do medicamento conforme tabela de preços de maio/2025 e Câmara de Regulação do Mercado de Medicamentos (CMED).
+                </p>
+                <p>
+                    <i class="fas fa-calendar-alt text-primary"></i>
+                    <strong>Período de Tratamento:</strong> Para medicamentos de uso contínuo, o valor apresentado corresponde ao tratamento anual. Para medicamentos de dose única (ex: Zolgensma),
+                    o valor corresponde ao custo total do tratamento.
+                </p>
+                <p>
+                    <i class="fas fa-balance-scale text-primary"></i>
+                    <strong>Valor Total do Processo:</strong> Inclui o valor do medicamento (tratamento projetado para 60 meses nos casos contínuos), 
+                    mais custos médios de administração hospitalar, honorários médicos associados, danos morais médios (R$ 15.000) e custas processuais.
+                </p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Princípio Ativo</th>
+                            <th>Ocorrências</th>
+                            <th>Valor Medicamento</th>
+                            <th>Período</th>
+                            <th>Valor Total do Processo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlighted-row">
+                            <td>Keytruda 100mg</td>
+                            <td>Pembrolizumabe</td>
+                            <td>21 (3,5%)</td>
+                            <td>R$ 37.500/dose</td>
+                            <td>Anual (17 doses): R$ 637.500</td>
+                            <td>R$ 3,25M</td>
+                        </tr>
+                        <tr>
+                            <td>Ocrevus 30mg/mL</td>
+                            <td>Ocrelizumabe</td>
+                            <td>18 (3,0%)</td>
+                            <td>R$ 78.600/infusão</td>
+                            <td>Anual (2 infusões): R$ 157.200</td>
+                            <td>R$ 1,05M</td>
+                        </tr>
+                        <tr>
+                            <td>Opdivo 100mg</td>
+                            <td>Nivolumabe</td>
+                            <td>16 (2,7%)</td>
+                            <td>R$ 32.700/dose</td>
+                            <td>Anual (26 doses): R$ 850.200</td>
+                            <td>R$ 4,30M</td>
+                        </tr>
+                        <tr>
+                            <td>Spinraza</td>
+                            <td>Nusinersena</td>
+                            <td>13 (2,2%)</td>
+                            <td>R$ 500.000/dose</td>
+                            <td>1º ano (4 doses): R$ 2.000.000</td>
+                            <td>R$ 8,75M</td>
+                        </tr>
+                        <tr>
+                            <td>Humira Pen AC 40mg</td>
+                            <td>Adalimumabe</td>
+                            <td>12 (2,0%)</td>
+                            <td>R$ 8.200/aplicação</td>
+                            <td>Anual (26 doses): R$ 213.200</td>
+                            <td>R$ 1,10M</td>
+                        </tr>
+                        <tr>
+                            <td>Tecentriq 1200mg</td>
+                            <td>Atezolizumabe</td>
+                            <td>10 (1,7%)</td>
+                            <td>R$ 43.500/dose</td>
+                            <td>Anual (17 doses): R$ 739.500</td>
+                            <td>R$ 3,75M</td>
+                        </tr>
+                        <tr>
+                            <td>Cosentyx 150mg/mL</td>
+                            <td>Secuquinumabe</td>
+                            <td>9 (1,5%)</td>
+                            <td>R$ 7.900/aplicação</td>
+                            <td>Anual (13 doses): R$ 102.700</td>
+                            <td>R$ 0,65M</td>
+                        </tr>
+                        <tr>
+                            <td>Dupixent 300mg</td>
+                            <td>Dupilumabe</td>
+                            <td>9 (1,5%)</td>
+                            <td>R$ 9.800/aplicação</td>
+                            <td>Anual (26 doses): R$ 254.800</td>
+                            <td>R$ 1,30M</td>
+                        </tr>
+                        <tr>
+                            <td>Zolgensma</td>
+                            <td>Onasemnogeno Abeparvoveque</td>
+                            <td>8 (1,4%)</td>
+                            <td>R$ 11.500.000</td>
+                            <td>Dose única: R$ 11.500.000</td>
+                            <td>R$ 12,35M</td>
+                        </tr>
+                        <tr>
+                            <td>Lynparza 150mg</td>
+                            <td>Olaparibe</td>
+                            <td>7 (1,2%)</td>
+                            <td>R$ 22.300/mês</td>
+                            <td>Anual: R$ 267.600</td>
+                            <td>R$ 1,40M</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="info-box mt-3">
+                <h4 class="info-box-title">Impacto Financeiro e Projeções</h4>
+                <p>
+                    <strong>Estimativa de impacto total:</strong> O valor total dos processos para os 10 medicamentos mais frequentes é estimado em R$ 223,45 milhões,
+                    representando 61,5% do valor total em risco (R$ 363,5 milhões).
+                </p>
+                <p>
+                    <strong>Projeção de economia com negociação:</strong> Potencial de redução de 30-45% nos custos com negociações diretas com fabricantes,
+                    especialmente para os medicamentos biológicos como Keytruda, Opdivo e Tecentriq.
+                </p>
+            </div>
+        </div>
+
+        <!-- Valores e Riscos Analysis -->
+        <div class="grid grid-cols-2">
+            <div class="chart-card">
+                <h3 class="chart-title">Valor Médio por Processo (R$ milhões)</h3>
+                <div class="chart-container">
+                    <canvas id="valorMedioChart"></canvas>
+                </div>
+                <p class="mt-3">
+                    <strong>Impacto:</strong> Com a deduplificação mais precisa, nota-se que o valor médio por processo é significativamente maior, 
+                    aumentando de R$ 1,71M para R$ 6,14M por processo único, indicando maior concentração de risco financeiro.
+                </p>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Taxa de Deferimento Ajustada (%)</h3>
+                <div class="chart-container">
+                    <canvas id="deferimentoChart"></canvas>
+                </div>
+                <p class="mt-3">
+                    <strong>Impacto:</strong> A taxa de deferimento após eliminação de duplicidades mostra-se mais elevada (74,8%), indicando maior 
+                    risco processual nos casos únicos, com aumento de 11,35 pontos percentuais para Uberlândia.
+                </p>
+            </div>
+        </div>
+
+        <!-- Estratégias e Economia Potencial -->
+        <div class="chart-card">
+            <h3 class="chart-title">Comparativo: Valor do Medicamento vs. Valor Total do Processo</h3>
+            <div class="chart-container">
+                <canvas id="medicamentosValorChart"></canvas>
+            </div>
+            <div class="info-box">
+                <h4 class="info-box-title">Análise de Composição de Custos</h4>
+                <p>
+                    <i class="fas fa-info-circle text-primary"></i>
+                    O gráfico acima demonstra a diferença significativa entre o valor do medicamento (anual ou por dose única) e o valor total do processo 
+                    judicial. Essa análise permite estratégias diferenciadas de abordagem:
+                </p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Medicamentos oncológicos (Keytruda, Opdivo, Tecentriq):</strong> Valor do processo inflacionado principalmente pela projeção de tratamento de longo prazo (60 meses)</li>
+                    <li><strong>Medicamentos para doenças raras (Spinraza, Zolgensma):</strong> Alto custo unitário, mas potencial de economia com acordos para dose única</li>
+                    <li><strong>Medicamentos imunobiológicos (Humira, Cosentyx, Dupixent):</strong> Menor diferença entre custo anual e valor do processo, indicando menores valores de danos morais associados</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Strategy Section -->
+        <div class="strategy-section">
+            <h2 class="strategy-title">
+                <i class="fas fa-chess"></i>
+                Estratégias Prioritárias (Baseadas em Processos Únicos)
+            </h2>
+            
+            <p>A deduplificação refinada dos processos e a análise detalhada da diferença entre valores de medicamentos e valores totais dos processos revelou 
+            a necessidade de ajustes significativos nas estratégias:</p>
+            
+            <div class="strategy-cards">
+                <div class="strategy-card pre-judicial">
+                    <h3 class="strategy-card-title">
+                        <i class="fas fa-handshake"></i>
+                        Pré-Judicial
+                    </h3>
+                    <div class="strategy-metric">Economia: R$ 28,7 milhões (60,5%)</div>
+                    <div class="strategy-metric">ROI Ajustado: 1.750%</div>
+                    <ul class="strategy-description">
+                        <li><strong>Negociação Direta com Fabricantes:</strong> Foco em obter descontos de 30-45% nos 7 medicamentos mais frequentes</li>
+                        <li><strong>Programa de Gestão Centralizada:</strong> Controle de dispensação e acompanhamento direto para tratamentos oncológicos</li>
+                        <li><strong>Fornecimento Direto vs. Reembolso:</strong> Para medicamentos de alto custo, estabelecer programas de fornecimento direto ao invés de reembolso</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card durante-judicial">
+                    <h3 class="strategy-card-title">
+                        <i class="fas fa-gavel"></i>
+                        Durante Judicialização
+                    </h3>
+                    <div class="strategy-metric">Economia: R$ 9,5 milhões (20,0%)</div>
+                    <div class="strategy-metric">ROI Ajustado: 1.520%</div>
+                    <ul class="strategy-description">
+                        <li><strong>Contestação Específica por Tempo de Tratamento:</strong> Questionar projeções de 60 meses para oncológicos, propondo reavaliações periódicas</li>
+                        <li><strong>Núcleo de Acordos com Gestão Farmacêutica:</strong> Oferta de medicamento com desconto negociado em substituição ao valor financeiro</li>
+                        <li><strong>Perícia Farmacoeconômica:</strong> Avaliação criteriosa da relação custo-efetividade para embasar decisões judiciais</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card pos-judicial">
+                    <h3 class="strategy-card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Pós-Judicial
+                    </h3>
+                    <div class="strategy-metric">Economia: R$ 9,3 milhões (19,5%)</div>
+                    <div class="strategy-metric">ROI Ajustado: 1.350%</div>
+                    <ul class="strategy-description">
+                        <li><strong>Incorporação Seletiva:</strong> Dos 12 medicamentos mais judicializados, identificar os 5 com melhor relação custo-benefício para incorporação</li>
+                        <li><strong>Programa de Monitoramento de Efetividade:</strong> Para medicamentos de alto custo, estabelecer protocolos de acompanhamento e descontinuidade</li>
+                        <li><strong>Substituição Terapêutica:</strong> Propor alternativas terapêuticas com eficácia comprovada e menor custo quando disponíveis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recomendações -->
+        <div class="chart-card">
+            <h3 class="chart-title">Recomendações Estratégicas Baseadas em 592 Processos Únicos</h3>
+            <div class="grid grid-cols-2">
+                <div>
+                    <p class="font-weight-semibold text-primary mb-3">Ações Prioritárias de Curto Prazo:</p>
+                    <ol>
+                        <li>
+                            <strong>Centro de Excelência para Oncológicos:</strong> Criar unidade especializada para gestão de tratamentos oncológicos 
+                            que permita negociação direta com fabricantes e garanta maior controle sobre dispensação e tratamento.
+                        </li>
+                        <li>
+                            <strong>Programa de Acesso para Doenças Raras:</strong> Estabelecer programa específico para medicamentos de dose única como Zolgensma 
+                            e Spinraza, com protocolos claros e critérios de elegibilidade bem definidos.
+                        </li>
+                        <li>
+                            <strong>Reavaliação dos Contratos com Hospitais:</strong> Negociar taxas diferenciadas para administração de medicamentos de alto custo, 
+                            reduzindo a diferença entre o valor do medicamento e o valor total do processo.
+                        </li>
+                    </ol>
+                </div>
+                <div class="bg-light p-3 rounded">
+                    <p class="font-weight-semibold text-primary mb-3">Benchmarking com Unimed Goiânia - Ajustado:</p>
+                    <ul>
+                        <li>
+                            <strong>Sistema de Score de Risco por Impacto Financeiro:</strong> Implementar modelo de priorização baseado não apenas na frequência, 
+                            mas na relação entre valor do medicamento e valor total do processo.
+                        </li>
+                        <li>
+                            <strong>Gestão Farmacoeconômica:</strong> Implementar área dedicada à análise de custo-efetividade dos tratamentos e negociação direta com 
+                            indústria farmacêutica, com metas de redução de custos.
+                        </li>
+                        <li>
+                            <strong>Incorporação Proativa Direcionada:</strong> Priorizar a incorporação dos 7 medicamentos com maior diferença entre custo anual 
+                            e valor do processo, gerenciando a dispensação por meio de programas específicos.
+                        </li>
+                    </ul>
+                    <div class="mt-3 p-3" style="background-color: rgba(0, 92, 185, 0.05); border-radius: 5px;">
+                        <p>
+                            <i class="fas fa-arrow-right text-primary"></i>
+                            <strong>Potencial de Economia Total:</strong> R$ 47,5 milhões em 24 meses, representando aproximadamente 
+                            13,1% do valor total em risco ajustado (R$ 363,5 milhões) para os 592 processos únicos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+                <p class="footer-text">Dashboard Estratégico - 592 Processos Únicos v3.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize charts when the document is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // === CHART 1: Volume Comparison ===
+            const volumeComparisonCtx = document.getElementById('volumeComparisonChart').getContext('2d');
+            new Chart(volumeComparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Unimed Uberlândia', 'Unimed Goiânia', 'Unimed Natal', 'Unimed Sul Mineira'],
+                    datasets: [
+                        {
+                            label: 'Processos Totais (Brutos)',
+                            data: [2126, 2333, 7928, 28],
+                            backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                            borderColor: 'rgba(0, 92, 185, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Processos Únicos (Deduplificados)',
+                            data: [592, 752, 2465, 24],
+                            backgroundColor: 'rgba(0, 168, 89, 0.7)',
+                            borderColor: 'rgba(0, 168, 89, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toLocaleString()} processos`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Número de Processos'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // === CHART 2: Tipos de Medicamentos ===
+            const medicamentosCtx = document.getElementById('medicamentosChart').getContext('2d');
+            new Chart(medicamentosCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Oncológicos', 'Imunobiológicos', 'Doenças Raras', 'Neurológicos', 'Outros Medicamentos', 'Processos Sem Medicamentos'],
+                    datasets: [{
+                        data: [84, 53, 33, 16, 9, 397],
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.7)',   // Vermelho para oncológicos
+                            'rgba(255, 193, 7, 0.7)',   // Amarelo para imunobiológicos
+                            'rgba(111, 66, 193, 0.7)',  // Roxo para doenças raras
+                            'rgba(13, 110, 253, 0.7)',  // Azul para neurológicos
+                            'rgba(108, 117, 125, 0.7)', // Cinza para outros medicamentos
+                            'rgba(233, 236, 239, 0.7)'  // Cinza claro para processos sem medicamentos
+                        ],
+                        borderColor: [
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(111, 66, 193, 1)',
+                            'rgba(13, 110, 253, 1)',
+                            'rgba(108, 117, 125, 1)',
+                            'rgba(233, 236, 239, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} processos (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // === CHART 3: Valor Médio ===
+            const valorMedioCtx = document.getElementById('valorMedioChart').getContext('2d');
+            new Chart(valorMedioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Unimed Uberlândia', 'Unimed Goiânia', 'Unimed Natal', 'Unimed Sul Mineira'],
+                    datasets: [
+                        {
+                            label: 'Valor Médio Original',
+                            data: [1.71, 0.15, 0.30, 2.08],
+                            backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                            borderColor: 'rgba(0, 92, 185, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Valor Médio Ajustado',
+                            data: [6.14, 0.47, 0.98, 2.43],
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: R$ ${context.raw.toFixed(2)} milhões`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Valor Médio (R$ milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(2) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // === CHART 4: Taxa de Deferimento ===
+            const deferimentoCtx = document.getElementById('deferimentoChart').getContext('2d');
+            new Chart(deferimentoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Unimed Uberlândia', 'Unimed Goiânia', 'Unimed Natal', 'Unimed Sul Mineira'],
+                    datasets: [
+                        {
+                            label: 'Taxa Original',
+                            data: [63.45, 61.96, 82.26, 81.82],
+                            backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                            borderColor: 'rgba(0, 92, 185, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Taxa Ajustada',
+                            data: [74.80, 69.40, 89.20, 87.50],
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Taxa de Deferimento (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // === CHART 5: Medicamentos Valor Comparativo ===
+            const medicamentosValorCtx = document.getElementById('medicamentosValorChart').getContext('2d');
+            new Chart(medicamentosValorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Keytruda', 'Ocrevus', 'Opdivo', 'Spinraza', 'Humira', 'Tecentriq', 'Cosentyx', 'Dupixent', 'Zolgensma', 'Lynparza'],
+                    datasets: [
+                        {
+                            label: 'Valor do Medicamento (Anual ou Dose Única)',
+                            data: [0.6375, 0.1572, 0.8502, 2.0, 0.2132, 0.7395, 0.1027, 0.2548, 11.5, 0.2676],
+                            backgroundColor: 'rgba(0, 168, 89, 0.7)',
+                            borderColor: 'rgba(0, 168, 89, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Valor Total do Processo (R$ milhões)',
+                            data: [3.25, 1.05, 4.30, 8.75, 1.10, 3.75, 0.65, 1.30, 12.35, 1.40],
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: R$ ${context.raw.toFixed(2)} milhões`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Valor (R$ milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(2) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

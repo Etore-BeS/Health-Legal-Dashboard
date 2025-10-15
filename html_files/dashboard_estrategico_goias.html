@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estratégico - Gestão de Riscos em Saúde</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #1e293b;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #f8fafc;
+            --dark-color: #0f172a;
+            --gray-color: #64748b;
+            --strategic-blue: #1e40af;
+            --strategic-gold: #d97706;
+            --risk-red: #dc2626;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--strategic-blue) 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(217, 119, 6, 0.3) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategic-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--strategic-gold) 0%, var(--accent-color) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            font-size: 36px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo-text {
+            font-size: 36px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 25px 0;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            font-weight: 600;
+            color: white;
+            border-bottom: 4px solid var(--strategic-gold);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .organization-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--strategic-gold), var(--accent-color), var(--risk-red));
+        }
+        
+        main {
+            padding: 40px 0;
+        }
+        
+        section {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%);
+            border-radius: 24px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--strategic-gold), var(--accent-color));
+        }
+        
+        .section-title {
+            color: white;
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 20px;
+            color: var(--strategic-gold);
+            font-size: 40px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.8) 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            padding: 35px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--strategic-gold), var(--accent-color));
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            border-color: var(--strategic-gold);
+        }
+        
+        .metric-icon {
+            font-size: 56px;
+            color: var(--strategic-gold);
+            margin-bottom: 25px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .metric-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .metric-title {
+            font-size: 18px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .metric-change {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .metric-change.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: #6ee7b7;
+            border: 2px solid rgba(16, 185, 129, 0.4);
+        }
+        
+        .metric-change.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            color: #fbbf24;
+            border: 2px solid rgba(245, 158, 11, 0.4);
+        }
+        
+        .metric-change.danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            color: #fca5a5;
+            border: 2px solid rgba(239, 68, 68, 0.4);
+        }
+        
+        .metric-change.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2));
+            color: #93c5fd;
+            border: 2px solid rgba(59, 130, 246, 0.4);
+        }
+        
+        .chart-container {
+            margin: 35px 0;
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(51, 65, 85, 0.6) 100%);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .chart-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, var(--strategic-blue) 0%, var(--risk-red) 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 40px;
+            margin: 35px 0;
+            box-shadow: 0 20px 60px rgba(30, 64, 175, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.1) 20px,
+                rgba(255,255,255,0.1) 40px
+            );
+            animation: move 15s linear infinite;
+        }
+        
+        @keyframes move {
+            0% { transform: translate(-100%, -100%); }
+            100% { transform: translate(100%, 100%); }
+        }
+        
+        .highlight-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-title i {
+            margin-right: 15px;
+            font-size: 32px;
+        }
+        
+        .highlight-content {
+            position: relative;
+            z-index: 2;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .risk-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.8) 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .risk-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .risk-high {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .risk-medium {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .risk-low {
+            border-color: var(--success-color);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .risk-level {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .risk-high .risk-level { color: #fca5a5; }
+        .risk-medium .risk-level { color: #fbbf24; }
+        .risk-low .risk-level { color: #6ee7b7; }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%);
+        }
+        
+        th, td {
+            padding: 20px 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--strategic-blue) 0%, var(--primary-color) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        td {
+            color: #e2e8f0;
+        }
+        
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(217, 119, 6, 0.1));
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+        
+        .strategy-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.8) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            border-left: 6px solid var(--strategic-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .strategy-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 15px;
+            color: var(--strategic-gold);
+            font-size: 28px;
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--strategic-gold), var(--accent-color));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%);
+            border-radius: 16px;
+            padding: 25px;
+            width: 45%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--strategic-gold);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(217, 119, 6, 0.5);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+            color: #6ee7b7;
+            border: 2px solid rgba(16, 185, 129, 0.5);
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.3));
+            color: #fbbf24;
+            border: 2px solid rgba(245, 158, 11, 0.5);
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
+            color: #fca5a5;
+            border: 2px solid rgba(239, 68, 68, 0.5);
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(29, 78, 216, 0.3));
+            color: #93c5fd;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--strategic-blue) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--strategic-gold) 0%, var(--accent-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(217, 119, 6, 0.4);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            font-size: 28px;
+        }
+        
+        .print-button:hover {
+            transform: scale(1.2) rotate(5deg);
+            box-shadow: 0 25px 60px rgba(217, 119, 6, 0.6);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: row !important;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px;
+            }
+            
+            .timeline-dot {
+                left: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                margin-top: 20px;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .risk-matrix {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        section {
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .metric-card {
+            animation: fadeInUp 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="strategic-icon">⚡</div>
+                    <div class="logo-text">ESTRATÉGICO</div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Dashboard de Gestão Estratégica</div>
+                    <div class="header-subtitle">Análise de Riscos e Tomada de Decisão</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Centro de Inteligência Estratégica - Judicialização da Saúde | Secretaria de Saúde de Goiás
+    </div>
+
+    <main class="container">
+        <!-- Matriz de Risco -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chess"></i> Matriz de Risco Estratégico</h2>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="metric-value">R$ 65M</div>
+                    <div class="metric-title">Exposição Total Estimada</div>
+                    <div class="metric-change danger">Próximos 3 anos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="metric-value">28%</div>
+                    <div class="metric-title">Crescimento Anual</div>
+                    <div class="metric-change warning">Demandas de saúde</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="metric-value">73%</div>
+                    <div class="metric-title">Índice de Prevenibilidade</div>
+                    <div class="metric-change success">Com ações estratégicas</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                    <div class="metric-value">180</div>
+                    <div class="metric-title">Prazo Médio (dias)</div>
+                    <div class="metric-change info">Para resolução</div>
+                </div>
+            </div>
+            
+            <div class="risk-matrix">
+                <div class="risk-card risk-high">
+                    <div class="risk-level">RISCO ALTO</div>
+                    <h3>Medicamentos Oncológicos</h3>
+                    <p>739 casos • R$ 18M estimado</p>
+                    <p>Taxa de deferimento: 90%</p>
+                </div>
+                
+                <div class="risk-card risk-high">
+                    <div class="risk-level">RISCO ALTO</div>
+                    <h3>Tratamentos Cardiológicos</h3>
+                    <p>1.277 casos • R$ 12M estimado</p>
+                    <p>Taxa de deferimento: 75%</p>
+                </div>
+                
+                <div class="risk-card risk-medium">
+                    <div class="risk-level">RISCO MÉDIO</div>
+                    <h3>Procedimentos Especializados</h3>
+                    <p>2.105 casos • R$ 8M estimado</p>
+                    <p>Taxa de deferimento: 65%</p>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-bullseye"></i> Alerta Estratégico - Prioridade Máxima</div>
+                <div class="highlight-content">
+                    <p><strong>Cenário Crítico Identificado:</strong> Com base na análise de 113.787 processos, identificamos um crescimento exponencial de 28% ao ano nas demandas de saúde, concentrado principalmente em medicamentos de alto custo e tratamentos especializados.</p>
+                    <br>
+                    <p><strong>Impacto Financeiro:</strong> A exposição total estimada de R$ 65 milhões nos próximos 3 anos representa 73% do orçamento anual de medicamentos especializados do Estado.</p>
+                    <br>
+                    <p><strong>Janela de Oportunidade:</strong> 73% dos casos são preveníveis através de ações estratégicas coordenadas, incluindo protocolos clínicos atualizados e negociações com laboratórios.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise Preditiva -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-crystal-ball"></i> Análise Preditiva e Projeções</h2>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Projeção de Crescimento por Especialidade</div>
+                    <canvas id="projecaoEspecialidadeChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Cenários de Impacto Financeiro</div>
+                    <canvas id="cenariosFinanceirosChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Modelo Preditivo: Probabilidade de Deferimento por Categoria</div>
+                <canvas id="probabilidadeDeferimentoChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Plano de Ação Estratégico -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-route"></i> Plano de Ação Estratégico</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3><strong>FASE 1 - IMEDIATA (0-3 meses)</strong></h3>
+                        <ul>
+                            <li>Criação do Comitê Estadual de Medicamentos de Alto Custo</li>
+                            <li>Implementação de sistema de alerta precoce para demandas</li>
+                            <li>Mapeamento completo dos fornecedores de medicamentos oncológicos</li>
+                            <li>Definição de protocolos de urgência para casos críticos</li>
+                        </ul>
+                        <span class="badge badge-danger">CRÍTICO</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3><strong>FASE 2 - CURTO PRAZO (3-6 meses)</strong></h3>
+                        <ul>
+                            <li>Negociação de acordos-quadro com laboratórios farmacêuticos</li>
+                            <li>Implantação de centros de referência especializados</li>
+                            <li>Desenvolvimento de protocolos clínicos estaduais</li>
+                            <li>Capacitação de equipes jurídicas especializadas</li>
+                        </ul>
+                        <span class="badge badge-warning">ALTA</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3><strong>FASE 3 - MÉDIO PRAZO (6-12 meses)</strong></h3>
+                        <ul>
+                            <li>Implementação de sistema de compras centralizadas</li>
+                            <li>Criação de fundo estadual para medicamentos especiais</li>
+                            <li>Parcerias com universidades para pesquisa clínica</li>
+                            <li>Programa de acompanhamento farmacoterapêutico</li>
+                        </ul>
+                        <span class="badge badge-info">MÉDIA</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3><strong>FASE 4 - LONGO PRAZO (12+ meses)</strong></h3>
+                        <ul>
+                            <li>Desenvolvimento de indústria farmacêutica regional</li>
+                            <li>Programa de telemedicina para acompanhamento</li>
+                            <li>Centro de excelência em medicina personalizada</li>
+                            <li>Integração com sistema nacional de saúde digital</li>
+                        </ul>
+                        <span class="badge badge-success">PLANEJAMENTO</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise Custo-Benefício -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-balance-scale-right"></i> Análise Custo-Benefício das Intervenções</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Intervenção Estratégica</th>
+                            <th>Investimento Inicial</th>
+                            <th>Economia Anual</th>
+                            <th>ROI (%)</th>
+                            <th>Prazo de Retorno</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Comitê de Medicamentos</strong></td>
+                            <td>R$ 500.000</td>
+                            <td>R$ 3.200.000</td>
+                            <td>540%</td>
+                            <td>2 meses</td>
+                            <td><span class="badge badge-danger">CRÍTICA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Protocolos Clínicos</strong></td>
+                            <td>R$ 800.000</td>
+                            <td>R$ 2.800.000</td>
+                            <td>250%</td>
+                            <td>4 meses</td>
+                            <td><span class="badge badge-danger">CRÍTICA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Centros de Referência</strong></td>
+                            <td>R$ 2.500.000</td>
+                            <td>R$ 4.100.000</td>
+                            <td>164%</td>
+                            <td>7 meses</td>
+                            <td><span class="badge badge-warning">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sistema de Compras</strong></td>
+                            <td>R$ 1.200.000</td>
+                            <td>R$ 1.800.000</td>
+                            <td>150%</td>
+                            <td>8 meses</td>
+                            <td><span class="badge badge-warning">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fundo Estadual</strong></td>
+                            <td>R$ 5.000.000</td>
+                            <td>R$ 3.500.000</td>
+                            <td>70%</td>
+                            <td>17 meses</td>
+                            <td><span class="badge badge-info">MÉDIA</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Retorno sobre Investimento por Intervenção</div>
+                    <canvas id="roiChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Economia Cumulativa ao Longo do Tempo</div>
+                    <canvas id="economiaCumulativaChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Recomendações Executivas -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-crown"></i> Recomendações Executivas</h2>
+            
+            <div class="strategy-card">
+                <div class="strategy-title"><i class="fas fa-rocket"></i> Recomendação Prioritária</div>
+                <div class="highlight-content">
+                    <p><strong>Implementação IMEDIATA do Comitê Estadual de Medicamentos de Alto Custo</strong></p>
+                    <br>
+                    <p><strong>Justificativa:</strong> Com ROI de 540% e retorno em apenas 2 meses, esta é a intervenção mais eficaz para reduzir imediatamente o impacto da judicialização.</p>
+                    <br>
+                    <p><strong>Composição Sugerida:</strong> Oncologistas, cardiologistas, farmacêuticos clínicos, gestores públicos, representantes jurídicos e economistas de saúde.</p>
+                    <br>
+                    <p><strong>Atribuições:</strong> Avaliação técnica de todas as demandas, elaboração de pareceres fundamentados, negociação com laboratórios e desenvolvimento de protocolos específicos.</p>
+                </div>
+            </div>
+            
+            <div class="grid-3">
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-users"></i> Para Secretários</div>
+                    <ul style="color: #e2e8f0; line-height: 1.8;">
+                        <li>Decreto estadual criando o Comitê de Medicamentos</li>
+                        <li>Destinação orçamentária específica para medicamentos especiais</li>
+                        <li>Acordos de cooperação com universidades federais</li>
+                        <li>Programa de capacitação contínua das equipes</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-hospital"></i> Para Gestores</div>
+                    <ul style="color: #e2e8f0; line-height: 1.8;">
+                        <li>Implementação de fluxos específicos para alta complexidade</li>
+                        <li>Sistema de informação integrado com o Judiciário</li>
+                        <li>Protocolos de resposta rápida (até 48h)</li>
+                        <li>Monitoramento de desfechos clínicos</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-chart-line"></i> Para Controladores</div>
+                    <ul style="color: #e2e8f0; line-height: 1.8;">
+                        <li>Auditoria especializada em medicamentos de alto custo</li>
+                        <li>Indicadores de performance específicos</li>
+                        <li>Relatórios executivos mensais</li>
+                        <li>Análise de custo-efetividade contínua</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-flag-checkered"></i> Meta Estratégica 2025-2027</div>
+                <div class="highlight-content">
+                    <p><strong>Objetivo Principal:</strong> Reduzir em 50% o impacto financeiro da judicialização de medicamentos até 2027, mantendo 100% da qualidade assistencial.</p>
+                    <br>
+                    <p><strong>Indicadores-Chave:</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Taxa de resolução extrajudicial: de 35% para 75%</li>
+                        <li>Tempo médio de resposta: de 180 para 45 dias</li>
+                        <li>Economia anual: R$ 22 milhões</li>
+                        <li>Satisfação dos usuários: > 90%</li>
+                    </ul>
+                    <br>
+                    <p><strong>Investimento Total:</strong> R$ 15 milhões ao longo de 3 anos</p>
+                    <p><strong>Retorno Esperado:</strong> R$ 65 milhões em economia</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- KPIs e Monitoramento -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> KPIs de Monitoramento Estratégico</h2>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-stopwatch"></i></div>
+                    <div class="metric-value">45</div>
+                    <div class="metric-title">Dias - Meta de Resposta</div>
+                    <div class="metric-change success">Atual: 180 dias</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-handshake"></i></div>
+                    <div class="metric-value">75%</div>
+                    <div class="metric-title">Taxa de Resolução Extrajudicial</div>
+                    <div class="metric-change warning">Atual: 35%</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-piggy-bank"></i></div>
+                    <div class="metric-value">R$ 22M</div>
+                    <div class="metric-title">Economia Anual Projetada</div>
+                    <div class="metric-change success">Meta 2027</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-heart"></i></div>
+                    <div class="metric-value">90%</div>
+                    <div class="metric-title">Satisfação dos Usuários</div>
+                    <div class="metric-change info">Meta de qualidade</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Dashboard de KPIs - Acompanhamento Mensal</div>
+                <canvas id="kpisChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Centro de Inteligência Estratégica - Secretaria de Saúde de Goiás</p>
+            <p>Dashboard Estratégico | Análise baseada em 113.787 processos judiciais</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#e2e8f0';
+            
+            // Cores estratégicas
+            const colors = {
+                primary: '#0f172a',
+                secondary: '#1e293b',
+                accent: '#3b82f6',
+                success: '#10b981',
+                warning: '#f59e0b',
+                danger: '#ef4444',
+                strategicBlue: '#1e40af',
+                strategicGold: '#d97706',
+                riskRed: '#dc2626'
+            };
+            
+            // Projeção por Especialidade
+            const projecaoEspecialidadeCtx = document.getElementById('projecaoEspecialidadeChart').getContext('2d');
+            new Chart(projecaoEspecialidadeCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2025', '2026', '2027', '2028', '2029'],
+                    datasets: [
+                        {
+                            label: 'Oncologia',
+                            data: [739, 946, 1210, 1548, 1981],
+                            borderColor: colors.danger,
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Cardiologia',
+                            data: [1277, 1635, 2093, 2679, 3431],
+                            borderColor: colors.strategicBlue,
+                            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Endocrinologia',
+                            data: [444, 568, 727, 930, 1190],
+                            borderColor: colors.strategicGold,
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e2e8f0',
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Cenários Financeiros
+            const cenariosFinanceirosCtx = document.getElementById('cenariosFinanceirosChart').getContext('2d');
+            new Chart(cenariosFinanceirosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário Otimista', 'Cenário Realista', 'Cenário Pessimista'],
+                    datasets: [
+                        {
+                            label: 'Sem Intervenção (R$ milhões)',
+                            data: [45, 65, 95],
+                            backgroundColor: colors.danger,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Com Intervenções (R$ milhões)',
+                            data: [22, 32, 48],
+                            backgroundColor: colors.success,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e2e8f0'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#e2e8f0',
+                                callback: function(value) {
+                                    return 'R$ ' + value + 'M';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Probabilidade de Deferimento
+            const probabilidadeDeferimentoCtx = document.getElementById('probabilidadeDeferimentoChart').getContext('2d');
+            new Chart(probabilidadeDeferimentoCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Oncológicos', 'Cardiológicos', 'Neurológicos', 'Reumatológicos', 'Dermatológicos', 'Endocrinológicos'],
+                    datasets: [{
+                        label: 'Probabilidade de Deferimento (%)',
+                        data: [90, 75, 82, 78, 70, 73],
+                        borderColor: colors.strategicGold,
+                        backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                        borderWidth: 3,
+                        pointBackgroundColor: colors.strategicGold,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e2e8f0'
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#e2e8f0',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.2)'
+                            },
+                            angleLines: {
+                                color: 'rgba(226, 232, 240, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // ROI
+            const roiCtx = document.getElementById('roiChart').getContext('2d');
+            new Chart(roiCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Comitê', 'Protocolos', 'Centros', 'Compras', 'Fundo'],
+                    datasets: [{
+                        label: 'ROI (%)',
+                        data: [540, 250, 164, 150, 70],
+                        backgroundColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.strategicBlue,
+                            colors.accent,
+                            colors.success
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 2,
+                        borderColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.strategicBlue,
+                            colors.accent,
+                            colors.success
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#e2e8f0',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Economia Cumulativa
+            const economiaCumulativaCtx = document.getElementById('economiaCumulativaChart').getContext('2d');
+            new Chart(economiaCumulativaCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mês 1', 'Mês 6', 'Mês 12', 'Mês 18', 'Mês 24', 'Mês 30', 'Mês 36'],
+                    datasets: [{
+                        label: 'Economia Cumulativa (R$ milhões)',
+                        data: [0, 5.2, 12.8, 22.4, 34.7, 49.1, 65.0],
+                        borderColor: colors.success,
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 3,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e2e8f0'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#e2e8f0',
+                                callback: function(value) {
+                                    return 'R$ ' + value + 'M';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // KPIs
+            const kpisCtx = document.getElementById('kpisChart').getContext('2d');
+            new Chart(kpisCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Tempo de Resposta (dias)',
+                            data: [180, 165, 145, 125, 105, 95, 85, 75, 65, 55, 50, 45],
+                            borderColor: colors.strategicBlue,
+                            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Resolução Extrajudicial (%)',
+                            data: [35, 42, 48, 53, 58, 62, 65, 68, 70, 72, 74, 75],
+                            borderColor: colors.success,
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e2e8f0'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true,
+                            max: 200,
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: '#e2e8f0'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#e2e8f0'
+                            },
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

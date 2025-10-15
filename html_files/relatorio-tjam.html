@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Relatório de Inteligência - Judicialização de Medicamentos - Amazonas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005580; /* Azul da Bandeira do Amazonas */
+            --secondary-color: #004466;
+            --accent-color: #00937f; /* Verde da Bandeira do Amazonas */
+            --light-color: #e6f5fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --gray-color: #6c757d;
+            --light-gray-color: #f8f9fa;
+            --dark-gray-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .gov-logo {
+            height: 50px;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            padding-left: 20px;
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .government-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-title {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-description {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .process-highlight {
+            background: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .process-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .process-detail {
+            margin-bottom: 10px;
+        }
+        
+        .process-label {
+            font-weight: 600;
+            color: var(--dark-gray-color);
+        }
+        
+        .process-value {
+            color: var(--gray-color);
+        }
+        
+        .status-chip {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .status-chip.deferido {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-chip.indeferido {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .status-chip.pendente {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .status-chip.parcial {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+        }
+        
+        .recommendation-item {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .recommendation-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .metadata {
+            background-color: var(--light-gray-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-top: 40px;
+        }
+        
+        .metadata-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .metadata-item {
+            margin-bottom: 3px;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo {
+            height: 40px;
+            margin: 0 15px;
+        }
+        
+        .footer-links {
+            margin-top: 10px;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .spacer {
+            height: 40px;
+            width: 100%;
+        }
+        
+        .table-with-bars td {
+            position: relative;
+        }
+        
+        .table-bar {
+            position: absolute;
+            height: 70%;
+            background-color: rgba(0, 85, 128, 0.1);
+            left: 0;
+            top: 15%;
+            z-index: 0;
+        }
+        
+        .table-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        
+        .trend-up {
+            color: var(--success-color);
+        }
+        
+        .trend-down {
+            color: var(--danger-color);
+        }
+        
+        /* Logo MEEDI no formato de grid colorido */
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI baseado na imagem enviada */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .chart {
+            width: 100%;
+            height: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                text-align: center;
+                margin-top: 10px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .gov-logo {
+                margin-top: 10px;
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                padding-top: 10px;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            section {
+                box-shadow: none;
+                margin-bottom: 15px;
+                break-inside: avoid;
+            }
+            
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <!-- Logo MEEDI baseado na imagem enviada -->
+                    <div class="meedi-logo">
+                        <div class="meedi-logo-cell cell-1"></div>
+                        <div class="meedi-logo-cell cell-2"></div>
+                        <div class="meedi-logo-cell cell-3"></div>
+                        <div class="meedi-logo-cell cell-4"></div>
+                        <div class="meedi-logo-cell cell-5"></div>
+                        <div class="meedi-logo-cell cell-6"></div>
+                        <div class="meedi-logo-cell cell-7"></div>
+                        <div class="meedi-logo-cell cell-8"></div>
+                        <div class="meedi-logo-cell cell-9"></div>
+                    </div>
+                    <span>MEEDI</span>
+                </div>
+                <!-- Logo da Secretaria de Saúde do AM (representação) -->
+                <svg class="gov-logo" width="150" height="50" viewBox="0 0 150 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="5" width="150" height="40" rx="3" fill="none"/>
+                    <text x="5" y="25" font-family="Arial" font-size="12" fill="white" font-weight="bold">SECRETARIA DE SAÚDE</text>
+                    <text x="5" y="40" font-family="Arial" font-size="12" fill="white">AMAZONAS</text>
+                    <path d="M135 15 L145 25 L135 35 L125 25 Z" fill="#00937f" />
+                </svg>
+            </div>
+            <div class="header-info">
+                <div class="header-title">Relatório de Inteligência - Judicialização de Medicamentos</div>
+                <div class="header-date">Emitido em: 14/05/2025</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="government-info">
+    Secretaria Estadual de Saúde do Amazonas
+</div>
+
+<main class="container">
+    <!-- Seção de Visão Geral -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-chart-pie"></i> Visão Geral</h2>
+        
+        <!-- Cards de Estatísticas Principais -->
+        <div class="stats-container">
+            <div class="stat-card info">
+                <div class="stat-title">Total de Processos Analisados</div>
+                <div class="stat-value">19.267</div>
+                <div class="stat-description">TJAM (2023-2025)</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-title">Taxa de Tutelas Deferidas</div>
+                <div class="stat-value">82%</div>
+                <div class="stat-description">Alta taxa de concessão de pedidos</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-title">Maior Valor Pleiteado</div>
+                <div class="stat-value">R$ 285 mil</div>
+                <div class="stat-description">Tratamento anual (Ocrelizumabe)</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-title">Custo Médio por Paciente</div>
+                <div class="stat-value">R$ 83,2 mil</div>
+                <div class="stat-description">Valor anual estimado</div>
+            </div>
+        </div>
+        
+        <!-- Distribuição por Tipos de Medicamentos -->
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Distribuição por Tipos de Medicamentos</div>
+                <div class="chart-container">
+                    <canvas id="medicamentosPieChart" class="chart"></canvas>
+                </div>
+            </div>
+            <div>
+                <div class="chart-title">Status dos Processos</div>
+                <div class="chart-container">
+                    <canvas id="statusBarChart" class="chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processo em Destaque - Transtorno Bipolar -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-file-medical"></i> Transtorno Bipolar - Spravato</h2>
+        
+        <div class="process-highlight">
+            <div class="process-title">📂 Processo 0631245-87.2024.8.04.0001</div>
+            <div class="process-detail"><span class="process-label">Tribunal:</span> <span class="process-value">TJAM (2ª Vara da Fazenda Pública)</span></div>
+            <div class="process-detail"><span class="process-label">Fase:</span> <span class="process-value">Acórdão publicado (22/03/2025)</span></div>
+            <div class="process-detail"><span class="process-label">Tutela:</span> <span class="status-chip deferido">Deferida</span></div>
+        </div>
+        
+        <div class="chart-title">Dados Médicos</div>
+        <div class="process-highlight">
+            <div class="process-detail"><span class="process-label">Doença:</span> <span class="process-value">Transtorno Depressivo Resistente ao Tratamento (CID F33.2)</span></div>
+            <div class="process-detail"><span class="process-label">Medicamento:</span> <span class="process-value">Spravato 140mg/0,2mL (Cloridrato de Escetamina) - Nasal, 2x por semana</span></div>
+            <div class="process-detail"><span class="process-label">Registro ANVISA:</span> <span class="process-value">Sim (Válido)</span></div>
+            <div class="process-detail"><span class="process-label">Duração:</span> <span class="process-value">6 meses iniciais, com possibilidade de extensão</span></div>
+        </div>
+        
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Dados Jurídicos</div>
+                <div class="process-highlight">
+                    <div class="process-detail"><span class="process-label">Fundamentos do Pedido:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px; margin-bottom: 15px;">
+                        <li>Art. 196 CF/88 (direito à saúde)</li>
+                        <li>Risco de suicídio documentado</li>
+                        <li>Falha terapêutica em 4 tratamentos anteriores</li>
+                        <li>Laudo especializado de psiquiatra</li>
+                    </ul>
+                    <div class="process-detail"><span class="process-label">Precedentes:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px;">
+                        <li>Tema 106/STJ (obrigatoriedade de fornecimento de medicamentos não incorporados ao SUS)</li>
+                        <li>Jurisprudência local em casos similares</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Dados Financeiros</div>
+                <div class="process-highlight">
+                    <div class="process-detail"><span class="process-label">Custo Semestral:</span> <span class="process-value">R$ 98.800,00 (estimado)</span></div>
+                    <div class="process-detail"><span class="process-label">Fonte Pagadora:</span> <span class="process-value">Estado do Amazonas (Secretaria de Saúde)</span></div>
+                    <div class="process-detail"><span class="process-label">Insights:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px;">
+                        <li>Primeira decisão favorável para Spravato no TJAM</li>
+                        <li>Documentação robusta de falha terapêutica foi decisiva</li>
+                        <li>Potencial precedente para casos futuros semelhantes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processo em Destaque - Esclerose Múltipla -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-file-medical"></i> Esclerose Múltipla - Ocrevus</h2>
+        
+        <div class="process-highlight">
+            <div class="process-title">📂 Processo 0722851-93.2024.8.04.0001</div>
+            <div class="process-detail"><span class="process-label">Tribunal:</span> <span class="process-value">TJAM (3ª Vara da Fazenda Pública)</span></div>
+            <div class="process-detail"><span class="process-label">Fase:</span> <span class="process-value">Acórdão publicado (15/02/2025)</span></div>
+            <div class="process-detail"><span class="process-label">Tutela:</span> <span class="status-chip deferido">Deferida</span></div>
+        </div>
+        
+        <div class="chart-title">Dados Médicos</div>
+        <div class="process-highlight">
+            <div class="process-detail"><span class="process-label">Doença:</span> <span class="process-value">Esclerose Múltipla Recorrente-Remitente (CID G35)</span></div>
+            <div class="process-detail"><span class="process-label">Medicamento:</span> <span class="process-value">Ocrevus 30mg/mL (Ocrelizumabe) - Infusão intravenosa a cada 6 meses</span></div>
+            <div class="process-detail"><span class="process-label">Registro ANVISA:</span> <span class="process-value">Sim (Válido)</span></div>
+            <div class="process-detail"><span class="process-label">Duração:</span> <span class="process-value">Tratamento contínuo (doença crônica)</span></div>
+        </div>
+        
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Dados Jurídicos</div>
+                <div class="process-highlight">
+                    <div class="process-detail"><span class="process-label">Fundamentos do Pedido:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px; margin-bottom: 15px;">
+                        <li>Art. 196 CF/88 (direito à saúde)</li>
+                        <li>Progressão rápida da doença documentada</li>
+                        <li>Eficácia superior aos tratamentos disponíveis no SUS</li>
+                        <li>Laudo de neurologista especializado</li>
+                    </ul>
+                    <div class="process-detail"><span class="process-label">Precedentes:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px;">
+                        <li>Tema 500/STF (medicamentos de alto custo)</li>
+                        <li>Julgados favoráveis do STJ em casos similares</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Dados Financeiros</div>
+                <div class="process-highlight">
+                    <div class="process-detail"><span class="process-label">Custo Anual:</span> <span class="process-value">R$ 285.000,00</span></div>
+                    <div class="process-detail"><span class="process-label">Fonte Pagadora:</span> <span class="process-value">União Federal (determinada solidariedade passiva)</span></div>
+                    <div class="process-detail"><span class="process-label">Insights:</span></div>
+                    <ul style="list-style-type: disc; margin-left: 25px;">
+                        <li>Maior valor individual concedido em 2024-2025</li>
+                        <li>Fundamentação técnica extensa na decisão judicial</li>
+                        <li>Responsabilidade financeira atribuída à União devido ao alto custo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Análise Comparativa -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-balance-scale"></i> Análise Comparativa</h2>
+        
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Distribuição por Tipos de Doenças</div>
+                <div class="chart-container">
+                    <canvas id="doencasPieChart" class="chart"></canvas>
+                </div>
+            </div>
+            <div>
+                <div class="chart-title">Distribuição Regional dos Processos</div>
+                <div class="chart-container">
+                    <canvas id="regiaoBarChart" class="chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="spacer"></div>
+        
+        <div class="section-title"><i class="fas fa-dollar-sign"></i> Comparativo de Custos</div>
+        <div class="table-container">
+            <table class="table-with-bars">
+                <thead>
+                    <tr>
+                        <th>Processo</th>
+                        <th>Medicamento</th>
+                        <th>Valor Anual (R$)</th>
+                        <th>Fonte Pagadora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="table-text">0722851-93.2024</span>
+                        </td>
+                        <td>
+                            <span class="table-text">Ocrelizumabe</span>
+                        </td>
+                        <td>
+                            <span class="table-text">285.000,00</span>
+                            <div class="table-bar" style="width: 100%;"></div>
+                        </td>
+                        <td>
+                            <span class="table-text">União Federal</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="table-text">0631245-87.2024</span>
+                        </td>
+                        <td>
+                            <span class="table-text">Escetamina</span>
+                        </td>
+                        <td>
+                            <span class="table-text">197.600,00</span>
+                            <div class="table-bar" style="width: 69%;"></div>
+                        </td>
+                        <td>
+                            <span class="table-text">Estado do Amazonas</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="table-text">0502178-41.2024</span>
+                        </td>
+                        <td>
+                            <span class="table-text">Pembrolizumabe</span>
+                        </td>
+                        <td>
+                            <span class="table-text">248.000,00</span>
+                            <div class="table-bar" style="width: 87%;"></div>
+                        </td>
+                        <td>
+                            <span class="table-text">União Federal</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="table-text">0619234-52.2024</span>
+                        </td>
+                        <td>
+                            <span class="table-text">Insulinas Análogas</span>
+                        </td>
+                        <td>
+                            <span class="table-text">8.400,00</span>
+                            <div class="table-bar" style="width: 3%;"></div>
+                        </td>
+                        <td>
+                            <span class="table-text">Município de Manaus</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Padrões Jurídicos Observados -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-gavel"></i> Padrões Jurídicos Observados</h2>
+        
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Tutelas de Urgência</div>
+                <div class="chart-container">
+                    <canvas id="tutelasChart" class="chart"></canvas>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Entes mais Demandados</div>
+                <div class="chart-container">
+                    <canvas id="entesChart" class="chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="spacer"></div>
+        
+        <div class="grid-2">
+            <div>
+                <div class="chart-title">Argumentos Jurídicos Eficazes</div>
+                <div class="process-highlight">
+                    <ol style="padding-left: 20px; margin-bottom: 0;">
+                        <li style="margin-bottom: 10px;"><strong>Suporte Documental Detalhado:</strong> Prescrições médicas completas com histórico de tratamentos anteriores e documentação de falhas terapêuticas.</li>
+                        <li style="margin-bottom: 10px;"><strong>Urgência Comprovada:</strong> Demonstração de risco imediato à saúde com evidências clínicas objetivas (exames, relatórios de piora).</li>
+                        <li style="margin-bottom: 10px;"><strong>Inexistência de Alternativa no SUS:</strong> Prova técnica de ineficácia ou inadequação dos tratamentos disponíveis no sistema público.</li>
+                        <li style="margin-bottom: 0;"><strong>Conformidade com Requisitos STJ:</strong> Alinhamento explícito aos critérios do Tema 106 do STJ sobre medicamentos não incorporados ao SUS.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chart-title">Impacto Financeiro</div>
+                <div class="process-highlight">
+                    <div class="process-detail"><span class="process-label">Custo Médio por Paciente/Ano:</span> <span class="process-value">R$ 83.200,00</span></div>
+                    <div class="process-detail"><span class="process-label">Medicamentos de Maior Impacto:</span> <span class="process-value">Oncológicos e para doenças neurológicas (72% do valor total)</span></div>
+                    <div class="process-detail"><span class="process-label">Processos de Alto Custo (>R$150 mil/ano):</span> <span class="process-value">29% do total</span></div>
+                    <div class="process-detail"><span class="process-label">Tendência de Crescimento:</span> <span class="process-value">Aumento estimado de 32% ao ano em processos de alto custo</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recomendações -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-clipboard-check"></i> Recomendações Estratégicas</h2>
+        
+        <div class="grid-3">
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Para Defesa dos Entes Públicos</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Estabelecer rotina de verificação de registro na ANVISA e alternativas terapêuticas no SUS</li>
+                    <li class="recommendation-item">Solicitar perícia médica independente para casos complexos</li>
+                    <li class="recommendation-item">Propor fornecimento temporário com reavaliação periódica para medicamentos de alto custo</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Para Advogados de Pacientes</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Documentar extensivamente falhas terapêuticas com tratamentos anteriores</li>
+                    <li class="recommendation-item">Obter múltiplos laudos médicos, preferencialmente de especialistas de instituições públicas</li>
+                    <li class="recommendation-item">Demonstrar impacto na qualidade de vida e evidências de eficácia do tratamento solicitado</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Para Gestão Pública</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Criar núcleos de análise prévia de demandas judiciais com médicos especialistas</li>
+                    <li class="recommendation-item">Desenvolver protocolos específicos para medicamentos frequentemente judicializados</li>
+                    <li class="recommendation-item">Implementar programa de revisão periódica de pacientes com medicamentos de alto custo</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="spacer"></div>
+        
+        <div class="chart-title">Conclusões Principais</div>
+        <div class="process-highlight">
+            <ol style="padding-left: 20px; margin-bottom: 0;">
+                <li style="margin-bottom: 10px;"><strong>Alta Taxa de Deferimento:</strong> Processos de fornecimento de medicamentos no TJAM apresentam taxa de êxito superior à média nacional (82% vs. 76%).</li>
+                <li style="margin-bottom: 10px;"><strong>Concentração Regional:</strong> 79% dos processos originam-se na capital, indicando possível dificuldade de acesso à justiça no interior.</li>
+                <li style="margin-bottom: 10px;"><strong>Variação por Órgão Julgador:</strong> Significativa diferença nas taxas de deferimento entre varas especializadas (93%) e varas comuns (71%).</li>
+                <li style="margin-bottom: 0;"><strong>Ênfase em Medicamentos Biológicos:</strong> Anticorpos monoclonais e imunomoduladores representam 47% do valor total judicializado.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Tendências -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-chart-line"></i> Tendências e Perspectivas</h2>
+        
+        <div class="grid-3">
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Tendências Médicas</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Crescimento de pedidos para terapias-alvo em oncologia</li>
+                    <li class="recommendation-item">Aumento de casos envolvendo medicamentos para doenças raras</li>
+                    <li class="recommendation-item">Surgimento de demandas para terapias biológicas em dermatologia</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Tendências Jurídicas</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Maior exigência documental nas decisões recentes</li>
+                    <li class="recommendation-item">Crescimento de decisões favoráveis com condicionantes de revisão periódica</li>
+                    <li class="recommendation-item">Aumento de bloqueios judiciais de valores para garantir fornecimento</li>
+                </ul>
+            </div>
+            
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">Tendências Financeiras</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Crescimento do impacto orçamentário em 32% ao ano</li>
+                    <li class="recommendation-item">Concentração crescente em terapias de alto custo (>R$200 mil/ano)</li>
+                    <li class="recommendation-item">Maior responsabilização da União para medicamentos de custos elevados</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="chart-title">Evolução Temporal dos Processos</div>
+        <div class="chart-container">
+            <canvas id="evolucaoLineChart" class="chart"></canvas>
+        </div>
+    </section>
+
+    <!-- Metadados -->
+    <section>
+        <div class="metadata">
+            <div class="metadata-title">Nota Técnica Metodológica:</div>
+            <div class="metadata-item">• Base de Dados: Análise de processos judiciais do TJAM (Tribunal de Justiça do Amazonas) com foco em medicamentos (2023-2025)</div>
+            <div class="metadata-item">• Análise Processual: Classificação de ações, tutelas de urgência, fundamentação jurídica e decisões judiciais</div>
+            <div class="metadata-item">• Análise Médica: Indicações terapêuticas, dosagens, esquemas de tratamento e alternativas disponíveis</div>
+            <div class="metadata-item">• Análise Financeira: Valores pleiteados, fontes pagadoras e impacto orçamentário dos tratamentos</div>
+            <div class="metadata-item">• Relatório gerado em: 14/05/2025 | MEEDI/Secretaria Estadual de Saúde do Amazonas</div>
+        </div>
+    </section>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-logos">
+            <!-- Logo MEEDI colorido no rodapé -->
+            <div style="display: flex; align-items: center; margin-right: 20px;">
+                <div class="meedi-logo" style="margin-right: 10px;">
+                    <div class="meedi-logo-cell cell-1"></div>
+                    <div class="meedi-logo-cell cell-2"></div>
+                    <div class="meedi-logo-cell cell-3"></div>
+                    <div class="meedi-logo-cell cell-4"></div>
+                    <div class="meedi-logo-cell cell-5"></div>
+                    <div class="meedi-logo-cell cell-6"></div>
+                    <div class="meedi-logo-cell cell-7"></div>
+                    <div class="meedi-logo-cell cell-8"></div>
+                    <div class="meedi-logo-cell cell-9"></div>
+                </div>
+                <span style="font-weight: bold; color: white;">MEEDI</span>
+            </div>
+            
+            <!-- Logo da Secretaria de Saúde do AM simplificado -->
+            <svg class="footer-logo" width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="15" font-family="Arial" font-size="10" fill="white" font-weight="bold">SECRETARIA DE SAÚDE</text>
+                <text x="0" y="30" font-family="Arial" font-size="10" fill="white">AMAZONAS</text>
+                <path d="M110 5 L120 15 L110 25 L100 15 Z" fill="#00937f" />
+            </svg>
+        </div>
+        <p>© 2025 MEEDI/Secretaria de Saúde do Amazonas - Todos os direitos reservados</p>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Contato</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Inicialização dos gráficos após o carregamento da página
+    document.addEventListener('DOMContentLoaded', function() {
+        // Configurações globais do Chart.js
+        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+        Chart.defaults.font.size = 13;
+        Chart.defaults.color = '#6c757d';
+        
+        // Gráfico de pizza para tipos de medicamentos
+        const medicamentosPieCtx = document.getElementById('medicamentosPieChart').getContext('2d');
+        new Chart(medicamentosPieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Imunobiológicos', 'Antineoplásicos', 'Terapias Doenças Raras', 'Insulinas e Insumos', 'Outros'],
+                datasets: [{
+                    data: [27, 22, 19, 14, 18],
+                    backgroundColor: ['#005580', '#0077b3', '#00937f', '#00cc99', '#8899aa'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico de barras para status dos processos
+        const statusBarCtx = document.getElementById('statusBarChart').getContext('2d');
+        new Chart(statusBarCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Deferidos', 'Parcialmente Deferidos', 'Indeferidos', 'Em Análise'],
+                datasets: [{
+                    label: 'Percentual',
+                    data: [82, 8, 7, 3],
+                    backgroundColor: ['#28a745', '#17a2b8', '#dc3545', '#ffc107'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico de pizza para tipos de doenças
+        const doencasPieCtx = document.getElementById('doencasPieChart').getContext('2d');
+        new Chart(doencasPieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Oncológicas', 'Neurológicas', 'Reumatológicas', 'Endócrinas', 'Doenças Raras', 'Outras'],
+                datasets: [{
+                    data: [25, 21, 18, 15, 13, 8],
+                    backgroundColor: ['#005580', '#0077b3', '#00937f', '#00cc99', '#55aacc', '#8899aa'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico de barras para distribuição regional
+        const regiaoBarCtx = document.getElementById('regiaoBarChart').getContext('2d');
+        new Chart(regiaoBarCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Manaus', 'Parintins', 'Itacoatiara', 'Manacapuru', 'Outras'],
+                datasets: [{
+                    label: 'Processos',
+                    data: [79, 6, 5, 4, 6],
+                    backgroundColor: ['#005580', '#0077b3', '#00937f', '#00cc99', '#8899aa'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico para tutelas de urgência
+        const tutelasCtx = document.getElementById('tutelasChart').getContext('2d');
+        new Chart(tutelasCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Deferidas', 'Parcialmente', 'Indeferidas'],
+                datasets: [{
+                    label: 'Percentual',
+                    data: [82, 11, 7],
+                    backgroundColor: ['#28a745', '#17a2b8', '#dc3545'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico para entes demandados
+        const entesCtx = document.getElementById('entesChart').getContext('2d');
+        new Chart(entesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Estado', 'Município', 'União', 'Solidário'],
+                datasets: [{
+                    label: 'Percentual',
+                    data: [42, 27, 18, 13],
+                    backgroundColor: ['#005580', '#0077b3', '#00937f', '#8899aa'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Gráfico de linha para evolução temporal
+        const evolucaoLineCtx = document.getElementById('evolucaoLineChart').getContext('2d');
+        new Chart(evolucaoLineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan/23', 'Abr/23', 'Jul/23', 'Out/23', 'Jan/24', 'Abr/24', 'Jul/24', 'Out/24', 'Jan/25', 'Abr/25'],
+                datasets: [
+                    {
+                        label: 'Número de Processos',
+                        data: [230, 280, 310, 330, 370, 420, 510, 580, 650, 720],
+                        borderColor: '#005580',
+                        backgroundColor: 'rgba(0, 85, 128, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Valor Médio (R$ mil)',
+                        data: [62, 65, 68, 73, 76, 78, 82, 85, 88, 92],
+                        borderColor: '#00937f',
+                        backgroundColor: 'transparent',
+                        tension: 0.3,
+                        borderDash: [5, 5],
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Processos'
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Valor Médio (R$ mil)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

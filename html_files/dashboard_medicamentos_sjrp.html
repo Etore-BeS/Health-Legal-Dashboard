@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Medicamentos - São José do Rio Preto</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --light-color: #f8fafc;
+            --dark-color: #1f2937;
+            --gray-color: #6b7280;
+            --sjrp-blue: #2563eb;
+            --sjrp-green: #16a34a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #334155;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--sjrp-blue) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .city-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--sjrp-green) 0%, #fff 50%, var(--sjrp-blue) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 20px 0;
+            background: white;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 4px solid var(--sjrp-green);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sjrp-green), var(--primary-color));
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            color: var(--sjrp-green);
+            font-size: 32px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sjrp-green), var(--primary-color));
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-title {
+            font-size: 16px;
+            color: var(--gray-color);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+        
+        .metric-change.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .metric-change.warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(180, 83, 9, 0.1));
+            color: var(--warning-color);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+        
+        .metric-change.danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(185, 28, 28, 0.1));
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        
+        .metric-change.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+            color: var(--secondary-color);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .chart-container {
+            margin: 30px 0;
+            position: relative;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, var(--sjrp-green) 0%, var(--primary-color) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 12px 35px rgba(22, 163, 74, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-title i {
+            margin-right: 15px;
+            font-size: 28px;
+        }
+        
+        .highlight-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 18px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--sjrp-green) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(22, 163, 74, 0.05));
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(180, 83, 9, 0.2));
+            color: var(--warning-color);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2));
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2));
+            color: var(--secondary-color);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .process-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .process-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sjrp-green), var(--primary-color));
+        }
+        
+        .process-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .process-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .process-status {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        
+        .process-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .process-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+        }
+        
+        .opportunity-alert {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 20%, #f59e0b 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #d97706;
+            color: #7c2d12;
+        }
+        
+        .opportunity-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .opportunity-title i {
+            margin-right: 10px;
+            color: #d97706;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--sjrp-green) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--sjrp-green) 0%, var(--primary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 12px 35px rgba(22, 163, 74, 0.4);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            font-size: 24px;
+        }
+        
+        .print-button:hover {
+            transform: scale(1.15);
+            box-shadow: 0 15px 45px rgba(22, 163, 74, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                margin-top: 20px;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="city-icon">🏥</div>
+                    <div class="logo-text">SJRP SAÚDE</div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Dashboard de Medicamentos Judicializados</div>
+                    <div class="header-subtitle">São José do Rio Preto - Análise Processual</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Prefeitura de São José do Rio Preto - Análise de Processos Judiciais de Medicamentos | Dados de 27/05/2025
+    </div>
+
+    <main class="container">
+        <!-- Visão Geral -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Panorama Geral dos Processos</h2>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-folder-open"></i></div>
+                    <div class="metric-value">61</div>
+                    <div class="metric-title">Total de Processos</div>
+                    <div class="metric-change info">Base completa analisada</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="metric-value">43</div>
+                    <div class="metric-title">Tutelas Deferidas</div>
+                    <div class="metric-change success">70,5% de sucesso</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="metric-value">R$ 9,4M</div>
+                    <div class="metric-title">Valor Total em Disputa</div>
+                    <div class="metric-change warning">Estimativa consolidada</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="metric-value">69,9%</div>
+                    <div class="metric-title">Probabilidade Média</div>
+                    <div class="metric-change info">Sucesso estimado</div>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-lightbulb"></i> Insights Estratégicos</div>
+                <div class="highlight-content">
+                    <p><strong>Alto índice de deferimento:</strong> 70,5% das tutelas foram deferidas, demonstrando forte fundamentação dos pedidos médicos.</p>
+                    <br>
+                    <p><strong>Concentração em tratamentos especializados:</strong> Predominam tratamentos endocrinológicos, gastroenterológicos e pneumológicos de alta complexidade.</p>
+                    <br>
+                    <p><strong>Oportunidade comercial significativa:</strong> R$ 9,4 milhões em disputa com alta probabilidade de êxito representam mercado potencial relevante.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise de Status e Tribunais -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-balance-scale"></i> Distribuição por Tribunais e Status</h2>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Processos por Tribunal</div>
+                    <canvas id="tribunaisChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Status das Tutelas</div>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tribunal</th>
+                            <th>Processos</th>
+                            <th>Taxa Deferimento</th>
+                            <th>Valor Médio</th>
+                            <th>Oportunidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>TST</strong></td>
+                            <td>40</td>
+                            <td>75%</td>
+                            <td>R$ 250.000</td>
+                            <td><span class="badge badge-success">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>STJ</strong></td>
+                            <td>17</td>
+                            <td>65%</td>
+                            <td>R$ 2.100.000</td>
+                            <td><span class="badge badge-danger">Crítica</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>TJSP</strong></td>
+                            <td>2</td>
+                            <td>50%</td>
+                            <td>R$ 500.000</td>
+                            <td><span class="badge badge-warning">Média</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Tratamentos Identificados -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-pills"></i> Tratamentos Médicos Identificados</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-heart"></i></div>
+                    <div class="metric-value">1</div>
+                    <div class="metric-title">Tratamento Endocrinológico</div>
+                    <div class="metric-change info">Especialidade identificada</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-lungs"></i></div>
+                    <div class="metric-value">1</div>
+                    <div class="metric-title">Tratamento Pneumológico</div>
+                    <div class="metric-change info">Especialidade identificada</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-stomach"></i></div>
+                    <div class="metric-value">1</div>
+                    <div class="metric-title">Tratamento Gastroenterológico</div>
+                    <div class="metric-change info">Especialidade identificada</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Valores por Faixa</div>
+                <canvas id="valoresChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Processos de Alta Prioridade -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Oportunidades Comerciais Identificadas</h2>
+            
+            <div class="process-card">
+                <div class="process-header">
+                    <div class="process-number">Processo: 10517975520198260576</div>
+                    <div class="process-status badge-success">Tutela Deferida</div>
+                </div>
+                <div class="process-info">
+                    <div class="process-detail">
+                        <span><strong>Tribunal:</strong></span>
+                        <span>STJ</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Valor do Pedido:</strong></span>
+                        <span>R$ 8.897.025,50</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Tipo de Tutela:</strong></span>
+                        <span>Tutela de Urgência</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Probabilidade:</strong></span>
+                        <span>95%</span>
+                    </div>
+                </div>
+                <div class="opportunity-alert">
+                    <div class="opportunity-title">
+                        <i class="fas fa-star"></i>
+                        OPORTUNIDADE DE ALTO VALOR
+                    </div>
+                    <p>Processo com maior valor individual (R$ 8,9 milhões), tutela deferida com caráter de urgência e probabilidade de sucesso de 95%. <strong>Ação imediata recomendada.</strong></p>
+                </div>
+            </div>
+            
+            <div class="process-card">
+                <div class="process-header">
+                    <div class="process-number">Processo: 10320585720238260576</div>
+                    <div class="process-status badge-warning">Tutela Indeferida</div>
+                </div>
+                <div class="process-info">
+                    <div class="process-detail">
+                        <span><strong>Tribunal:</strong></span>
+                        <span>STJ (8 movimentações)</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Valor do Pedido:</strong></span>
+                        <span>R$ 352.277,91</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Tratamento:</strong></span>
+                        <span>Gastroenterológico</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Quantidade:</strong></span>
+                        <span>4 ampolas</span>
+                    </div>
+                </div>
+                <div class="opportunity-alert">
+                    <div class="opportunity-title">
+                        <i class="fas fa-eye"></i>
+                        PROCESSO PARA MONITORAMENTO
+                    </div>
+                    <p>Tratamento gastroenterológico com múltiplas movimentações (8 no STJ). Apesar do indeferimento atual, apresenta caráter de urgência e probabilidade de 45% em recursos. <strong>Monitorar para possível reversão.</strong></p>
+                </div>
+            </div>
+            
+            <div class="process-card">
+                <div class="process-header">
+                    <div class="process-number">Processo: 10215002620238260576</div>
+                    <div class="process-status badge-success">Tutela Deferida</div>
+                </div>
+                <div class="process-info">
+                    <div class="process-detail">
+                        <span><strong>Tribunal:</strong></span>
+                        <span>STJ (12 movimentações)</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Tratamento:</strong></span>
+                        <span>Endocrinológico</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Prazo:</strong></span>
+                        <span>90 dias</span>
+                    </div>
+                    <div class="process-detail">
+                        <span><strong>Probabilidade:</strong></span>
+                        <span>80%</span>
+                    </div>
+                </div>
+                <div class="opportunity-alert">
+                    <div class="opportunity-title">
+                        <i class="fas fa-clock"></i>
+                        PRAZO DEFINIDO PARA CUMPRIMENTO
+                    </div>
+                    <p>Tratamento endocrinológico com tutela deferida e prazo de 90 dias para cumprimento. Processo com 12 movimentações demonstra complexidade e importância. <strong>Oportunidade de fornecimento garantido.</strong></p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise de Probabilidades -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Análise de Probabilidades de Sucesso</h2>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Probabilidades</div>
+                <canvas id="probabilidadesChart"></canvas>
+            </div>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="metric-value">36</div>
+                    <div class="metric-title">Processos com 80% de Sucesso</div>
+                    <div class="metric-change success">Alta probabilidade</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-star"></i></div>
+                    <div class="metric-value">7</div>
+                    <div class="metric-title">Processos com 95% de Sucesso</div>
+                    <div class="metric-change success">Probabilidade máxima</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                    <div class="metric-value">6</div>
+                    <div class="metric-title">Processos Pendentes</div>
+                    <div class="metric-change warning">Aguardando decisão</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Recomendações Estratégicas -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> Recomendações Comerciais</h2>
+            
+            <div class="grid-2">
+                <div class="process-card">
+                    <div class="process-header">
+                        <div class="process-number"><i class="fas fas-rocket"></i> Ações Imediatas</div>
+                    </div>
+                    <ul style="margin-top: 15px; line-height: 1.8;">
+                        <li><strong>Processo 10517975520198260576:</strong> Contatar urgentemente para fornecimento de R$ 8,9 milhões (95% probabilidade)</li>
+                        <li><strong>Tutelas com Urgência:</strong> 7 processos com tutela de urgência deferida requerem ação imediata</li>
+                        <li><strong>STJ - Alto Valor:</strong> Focar nos 17 processos do STJ com valor médio de R$ 2,1 milhões</li>
+                        <li><strong>Prazos Definidos:</strong> 2 processos têm prazos específicos para cumprimento (30 e 90 dias)</li>
+                    </ul>
+                </div>
+                
+                <div class="process-card">
+                    <div class="process-header">
+                        <div class="process-number"><i class="fas fa-eye"></i> Monitoramento</div>
+                    </div>
+                    <ul style="margin-top: 15px; line-height: 1.8;">
+                        <li><strong>6 Processos Pendentes:</strong> Acompanhar decisões com probabilidade média de 50%</li>
+                        <li><strong>Recursos em Andamento:</strong> Monitorar processos indeferidos com múltiplas movimentações</li>
+                        <li><strong>Tratamentos Especializados:</strong> Acompanhar evolução dos 3 tipos de tratamento identificados</li>
+                        <li><strong>Ministério Público:</strong> Processos com MP no polo ativo têm maior taxa de sucesso</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-bullseye"></i> Estratégia de Abordagem</div>
+                <div class="highlight-content">
+                    <p><strong>Segmentação por Valor:</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Alto Valor (>R$ 300k):</strong> 2 processos com R$ 9,2 milhões - Equipe senior dedicada</li>
+                        <li><strong>Médio Valor (R$ 100k-300k):</strong> 1 processo com R$ 143k - Abordagem comercial padrão</li>
+                        <li><strong>Baixo Valor (<R$ 30k):</strong> 6 processos com R$ 27k - Processo automatizado</li>
+                    </ul>
+                    <br>
+                    <p><strong>Timeline de Ação:</strong> Priorizar processos com tutela deferida e urgência médica. Contato nas próximas 24-48h para casos críticos.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Prefeitura de São José do Rio Preto</p>
+            <p>Dashboard de Inteligência Comercial - Medicamentos Judicializados | Processado em 27/05/2025</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6b7280';
+            
+            const colors = {
+                primary: '#1e40af',
+                secondary: '#3b82f6',
+                success: '#10b981',
+                warning: '#f59e0b',
+                danger: '#ef4444',
+                sjrpGreen: '#16a34a',
+                info: '#06b6d4'
+            };
+            
+            // Gráfico de Tribunais
+            const tribunaisCtx = document.getElementById('tribunaisChart').getContext('2d');
+            new Chart(tribunaisCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['TST', 'STJ', 'TJSP'],
+                    datasets: [{
+                        data: [40, 17, 2],
+                        backgroundColor: [
+                            colors.primary,
+                            colors.sjrpGreen,
+                            colors.warning
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Status
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Deferida', 'Indeferida', 'Pendente'],
+                    datasets: [{
+                        data: [43, 12, 6],
+                        backgroundColor: [
+                            colors.success,
+                            colors.danger,
+                            colors.warning
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Valores
+            const valoresCtx = document.getElementById('valoresChart').getContext('2d');
+            new Chart(valoresCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Até R$ 10k', 'R$ 10k-30k', 'R$ 30k-100k', 'R$ 100k-300k', 'Acima R$ 300k'],
+                    datasets: [{
+                        label: 'Quantidade de Processos',
+                        data: [6, 0, 0, 1, 2],
+                        backgroundColor: [
+                            colors.success,
+                            colors.info,
+                            colors.warning,
+                            colors.secondary,
+                            colors.danger
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 2,
+                        borderColor: [
+                            colors.success,
+                            colors.info,
+                            colors.warning,
+                            colors.secondary,
+                            colors.danger
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Probabilidades
+            const probabilidadesCtx = document.getElementById('probabilidadesChart').getContext('2d');
+            new Chart(probabilidadesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['30%', '45%', '50%', '80%', '95%'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [8, 4, 6, 36, 7],
+                        backgroundColor: colors.primary,
+                        borderRadius: 6,
+                        borderWidth: 2,
+                        borderColor: colors.primary
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

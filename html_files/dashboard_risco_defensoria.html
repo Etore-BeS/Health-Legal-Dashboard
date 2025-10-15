@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard MEEDI - Gestão de Riscos Defensoria</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --meedi-primary: #1e3a8a;
+            --meedi-secondary: #3b82f6;
+            --meedi-accent: #10b981;
+            --meedi-success: #059669;
+            --meedi-warning: #d97706;
+            --meedi-danger: #dc2626;
+            --meedi-light: #f8fafc;
+            --meedi-dark: #1f2937;
+            --risk-critical: #991b1b;
+            --risk-high: #dc2626;
+            --risk-medium: #d97706;
+            --risk-low: #059669;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 45px;
+            height: 45px;
+            margin-right: 12px;
+        }
+
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 2px;
+        }
+
+        .cell-1 { background: #60a5fa; }
+        .cell-2 { background: #34d399; }
+        .cell-3 { background: #fbbf24; }
+        .cell-4 { background: #a78bfa; }
+        .cell-5 { background: #f87171; }
+        .cell-6 { background: #06b6d4; }
+        .cell-7 { background: #8b5cf6; }
+        .cell-8 { background: #10b981; }
+        .cell-9 { background: #f59e0b; }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border-bottom: 3px solid var(--meedi-danger);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #f87171;
+        }
+
+        .header-title p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            color: #cbd5e1;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, var(--meedi-danger), #991b1b);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .alert-section {
+            background: linear-gradient(135deg, rgba(153, 27, 27, 0.2), rgba(220, 38, 38, 0.2));
+            border: 2px solid var(--risk-critical);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(153, 27, 27, 0.3);
+        }
+
+        .alert-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .alert-item {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .alert-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fca5a5;
+        }
+
+        .alert-label {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-top: 0.5rem;
+        }
+
+        .risk-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .risk-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(248, 113, 113, 0.4);
+            box-shadow: 0 12px 40px rgba(220, 38, 38, 0.2);
+        }
+
+        .risk-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--risk-high), var(--risk-critical));
+        }
+
+        .risk-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(153, 27, 27, 0.2));
+            color: #fca5a5;
+        }
+
+        .risk-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fca5a5;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .analysis-container {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .analysis-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 350px;
+        }
+
+        .risk-assessment {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .assessment-item {
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid;
+        }
+
+        .critical {
+            background: rgba(153, 27, 27, 0.2);
+            border-color: var(--risk-critical);
+            color: #fca5a5;
+        }
+
+        .high {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: var(--risk-high);
+            color: #fbbf24;
+        }
+
+        .medium {
+            background: rgba(217, 119, 6, 0.2);
+            border-color: var(--risk-medium);
+            color: #fbbf24;
+        }
+
+        .low {
+            background: rgba(5, 150, 105, 0.2);
+            border-color: var(--risk-low);
+            color: #34d399;
+        }
+
+        .assessment-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .assessment-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .recommendations-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-item {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--risk-high);
+        }
+
+        .recommendation-priority {
+            font-size: 0.8rem;
+            background: var(--risk-high);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-title h1 {
+                font-size: 2rem;
+            }
+            
+            .alert-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="meedi-logo">
+                <div class="meedi-logo-cell cell-1"></div>
+                <div class="meedi-logo-cell cell-2"></div>
+                <div class="meedi-logo-cell cell-3"></div>
+                <div class="meedi-logo-cell cell-4"></div>
+                <div class="meedi-logo-cell cell-5"></div>
+                <div class="meedi-logo-cell cell-6"></div>
+                <div class="meedi-logo-cell cell-7"></div>
+                <div class="meedi-logo-cell cell-8"></div>
+                <div class="meedi-logo-cell cell-9"></div>
+            </div>
+            <div class="header-title">
+                <h1><i class="fas fa-shield-alt"></i> Dashboard de Gestão de Riscos</h1>
+                <p>Análise Avançada de Riscos Processuais | Defensoria Pública</p>
+            </div>
+            <button class="print-btn" onclick="window.print()">
+                <i class="fas fa-file-pdf"></i> Relatório
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Alertas Críticos -->
+        <div class="alert-section">
+            <div class="alert-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Alertas Críticos - Atenção Imediata
+            </div>
+            <div class="alert-grid">
+                <div class="alert-item">
+                    <div class="alert-value">153</div>
+                    <div class="alert-label">Processos Indeferidos<br>Requer Análise</div>
+                </div>
+                <div class="alert-item">
+                    <div class="alert-value">54</div>
+                    <div class="alert-label">Processos Pendentes<br>Risco de Prescrição</div>
+                </div>
+                <div class="alert-item">
+                    <div class="alert-value">37.5%</div>
+                    <div class="alert-label">Taxa de Indeferimento<br>Acima do Limite</div>
+                </div>
+                <div class="alert-item">
+                    <div class="alert-value">R$ 300K</div>
+                    <div class="alert-label">Maior Valor Individual<br>Alto Impacto</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métricas de Risco -->
+        <div class="risk-metrics">
+            <div class="risk-card">
+                <div class="risk-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="risk-value">Alto</div>
+                <div class="risk-title">Nível de Risco Geral</div>
+                <div class="risk-description">Taxa de indeferimento de 37,5% indica necessidade de revisão estratégica</div>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="risk-value">63.6%</div>
+                <div class="risk-title">Probabilidade Média</div>
+                <div class="risk-description">Probabilidade média de êxito dos processos em andamento</div>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="risk-value">13.2%</div>
+                <div class="risk-title">Taxa de Pendência</div>
+                <div class="risk-description">Percentual de processos aguardando decisão judicial</div>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="risk-value">R$ 22K</div>
+                <div class="risk-title">Exposição Média</div>
+                <div class="risk-description">Valor médio em risco por processo individual</div>
+            </div>
+        </div>
+
+        <!-- Análise de Risco -->
+        <div class="analysis-grid">
+            <div class="analysis-container">
+                <div class="analysis-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Avaliação de Risco por Categoria
+                </div>
+                <div class="risk-assessment">
+                    <div class="assessment-item critical">
+                        <div class="assessment-value">37.5%</div>
+                        <div class="assessment-label">Crítico<br>Indeferidos</div>
+                    </div>
+                    <div class="assessment-item high">
+                        <div class="assessment-value">13.2%</div>
+                        <div class="assessment-label">Alto<br>Pendentes</div>
+                    </div>
+                    <div class="assessment-item medium">
+                        <div class="assessment-value">5.4%</div>
+                        <div class="assessment-label">Médio<br>Recursos</div>
+                    </div>
+                    <div class="assessment-item low">
+                        <div class="assessment-value">49.3%</div>
+                        <div class="assessment-label">Baixo<br>Deferidos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-container">
+                <div class="analysis-title">
+                    <i class="fas fa-balance-scale"></i>
+                    Distribuição por Tribunal
+                </div>
+                <div class="risk-assessment">
+                    <div class="assessment-item high">
+                        <div class="assessment-value">94.6%</div>
+                        <div class="assessment-label">STJ<br>Alta Complexidade</div>
+                    </div>
+                    <div class="assessment-item medium">
+                        <div class="assessment-value">3.9%</div>
+                        <div class="assessment-label">TJDFT<br>Regional</div>
+                    </div>
+                    <div class="assessment-item low">
+                        <div class="assessment-value">1.5%</div>
+                        <div class="assessment-label">Outros<br>Diversos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Tendências -->
+        <div class="chart-container">
+            <div class="chart-title">
+                <i class="fas fa-chart-area"></i>
+                Análise de Tendências de Risco - Valores por Faixa
+            </div>
+            <div class="chart-canvas">
+                <canvas id="riskTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recomendações Estratégicas -->
+        <div class="recommendations">
+            <div class="recommendations-title">
+                <i class="fas fa-lightbulb"></i>
+                Recomendações Estratégicas Prioritárias
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-priority">CRÍTICO</div>
+                <div class="recommendation-title">Revisão Imediata dos 153 Processos Indeferidos</div>
+                <div class="recommendation-description">
+                    Análise detalhada dos processos indeferidos para identificar padrões de falha e desenvolver estratégias corretivas. 
+                    Implementar grupo de trabalho dedicado para revisão em 30 dias.
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-priority">ALTO</div>
+                <div class="recommendation-title">Sistema de Monitoramento de Prazos</div>
+                <div class="recommendation-description">
+                    Criar sistema automatizado de alertas para os 54 processos pendentes, evitando prescrições e perdas processuais. 
+                    Estabelecer cronograma de acompanhamento semanal.
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-priority">MÉDIO</div>
+                <div class="recommendation-title">Especialização em Casos STJ</div>
+                <div class="recommendation-description">
+                    Desenvolver expertise específica para o STJ, onde tramitam 94,6% dos processos. 
+                    Capacitação da equipe em jurisprudência recente e precedentes relevantes.
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-priority">BAIXO</div>
+                <div class="recommendation-title">Otimização de Recursos</div>
+                <div class="recommendation-description">
+                    Implementar análise preditiva para priorizar processos com maior probabilidade de êxito, 
+                    otimizando alocação de recursos humanos e financeiros.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico de Tendências de Risco
+        const riskTrendCtx = document.getElementById('riskTrendChart').getContext('2d');
+        new Chart(riskTrendCtx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Até R$ 10K (29 casos)',
+                    'R$ 10K-30K (3 casos)',
+                    'R$ 30K-100K (3 casos)',
+                    'R$ 100K-300K (2 casos)',
+                    'Acima R$ 300K (0 casos)',
+                    'Taxa Sucesso'
+                ],
+                datasets: [{
+                    label: 'Distribuição de Risco',
+                    data: [78.4, 8.1, 8.1, 5.4, 0, 49.3],
+                    backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                    borderColor: '#f87171',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#dc2626',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f1f5f9'
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(248, 113, 113, 0.2)'
+                        },
+                        angleLines: {
+                            color: 'rgba(248, 113, 113, 0.2)'
+                        },
+                        pointLabels: {
+                            color: '#cbd5e1',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            backdropColor: 'transparent'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

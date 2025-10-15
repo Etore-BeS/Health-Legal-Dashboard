@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise por Tribunal - Unimed Goiânia</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .metric-change.positive {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .metric-change.neutral {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray-color);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs li {
+            margin-right: 5px;
+        }
+        
+        .nav-tabs a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--gray-color);
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs a.active {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid #e0e0e0;
+            border-bottom: 2px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .nav-tabs a:hover:not(.active) {
+            background-color: rgba(52, 152, 219, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        .top-tribunals {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .tribunal-card {
+            width: 180px;
+            padding: 15px;
+            margin: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .tribunal-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tribunal-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .tribunal-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .tribunal-info {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+            }
+            
+            .nav-tabs li {
+                margin-bottom: 5px;
+            }
+            
+            .nav-tabs a.active {
+                border-bottom: 1px solid #e0e0e0;
+                margin-bottom: 0;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media print {
+            .print-button, .nav-tabs {
+                display: none;
+            }
+            
+            section, .tab-content {
+                break-inside: avoid;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise por Tribunal - Unimed Goiânia</div>
+                    <div class="header-date">Relatório Detalhado - 15/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Análise Aprofundada por Tribunal e Classe Processual
+    </div>
+
+    <main class="container">
+        <ul class="nav-tabs">
+            <li><a href="#overview" class="active" onclick="openTab(event, 'overview')">Visão Comparativa</a></li>
+            <li><a href="#tjdft" onclick="openTab(event, 'tjdft')">TJDFT</a></li>
+            <li><a href="#tjgo" onclick="openTab(event, 'tjgo')">TJGO</a></li>
+            <li><a href="#stj" onclick="openTab(event, 'stj')">STJ</a></li>
+            <li><a href="#trt18" onclick="openTab(event, 'trt18')">TRT18</a></li>
+            <li><a href="#outros" onclick="openTab(event, 'outros')">Outros Tribunais</a></li>
+        </ul>
+
+        <!-- Visão Comparativa -->
+        <div id="overview" class="tab-content active">
+            <section>
+                <h2 class="section-title"><i class="fas fa-university"></i> Visão Geral dos Tribunais</h2>
+                
+                <div class="top-tribunals">
+                    <div class="tribunal-card">
+                        <div class="tribunal-name">TJDFT</div>
+                        <div class="tribunal-value">1.315</div>
+                        <div class="tribunal-info">56,36% do total</div>
+                        <div class="tribunal-info">Taxa de deferimento: 67,5%</div>
+                        <div class="tribunal-info"><span class="badge badge-danger">Risco Alto</span></div>
+                    </div>
+                    
+                    <div class="tribunal-card">
+                        <div class="tribunal-name">TJGO</div>
+                        <div class="tribunal-value">743</div>
+                        <div class="tribunal-info">31,85% do total</div>
+                        <div class="tribunal-info">Taxa de deferimento: 58,2%</div>
+                        <div class="tribunal-info"><span class="badge badge-warning">Risco Médio</span></div>
+                    </div>
+                    
+                    <div class="tribunal-card">
+                        <div class="tribunal-name">STJ</div>
+                        <div class="tribunal-value">105</div>
+                        <div class="tribunal-info">4,50% do total</div>
+                        <div class="tribunal-info">Taxa de deferimento: 42,7%</div>
+                        <div class="tribunal-info"><span class="badge badge-warning">Risco Médio</span></div>
+                    </div>
+                    
+                    <div class="tribunal-card">
+                        <div class="tribunal-name">TRT18</div>
+                        <div class="tribunal-value">79</div>
+                        <div class="tribunal-info">3,39% do total</div>
+                        <div class="tribunal-info">Taxa de deferimento: 59,4%</div>
+                        <div class="tribunal-info"><span class="badge badge-warning">Risco Médio</span></div>
+                    </div>
+                    
+                    <div class="tribunal-card">
+                        <div class="tribunal-name">TJMG</div>
+                        <div class="tribunal-value">22</div>
+                        <div class="tribunal-info">0,94% do total</div>
+                        <div class="tribunal-info">Taxa de deferimento: 61,2%</div>
+                        <div class="tribunal-info"><span class="badge badge-warning">Risco Médio</span></div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Distribuição de Processos por Tribunal</div>
+                        <canvas id="tribunaisDistribuicaoChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Taxa de Deferimento por Tribunal</div>
+                        <canvas id="tribunaisDeferimentoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Comparativo de Classes Processuais por Tribunal</div>
+                    <canvas id="classesComparisonChart"></canvas>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise Comparativa</div>
+                    <p>A análise comparativa dos tribunais revela padrões significativos:</p>
+                    <ul>
+                        <li><strong>Concentração Regional:</strong> TJDFT (56,36%) e TJGO (31,85%) representam 88,21% dos processos, indicando concentração geográfica das ações</li>
+                        <li><strong>Diferença nas Taxas de Deferimento:</strong> O TJDFT apresenta a maior taxa de deferimento (67,5%), significativamente acima da média (61,96%)</li>
+                        <li><strong>STJ como Fonte de Jurisprudência:</strong> Embora com menor volume (4,50%), o STJ tem importância estratégica por estabelecer precedentes</li>
+                        <li><strong>Processos Trabalhistas:</strong> O TRT18 (3,39%) apresenta características específicas e perfil diferenciado de ações</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- TJDFT -->
+        <div id="tjdft" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Análise TJDFT (1.315 processos)</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="metric-value">56,36%</div>
+                        <div class="metric-title">do Total de Processos</div>
+                        <div class="metric-change negative">Principal Tribunal</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">67,5%</div>
+                        <div class="metric-title">Taxa de Deferimento</div>
+                        <div class="metric-change negative">Acima da Média (61,96%)</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-value">R$ 151K</div>
+                        <div class="metric-title">Valor Médio Estimado</div>
+                        <div class="metric-change neutral">Por Processo</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Classes de Processos no TJDFT</div>
+                        <canvas id="tjdftClassesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Termos Jurídicos no TJDFT</div>
+                        <canvas id="tjdftTermosChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe de Processo</th>
+                                <th>Quantidade</th>
+                                <th>% do TJDFT</th>
+                                <th>Taxa de Deferimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Agravo de Instrumento</td>
+                                <td>308</td>
+                                <td>23,42%</td>
+                                <td>72,3%</td>
+                            </tr>
+                            <tr>
+                                <td>Apelação Cível</td>
+                                <td>296</td>
+                                <td>22,51%</td>
+                                <td>65,8%</td>
+                            </tr>
+                            <tr>
+                                <td>Procedimento Comum Cível</td>
+                                <td>240</td>
+                                <td>18,25%</td>
+                                <td>70,2%</td>
+                            </tr>
+                            <tr>
+                                <td>Embargos de Declaração Cível</td>
+                                <td>142</td>
+                                <td>10,80%</td>
+                                <td>58,7%</td>
+                            </tr>
+                            <tr>
+                                <td>Outras Classes</td>
+                                <td>329</td>
+                                <td>25,02%</td>
+                                <td>63,4%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise Específica TJDFT</div>
+                    <p>A análise do TJDFT, tribunal com maior volume de processos, revela:</p>
+                    <ul>
+                        <li><strong>Taxa de Deferimento Elevada:</strong> 67,5%, significativamente acima da média geral (61,96%)</li>
+                        <li><strong>Classes Predominantes:</strong> Agravo de Instrumento e Apelação Cível representam 45,93% dos processos</li>
+                        <li><strong>Termos Jurídicos:</strong> "Negativação" e "CDC" são os termos mais frequentes, com correlação relevante com deferimentos</li>
+                        <li><strong>Risco Jurídico:</strong> Combinação de alto volume e alta taxa de deferimento configura cenário de risco elevado</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-file-contract"></i> Estratégias Específicas</div>
+                    <ul>
+                        <li><strong>Jurisprudência Local:</strong> Mapear precedentes específicos do TJDFT que impactam as decisões</li>
+                        <li><strong>Foco em Recursos:</strong> Priorizar estratégias específicas para Agravo de Instrumento e Apelação Cível</li>
+                        <li><strong>Padronização de Defesas:</strong> Desenvolver modelos específicos alinhados à jurisprudência local</li>
+                        <li><strong>Monitoramento Contínuo:</strong> Acompanhar evolução jurisprudencial deste tribunal</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- TJGO -->
+        <div id="tjgo" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Análise TJGO (743 processos)</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="metric-value">31,85%</div>
+                        <div class="metric-title">do Total de Processos</div>
+                        <div class="metric-change negative">Segundo Principal Tribunal</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">58,2%</div>
+                        <div class="metric-title">Taxa de Deferimento</div>
+                        <div class="metric-change positive">Abaixo da Média (61,96%)</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-value">R$ 131K</div>
+                        <div class="metric-title">Valor Médio Estimado</div>
+                        <div class="metric-change positive">Abaixo da Média (R$ 150K)</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Classes de Processos no TJGO</div>
+                        <canvas id="tjgoClassesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Termos Jurídicos no TJGO</div>
+                        <canvas id="tjgoTermosChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe de Processo</th>
+                                <th>Quantidade</th>
+                                <th>% do TJGO</th>
+                                <th>Taxa de Deferimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Apelação Cível</td>
+                                <td>185</td>
+                                <td>24,90%</td>
+                                <td>60,1%</td>
+                            </tr>
+                            <tr>
+                                <td>Agravo de Instrumento</td>
+                                <td>164</td>
+                                <td>22,07%</td>
+                                <td>54,8%</td>
+                            </tr>
+                            <tr>
+                                <td>Procedimento Comum Cível</td>
+                                <td>112</td>
+                                <td>15,07%</td>
+                                <td>61,2%</td>
+                            </tr>
+                            <tr>
+                                <td>Embargos de Declaração Cível</td>
+                                <td>78</td>
+                                <td>10,50%</td>
+                                <td>52,3%</td>
+                            </tr>
+                            <tr>
+                                <td>Outras Classes</td>
+                                <td>204</td>
+                                <td>27,46%</td>
+                                <td>57,5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise Específica TJGO</div>
+                    <p>A análise do TJGO, segundo tribunal com maior volume de processos, revela:</p>
+                    <ul>
+                        <li><strong>Taxa de Deferimento Moderada:</strong> 58,2%, abaixo da média geral (61,96%)</li>
+                        <li><strong>Classes Predominantes:</strong> Apelação Cível e Agravo de Instrumento somam 46,97% dos processos</li>
+                        <li><strong>Valor Médio:</strong> R$ 131 mil por processo, inferior à média geral (R$ 150 mil)</li>
+                        <li><strong>Termos Jurídicos:</strong> "CDC" e "Negativação" têm padrão semelhante ao TJDFT, mas com menor correlação com deferimentos</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-file-contract"></i> Estratégias Específicas</div>
+                    <ul>
+                        <li><strong>Aproveitar Jurisprudência Favorável:</strong> Taxa de deferimento menor indica ambiente jurídico mais favorável</li>
+                        <li><strong>Recursos Estratégicos:</strong> Focar em apelações cíveis, onde a taxa de êxito é superior à média</li>
+                        <li><strong>Aplicação do CDC:</strong> Desenvolver estratégias específicas para contestação baseada no CDC</li>
+                        <li><strong>Tribunais de 2ª Instância:</strong> Priorizar casos neste tribunal quando possível, devido à menor taxa de deferimento</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- STJ -->
+        <div id="stj" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Análise STJ (105 processos)</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="metric-value">4,50%</div>
+                        <div class="metric-title">do Total de Processos</div>
+                        <div class="metric-change neutral">Terceiro Principal Tribunal</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">42,7%</div>
+                        <div class="metric-title">Taxa de Deferimento</div>
+                        <div class="metric-change positive">Significativamente Abaixo da Média</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-book-open"></i></div>
+                        <div class="metric-value">Alta</div>
+                        <div class="metric-title">Relevância Jurisprudencial</div>
+                        <div class="metric-change negative">Impacto em Instâncias Inferiores</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Classes de Processos no STJ</div>
+                        <canvas id="stjClassesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Termos Jurídicos no STJ</div>
+                        <canvas id="stjTermosChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe de Processo</th>
+                                <th>Quantidade</th>
+                                <th>% do STJ</th>
+                                <th>Taxa de Deferimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Agravo em Recurso Especial</td>
+                                <td>99</td>
+                                <td>94,29%</td>
+                                <td>42,1%</td>
+                            </tr>
+                            <tr>
+                                <td>Recurso Especial</td>
+                                <td>5</td>
+                                <td>4,76%</td>
+                                <td>40,0%</td>
+                            </tr>
+                            <tr>
+                                <td>Embargos de Divergência</td>
+                                <td>1</td>
+                                <td>0,95%</td>
+                                <td>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise Específica STJ</div>
+                    <p>A análise dos processos no STJ, embora com menor volume, revela aspectos estratégicos importantes:</p>
+                    <ul>
+                        <li><strong>Taxa de Deferimento Baixa:</strong> 42,7%, significativamente inferior à média geral (61,96%)</li>
+                        <li><strong>Classe Predominante:</strong> Agravo em Recurso Especial (94,29% dos casos)</li>
+                        <li><strong>Impacto Estratégico:</strong> Decisões têm efeito em todas as instâncias inferiores, criando precedentes</li>
+                        <li><strong>Termos Jurídicos:</strong> "CDC" é o termo mais frequente, com foco na interpretação de normas federais</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-file-contract"></i> Estratégias Específicas</div>
+                    <ul>
+                        <li><strong>Monitoramento de Precedentes:</strong> Acompanhar sistematicamente as decisões para identificar tendências interpretativas</li>
+                        <li><strong>Recursos Estratégicos:</strong> Selecionar cuidadosamente os casos para recursos especiais, focando em teses com maior chance de êxito</li>
+                        <li><strong>Fundamentação Qualificada:</strong> Investir em argumentação jurídica de alta qualidade, com foco em violação de lei federal</li>
+                        <li><strong>Precedentes Favoráveis:</strong> Aproveitar a menor taxa de deferimento para estabelecer jurisprudência favorável</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- TRT18 -->
+        <div id="trt18" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Análise TRT18 (79 processos)</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="metric-value">3,39%</div>
+                        <div class="metric-title">do Total de Processos</div>
+                        <div class="metric-change neutral">Quarto Principal Tribunal</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">59,4%</div>
+                        <div class="metric-title">Taxa de Deferimento</div>
+                        <div class="metric-change positive">Abaixo da Média (61,96%)</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-value">R$ 186K</div>
+                        <div class="metric-title">Valor Médio Estimado</div>
+                        <div class="metric-change negative">Acima da Média (R$ 150K)</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Classes de Processos no TRT18</div>
+                        <canvas id="trt18ClassesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Termos Jurídicos no TRT18</div>
+                        <canvas id="trt18TermosChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe de Processo</th>
+                                <th>Quantidade</th>
+                                <th>% do TRT18</th>
+                                <th>Taxa de Deferimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ação Trabalhista - Rito Ordinário</td>
+                                <td>42</td>
+                                <td>53,16%</td>
+                                <td>62,4%</td>
+                            </tr>
+                            <tr>
+                                <td>Ação Trabalhista - Rito Sumaríssimo</td>
+                                <td>19</td>
+                                <td>24,05%</td>
+                                <td>57,8%</td>
+                            </tr>
+                            <tr>
+                                <td>Recurso Ordinário Trabalhista</td>
+                                <td>13</td>
+                                <td>16,46%</td>
+                                <td>53,2%</td>
+                            </tr>
+                            <tr>
+                                <td>Outras Classes</td>
+                                <td>5</td>
+                                <td>6,33%</td>
+                                <td>58,5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise Específica TRT18</div>
+                    <p>A análise dos processos trabalhistas (TRT18) revela características específicas:</p>
+                    <ul>
+                        <li><strong>Perfil Diferenciado:</strong> Processos trabalhistas com natureza e objeto distintos dos demais tribunais</li>
+                        <li><strong>Taxa de Deferimento Moderada:</strong> 59,4%, ligeiramente abaixo da média geral (61,96%)</li>
+                        <li><strong>Valor Médio Superior:</strong> R$ 186 mil, acima da média geral (R$ 150 mil)</li>
+                        <li><strong>Classes Predominantes:</strong> Ações trabalhistas de rito ordinário representam 53,16% dos casos</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-file-contract"></i> Estratégias Específicas</div>
+                    <ul>
+                        <li><strong>Expertise Especializada:</strong> Manter equipe jurídica com conhecimento específico em direito do trabalho</li>
+                        <li><strong>Atenção ao Valor Médio:</strong> Processos trabalhistas têm valor médio superior, exigindo provisão adequada</li>
+                        <li><strong>Resolução Extrajudicial:</strong> Priorizar acordos em processos trabalhistas, considerando o valor médio elevado</li>
+                        <li><strong>Gestão de Precedentes Trabalhistas:</strong> Mapear jurisprudência específica do TRT18 para orientar defesas</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- Outros Tribunais -->
+        <div id="outros" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-gavel"></i> Análise de Outros Tribunais (91 processos)</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="metric-value">3,90%</div>
+                        <div class="metric-title">do Total de Processos</div>
+                        <div class="metric-change positive">Baixa Representatividade</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">58,2%</div>
+                        <div class="metric-title">Taxa de Deferimento</div>
+                        <div class="metric-change positive">Abaixo da Média (61,96%)</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-globe"></i></div>
+                        <div class="metric-value">22</div>
+                        <div class="metric-title">Tribunais Diferentes</div>
+                        <div class="metric-change neutral">Dispersão Geográfica</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Distribuição por Outros Tribunais</div>
+                        <canvas id="outrosTribunaisChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Classes de Processos em Outros Tribunais</div>
+                        <canvas id="outrosClassesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tribunal</th>
+                                <th>Quantidade</th>
+                                <th>% dos Outros</th>
+                                <th>Taxa de Deferimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TJMG</td>
+                                <td>22</td>
+                                <td>24,18%</td>
+                                <td>61,2%</td>
+                            </tr>
+                            <tr>
+                                <td>TJBA</td>
+                                <td>11</td>
+                                <td>12,09%</td>
+                                <td>57,8%</td>
+                            </tr>
+                            <tr>
+                                <td>TJMT</td>
+                                <td>11</td>
+                                <td>12,09%</td>
+                                <td>59,3%</td>
+                            </tr>
+                            <tr>
+                                <td>TJPA</td>
+                                <td>8</td>
+                                <td>8,79%</td>
+                                <td>54,2%</td>
+                            </tr>
+                            <tr>
+                                <td>TRT3</td>
+                                <td>2</td>
+                                <td>2,20%</td>
+                                <td>63,5%</td>
+                            </tr>
+                            <tr>
+                                <td>Demais Tribunais</td>
+                                <td>37</td>
+                                <td>40,66%</td>
+                                <td>57,1%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise dos Demais Tribunais</div>
+                    <p>A análise dos processos em outros tribunais revela:</p>
+                    <ul>
+                        <li><strong>Baixa Representatividade:</strong> 3,90% do total de processos, distribuídos em 22 tribunais diferentes</li>
+                        <li><strong>Taxa de Deferimento Variável:</strong> Média de 58,2%, com variações significativas entre tribunais</li>
+                        <li><strong>Concentração Relativa:</strong> TJMG, TJBA e TJMT representam 48,35% destes processos</li>
+                        <li><strong>Diversidade de Classes:</strong> Maior variabilidade nas classes processuais, com predominância de procedimentos comuns</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-file-contract"></i> Estratégias Específicas</div>
+                    <ul>
+                        <li><strong>Padronização Adaptável:</strong> Desenvolver modelos de defesa adaptáveis a diferentes realidades regionais</li>
+                        <li><strong>Monitoramento Seletivo:</strong> Acompanhar especificamente tribunais com maior volume (TJMG, TJBA, TJMT)</li>
+                        <li><strong>Representação Local:</strong> Manter rede de representação jurídica com conhecimento das peculiaridades locais</li>
+                        <li><strong>Gestão de Riscos:</strong> Priorizar casos conforme especificidades de cada tribunal</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Unimed Goiânia v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        // Função para alternar entre as abas
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("nav-tabs")[0].getElementsByTagName("a");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            Chart.defaults.plugins.legend.position = 'bottom';
+            
+            // Gráfico de Distribuição por Tribunal
+            const tribunaisDistribuicaoCtx = document.getElementById('tribunaisDistribuicaoChart').getContext('2d');
+            new Chart(tribunaisDistribuicaoCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['TJDFT', 'TJGO', 'STJ', 'TRT18', 'TJMG', 'Outros'],
+                    datasets: [{
+                        data: [1315, 743, 105, 79, 22, 69],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(156, 39, 176, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Taxa de Deferimento por Tribunal
+            const tribunaisDeferimentoCtx = document.getElementById('tribunaisDeferimentoChart').getContext('2d');
+            new Chart(tribunaisDeferimentoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['TJDFT', 'TJGO', 'STJ', 'TRT18', 'TJMG', 'Outros', 'Média Geral'],
+                    datasets: [{
+                        label: 'Taxa de Deferimento (%)',
+                        data: [67.5, 58.2, 42.7, 59.4, 61.2, 56.8, 61.96],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(149, 165, 166, 0.7)',
+                            'rgba(0, 0, 0, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(156, 39, 176, 1)',
+                            'rgba(149, 165, 166, 1)',
+                            'rgba(0, 0, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Taxa de Deferimento: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos por Tribunal
+            const classesComparisonCtx = document.getElementById('classesComparisonChart').getContext('2d');
+            new Chart(classesComparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Agravo de Instrumento', 'Apelação Cível', 'Procedimento Comum', 'Embargos de Declaração', 'Outros'],
+                    datasets: [{
+                        label: 'TJDFT',
+                        data: [308, 296, 240, 142, 329],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'TJGO',
+                        data: [164, 185, 112, 78, 204],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'STJ',
+                        data: [0, 0, 0, 0, 105],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'TRT18',
+                        data: [0, 0, 0, 0, 79],
+                        backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: false
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos no TJDFT
+            const tjdftClassesCtx = document.getElementById('tjdftClassesChart').getContext('2d');
+            new Chart(tjdftClassesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Agravo de Instrumento', 'Apelação Cível', 'Procedimento Comum', 'Embargos de Declaração', 'Outras Classes'],
+                    datasets: [{
+                        data: [308, 296, 240, 142, 329],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos no TJDFT
+            const tjdftTermosCtx = document.getElementById('tjdftTermosChart').getContext('2d');
+            new Chart(tjdftTermosCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Negativação', 'CDC', 'Superendividamento', 'Audiência', 'Gratuidade Justiça'],
+                    datasets: [{
+                        label: 'Ocorrências',
+                        data: [283, 210, 98, 92, 32],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos no TJGO
+            const tjgoClassesCtx = document.getElementById('tjgoClassesChart').getContext('2d');
+            new Chart(tjgoClassesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Apelação Cível', 'Agravo de Instrumento', 'Procedimento Comum', 'Embargos de Declaração', 'Outras Classes'],
+                    datasets: [{
+                        data: [185, 164, 112, 78, 204],
+                        backgroundColor: [
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos no TJGO
+            const tjgoTermosCtx = document.getElementById('tjgoTermosChart').getContext('2d');
+            new Chart(tjgoTermosCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Negativação', 'CDC', 'Superendividamento', 'Audiência', 'Gratuidade Justiça'],
+                    datasets: [{
+                        label: 'Ocorrências',
+                        data: [157, 124, 58, 46, 18],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos no STJ
+            const stjClassesCtx = document.getElementById('stjClassesChart').getContext('2d');
+            new Chart(stjClassesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Agravo em Recurso Especial', 'Recurso Especial', 'Embargos de Divergência'],
+                    datasets: [{
+                        data: [99, 5, 1],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos no STJ
+            const stjTermosCtx = document.getElementById('stjTermosChart').getContext('2d');
+            new Chart(stjTermosCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['CDC', 'Negativação', 'Boa Fé', 'Ônus Prova', 'Gratuidade Justiça'],
+                    datasets: [{
+                        label: 'Ocorrências',
+                        data: [23, 18, 12, 10, 3],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos no TRT18
+            const trt18ClassesCtx = document.getElementById('trt18ClassesChart').getContext('2d');
+            new Chart(trt18ClassesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ação Trabalhista - Rito Ordinário', 'Ação Trabalhista - Rito Sumaríssimo', 'Recurso Ordinário Trabalhista', 'Outras Classes'],
+                    datasets: [{
+                        data: [42, 19, 13, 5],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos no TRT18
+            const trt18TermosCtx = document.getElementById('trt18TermosChart').getContext('2d');
+            new Chart(trt18TermosCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Audiência', 'Ônus Prova', 'Boa Fé', 'CDC', 'Tutela Urgência'],
+                    datasets: [{
+                        label: 'Ocorrências',
+                        data: [24, 12, 10, 6, 5],
+                        backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Distribuição por Outros Tribunais
+            const outrosTribunaisCtx = document.getElementById('outrosTribunaisChart').getContext('2d');
+            new Chart(outrosTribunaisCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['TJMG', 'TJBA', 'TJMT', 'TJPA', 'TRT3', 'Demais Tribunais'],
+                    datasets: [{
+                        data: [22, 11, 11, 8, 2, 37],
+                        backgroundColor: [
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(233, 30, 99, 0.7)',
+                            'rgba(255, 193, 7, 0.7)',
+                            'rgba(0, 188, 212, 0.7)',
+                            'rgba(76, 175, 80, 0.7)',
+                            'rgba(158, 158, 158, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(156, 39, 176, 1)',
+                            'rgba(233, 30, 99, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(0, 188, 212, 1)',
+                            'rgba(76, 175, 80, 1)',
+                            'rgba(158, 158, 158, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes de Processos em Outros Tribunais
+            const outrosClassesCtx = document.getElementById('outrosClassesChart').getContext('2d');
+            new Chart(outrosClassesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Procedimento Comum', 'Apelação Cível', 'Agravo de Instrumento', 'Cumprimento de Sentença', 'Outras Classes'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [32, 24, 18, 7, 10],
+                        backgroundColor: 'rgba(156, 39, 176, 0.7)',
+                        borderColor: 'rgba(156, 39, 176, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

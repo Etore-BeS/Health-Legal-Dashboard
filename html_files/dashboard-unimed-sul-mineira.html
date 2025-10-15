@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Judicialização - Unimed Sul Mineira</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+        
+        .stat-accent-1 .stat-icon, .stat-accent-1 .stat-value {
+            color: var(--primary-color);
+        }
+        
+        .stat-accent-2 .stat-icon, .stat-accent-2 .stat-value {
+            color: var(--secondary-color);
+        }
+        
+        .stat-accent-3 .stat-icon, .stat-accent-3 .stat-value {
+            color: var(--warning-color);
+        }
+        
+        .stat-accent-4 .stat-icon, .stat-accent-4 .stat-value {
+            color: var(--danger-color);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--info-color);
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left-color: var(--success-color);
+        }
+        
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-left-color: var(--warning-color);
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger-color);
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-title i {
+            margin-right: 8px;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .strategy-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .strategy-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .strategy-content {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .process-container {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .process-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        .process-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .process-status {
+            font-weight: 600;
+        }
+        
+        .process-status.approved {
+            color: var(--success-color);
+        }
+        
+        .process-status.rejected {
+            color: var(--danger-color);
+        }
+        
+        .process-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .process-detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .process-detail-label {
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .process-detail-value {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .next-steps-container {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .next-steps-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .next-steps-title i {
+            margin-right: 10px;
+            color: var(--info-color);
+        }
+        
+        .next-steps-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+        
+        .next-steps-number {
+            background-color: var(--info-color);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .next-steps-content {
+            flex-grow: 1;
+        }
+        
+        .next-steps-content-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--info-color);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* Botão de impressão */
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+            
+            section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise Estratégica de Processos Judiciais - Unimed Sul Mineira</div>
+                    <div class="header-date">Relatório Atualizado - 15/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Relatório Estratégico de Judicialização - Planos de Saúde
+    </div>
+
+    <main class="container">
+        <!-- Visão Geral dos Processos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Visão Geral dos Processos</h2>
+            
+            <p>
+                Este relatório apresenta uma análise estratégica dos processos judiciais relacionados à Unimed Sul Mineira, com foco em identificar padrões, tendências e oportunidades de otimização.
+            </p>
+            
+            <div class="grid-4">
+                <div class="stat-card stat-accent-1">
+                    <div class="stat-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="stat-value">28</div>
+                    <div class="stat-label">Total de Processos</div>
+                </div>
+                <div class="stat-card stat-accent-2">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-value">81,82%</div>
+                    <div class="stat-label">Taxa de Deferimento</div>
+                </div>
+                <div class="stat-card stat-accent-3">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-value">R$ 2,08M</div>
+                    <div class="stat-label">Valor Médio</div>
+                </div>
+                <div class="stat-card stat-accent-4">
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-value">R$ 22,47M</div>
+                    <div class="stat-label">Valor Máximo</div>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-lightbulb"></i> Principais Insights dos Dados Analisados</div>
+                <ul>
+                    <li><strong>Alta Taxa de Deferimento</strong>: 81,82% dos processos com decisão são deferidos (9 deferimentos vs. 2 indeferimentos)</li>
+                    <li><strong>Valores Significativos</strong>: Valor médio de R$ 2.079.434,40 por processo, com valor máximo chegando a R$ 22.467.981,06</li>
+                    <li><strong>Termos Jurídicos Relevantes</strong>: "Tutela Urgência" aparece em 9 processos, "Gratuidade Justiça" em 8 e "CDC" em 8</li>
+                    <li><strong>Principais Tribunais</strong>: TJMG é o mais frequente, com 17 menções diretas e 7 referências indiretas</li>
+                </ul>
+            </div>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição de Decisões</div>
+                    <canvas id="decisoesChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Termos Jurídicos Frequentes</div>
+                    <canvas id="termosJuridicosChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise por Tribunais -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-university"></i> Análise por Tribunais</h2>
+            
+            <div class="alert alert-info">
+                <div class="alert-title"><i class="fas fa-info-circle"></i> Concentração de Processos</div>
+                <p>O TJMG (Tribunal de Justiça de Minas Gerais) concentra a maior parte dos processos, seguido pelo STJ, TJBA e outros tribunais em menor quantidade.</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Processos por Tribunal</div>
+                <canvas id="tribunaisChart"></canvas>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tribunal</th>
+                            <th>Menções Diretas</th>
+                            <th>Menções Indiretas</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TJMG</td>
+                            <td>17</td>
+                            <td>7</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>STJ</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>TJBA</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>TJES</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>TRT3</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>Outros</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Análise por Classes Processuais -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-balance-scale"></i> Análise por Classes Processuais</h2>
+            
+            <div class="chart-container">
+                <div class="chart-title">Principais Classes de Processos</div>
+                <canvas id="classesChart"></canvas>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-search"></i> Análise de Padrões</div>
+                <p>As classes processuais mais comuns são:</p>
+                <ul>
+                    <li><strong>Procedimento Comum Cível</strong>: 21 menções (combinando diretas e indiretas)</li>
+                    <li><strong>Procedimento do Juizado Especial Cível</strong>: 7 menções</li>
+                    <li><strong>Tutela Antecipada Antecedente</strong>: 3 menções</li>
+                    <li><strong>Cumprimento de Sentença</strong>: 3 menções</li>
+                </ul>
+                <p>Notavelmente, os procedimentos comuns cíveis representam 75% dos processos com decisão, sugerindo a necessidade de estratégias específicas para este tipo de processo.</p>
+            </div>
+        </section>
+        
+        <!-- Análise de Correlação entre Termos Jurídicos e Decisões -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-link"></i> Correlação: Termos Jurídicos e Decisões</h2>
+            
+            <div class="alert alert-warning">
+                <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Atenção</div>
+                <p>Os dados indicam forte correlação entre menções a "Tutela Urgência" e decisões favoráveis. Este padrão deve ser considerado na estratégia jurídica.</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Impacto de Termos Jurídicos nas Decisões</div>
+                <canvas id="correlacaoChart"></canvas>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Termo Jurídico</th>
+                            <th>Nº de Ocorrências</th>
+                            <th>Correlação com Deferimento</th>
+                            <th>Relevância Estratégica</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tutela Urgência</td>
+                            <td>9</td>
+                            <td>Alta</td>
+                            <td><span class="badge badge-success">Crítica</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gratuidade Justiça</td>
+                            <td>8</td>
+                            <td>Média</td>
+                            <td><span class="badge badge-warning">Importante</span></td>
+                        </tr>
+                        <tr>
+                            <td>CDC</td>
+                            <td>8</td>
+                            <td>Alta</td>
+                            <td><span class="badge badge-success">Crítica</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ônus Prova</td>
+                            <td>5</td>
+                            <td>Média</td>
+                            <td><span class="badge badge-warning">Importante</span></td>
+                        </tr>
+                        <tr>
+                            <td>Audiência</td>
+                            <td>4</td>
+                            <td>Baixa</td>
+                            <td><span class="badge badge-danger">Secundária</span></td>
+                        </tr>
+                        <tr>
+                            <td>Boa Fé</td>
+                            <td>3</td>
+                            <td>Média-Alta</td>
+                            <td><span class="badge badge-warning">Importante</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Análise de Valores -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-dollar-sign"></i> Análise Financeira</h2>
+            
+            <div class="strategy-card">
+                <div class="strategy-title"><i class="fas fa-chart-line"></i> Impacto Financeiro dos Processos</div>
+                
+                <p class="strategy-content">
+                    Os valores envolvidos nos processos judiciais apresentam grande variação, com média de R$ 2.079.434,40 e valor máximo de R$ 22.467.981,06. Esta dispersão sugere a necessidade de estratégias personalizadas para diferentes faixas de valor.
+                </p>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição de Valores por Faixa</div>
+                    <canvas id="valoresChart"></canvas>
+                </div>
+                
+                <div class="alert alert-danger">
+                    <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Risco Financeiro</div>
+                    <p>A alta taxa de deferimento (81,82%) combinada com o elevado valor médio dos processos representa um risco financeiro significativo, estimado em R$ 47,8 milhões para os processos em análise.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Estratégias Recomendadas -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chess"></i> Estratégias Recomendadas</h2>
+            
+            <div class="insight-card">
+                <div class="insight-title"><i class="fas fa-lightbulb"></i> Abordagem Estratégica</div>
+                <p>Com base nos dados analisados, recomendamos um conjunto de estratégias para mitigar riscos e otimizar resultados:</p>
+            </div>
+            
+            <div class="grid-3">
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-shield-alt"></i> Prevenção</div>
+                    <ul>
+                        <li>Revisão de contratos com foco em cláusulas frequentemente questionadas</li>
+                        <li>Criação de protocolos específicos para procedimentos com alta taxa de judicialização</li>
+                        <li>Implementação de canais de negociação prévia para casos com alta probabilidade de deferimento</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-balance-scale"></i> Condução Processual</div>
+                    <ul>
+                        <li>Desenvolvimento de argumentação específica para contestar "Tutela Urgência"</li>
+                        <li>Priorização de acordos em processos com alta probabilidade de deferimento</li>
+                        <li>Atenção especial a processos no TJMG, onde se concentra a maioria dos casos</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card">
+                    <div class="strategy-title"><i class="fas fa-chart-bar"></i> Monitoramento</div>
+                    <ul>
+                        <li>Implementação de sistema de alerta para novos processos com termos críticos</li>
+                        <li>Acompanhamento de decisões por tribunal para identificar tendências</li>
+                        <li>Análise contínua da correlação entre termos jurídicos e resultados</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="next-steps-container">
+                <div class="next-steps-title"><i class="fas fa-tasks"></i> Plano de Implementação</div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">1</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Análise Detalhada por Tipo de Procedimento</div>
+                        <p>Desenvolver análise específica dos procedimentos comuns cíveis, que representam a maioria dos casos, identificando padrões e oportunidades de melhoria.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">2</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Programa de Negociação Prévia</div>
+                        <p>Implementar sistema de triagem para identificar casos com alta probabilidade de deferimento judicial (especialmente os que mencionam "Tutela Urgência" e "CDC"), oferecendo soluções administrativas.</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">3</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Capacitação da Equipe Jurídica</div>
+                        <p>Realizar treinamentos específicos sobre estratégias de defesa baseadas nos padrões identificados, com foco em mitigar o impacto de termos como "Tutela Urgência".</p>
+                    </div>
+                </div>
+                
+                <div class="next-steps-item">
+                    <div class="next-steps-number">4</div>
+                    <div class="next-steps-content">
+                        <div class="next-steps-content-title">Revisão de Contratos e Procedimentos</div>
+                        <p>Atualizar contratos e procedimentos operacionais para reduzir vulnerabilidades jurídicas, especialmente em relação às questões frequentemente apontadas nos processos judiciais.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Análise Estratégica para Unimed Sul Mineira v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            
+            // Gráfico de Distribuição de Decisões
+            const decisoesCtx = document.getElementById('decisoesChart').getContext('2d');
+            new Chart(decisoesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deferidos', 'Indeferidos', 'Sem Decisão/Pendentes'],
+                    datasets: [{
+                        data: [9, 2, 17],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Termos Jurídicos
+            const termosJuridicosCtx = document.getElementById('termosJuridicosChart').getContext('2d');
+            new Chart(termosJuridicosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tutela Urgência', 'Gratuidade Justiça', 'CDC', 'Ônus Prova', 'Audiência', 'Boa Fé', 'Negativação'],
+                    datasets: [{
+                        label: 'Número de Ocorrências',
+                        data: [9, 8, 8, 5, 4, 3, 1],
+                        backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                        borderColor: 'rgba(0, 92, 185, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Número de Ocorrências'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Tribunais
+            const tribunaisCtx = document.getElementById('tribunaisChart').getContext('2d');
+            new Chart(tribunaisCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['TJMG', 'STJ', 'TJBA', 'TRT3', 'TJES', 'TJMA', 'TJMT', 'TJRJ'],
+                    datasets: [{
+                        label: 'Menções Diretas',
+                        data: [17, 2, 2, 2, 2, 1, 1, 1],
+                        backgroundColor: 'rgba(0, 92, 185, 0.7)',
+                        borderColor: 'rgba(0, 92, 185, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Menções Indiretas',
+                        data: [7, 2, 2, 2, 1, 1, 0, 0],
+                        backgroundColor: 'rgba(0, 168, 89, 0.7)',
+                        borderColor: 'rgba(0, 168, 89, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Número de Menções'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Classes Processuais
+            const classesCtx = document.getElementById('classesChart').getContext('2d');
+            new Chart(classesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Procedimento Comum Cível', 'Juizado Especial Cível', 'Tutela Antecipada', 'Cumprimento de Sentença', 'Outros'],
+                    datasets: [{
+                        data: [21, 7, 3, 3, 11],
+                        backgroundColor: [
+                            'rgba(0, 92, 185, 0.7)',
+                            'rgba(0, 168, 89, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 92, 185, 1)',
+                            'rgba(0, 168, 89, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Correlação entre Termos e Decisões
+            const correlacaoCtx = document.getElementById('correlacaoChart').getContext('2d');
+            new Chart(correlacaoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tutela Urgência', 'CDC', 'Gratuidade Justiça', 'Boa Fé', 'Ônus Prova', 'Audiência'],
+                    datasets: [{
+                        label: 'Taxa de Deferimento Estimada (%)',
+                        data: [85, 82, 75, 70, 65, 60],
+                        backgroundColor: 'rgba(0, 168, 89, 0.7)',
+                        borderColor: 'rgba(0, 168, 89, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Taxa de Deferimento (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Valores
+            const valoresCtx = document.getElementById('valoresChart').getContext('2d');
+            new Chart(valoresCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Até R$ 500 mil', 'R$ 500 mil a R$ 1 milhão', 'R$ 1 milhão a R$ 5 milhões', 'R$ 5 milhões a R$ 10 milhões', 'Acima de R$ 10 milhões'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [5, 7, 10, 3, 3],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Número de Processos'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

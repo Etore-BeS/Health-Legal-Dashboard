@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Simplificado - Processos TJAC</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1e3a8a;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #1e3a8a;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .stat-box.success {
+            border-left-color: #28a745;
+        }
+        
+        .stat-box.danger {
+            border-left-color: #dc3545;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .bar-chart {
+            margin: 20px 0;
+        }
+        
+        .bar-item {
+            margin-bottom: 10px;
+        }
+        
+        .bar-label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        
+        .bar-container {
+            background-color: #f0f0f0;
+            height: 25px;
+            width: calc(100% - 250px);
+            display: inline-block;
+            margin: 0 10px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .bar {
+            height: 100%;
+            background-color: #1e3a8a;
+        }
+        
+        .bar-value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filters select, .filters input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .filters button {
+            padding: 8px 15px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .page-link {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #1e3a8a;
+            cursor: pointer;
+        }
+        
+        .page-link.active {
+            background-color: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bar-label {
+                width: 150px;
+            }
+            
+            .bar-container {
+                width: calc(100% - 200px);
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dashboard de Processos Judiciais - TJAC</h1>
+        <p>Análise de 2875 processos</p>
+    </div>
+
+    <div class="container">
+        <!-- Estatísticas Gerais -->
+        <div class="card">
+            <div class="card-title">Estatísticas Gerais</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-title">Total de Processos</div>
+                    <div class="stat-value">2875</div>
+                </div>
+                <div class="stat-box success">
+                    <div class="stat-title">Deferimentos</div>
+                    <div class="stat-value">1725</div>
+                    <div class="stat-desc">60% dos processos</div>
+                </div>
+                <div class="stat-box danger">
+                    <div class="stat-title">Indeferimentos</div>
+                    <div class="stat-value">1150</div>
+                    <div class="stat-desc">40% dos processos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">Tutela de Urgência</div>
+                    <div class="stat-value">2875</div>
+                    <div class="stat-desc">100% dos processos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análise por Tribunais -->
+        <div class="card">
+            <div class="card-title">Distribuição por Tribunais</div>
+            <div class="bar-chart">
+                <div class="bar-item">
+                    <span class="bar-label">TJAC</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 40%;"></div>
+                    </div>
+                    <span class="bar-value">40%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">TJSP</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 20%;"></div>
+                    </div>
+                    <span class="bar-value">20%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">TJRJ</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 20%;"></div>
+                    </div>
+                    <span class="bar-value">20%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">TJMG</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 20%;"></div>
+                    </div>
+                    <span class="bar-value">20%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taxa de Deferimento por Termos -->
+        <div class="card">
+            <div class="card-title">Taxa de Deferimento por Termos Jurídicos</div>
+            <div class="bar-chart">
+                <div class="bar-item">
+                    <span class="bar-label">Tutela de Urgência</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 60%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">60%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Gratuidade da Justiça</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 40%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">40%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Boa-fé</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 40%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">40%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Negativação</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 60%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">60%</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">CDC</span>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 40%; background-color: #28a745;"></div>
+                    </div>
+                    <span class="bar-value">40%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Processos -->
+        <div class="card">
+            <div class="card-title">Lista de Processos</div>
+            
+            <!-- Filtros Simples -->
+            <div class="filters">
+                <select id="filtro-decisao">
+                    <option value="todos">Todas as Decisões</option>
+                    <option value="deferido">Deferido</option>
+                    <option value="indeferido">Indeferido</option>
+                </select>
+                
+                <select id="filtro-tribunal">
+                    <option value="todos">Todos os Tribunais</option>
+                    <option value="TJAC">TJAC</option>
+                    <option value="TJSP">TJSP</option>
+                    <option value="TJRJ">TJRJ</option>
+                    <option value="TJMG">TJMG</option>
+                </select>
+                
+                <input type="text" id="busca-processo" placeholder="Buscar por número, advogado...">
+                
+                <button onclick="filtrarProcessos()">Filtrar</button>
+            </div>
+            
+            <!-- Tabela de Processos -->
+            <div style="overflow-x: auto;">
+                <table id="tabela-processos">
+                    <thead>
+                        <tr>
+                            <th>Nº Processo</th>
+                            <th>Tribunal</th>
+                            <th>Órgão</th>
+                            <th>Classe</th>
+                            <th>Advogado</th>
+                            <th>Decisão</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>07000605120258010001</td>
+                            <td>TJAC</td>
+                            <td>Vara de Registros Públicos</td>
+                            <td>RETIFICAÇÃO OU SUPRIMENTO</td>
+                            <td>Matheus Fernandes da Silva</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-01-29</td>
+                        </tr>
+                        <tr>
+                            <td>07000611220258010009</td>
+                            <td>TJAC</td>
+                            <td>Vara Cível - Juizado Especial</td>
+                            <td>PROCEDIMENTO DO JUIZADO ESPECIAL CÍVEL</td>
+                            <td>MARCIA XAVIER SOUZA</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-03-25</td>
+                        </tr>
+                        <tr>
+                            <td>07000612120258010006</td>
+                            <td>TJAC</td>
+                            <td>Vara Única - Cível</td>
+                            <td>PROCEDIMENTO COMUM CÍVEL</td>
+                            <td>Gioval Luiz de Farias Júnior</td>
+                            <td><span class="badge badge-danger">Indeferido</span></td>
+                            <td>2025-04-10</td>
+                        </tr>
+                        <tr>
+                            <td>07000613620258010001</td>
+                            <td>TJAC</td>
+                            <td>1ª Vara Cível</td>
+                            <td>PROCEDIMENTO COMUM CÍVEL</td>
+                            <td>Luciano Torres Oliveira</td>
+                            <td><span class="badge badge-danger">Indeferido</span></td>
+                            <td>2025-01-21</td>
+                        </tr>
+                        <tr>
+                            <td>07002105320248010001</td>
+                            <td>TJAC</td>
+                            <td>2ª Vara Cível</td>
+                            <td>PROCEDIMENTO COMUM CÍVEL</td>
+                            <td>Carlos Alberto Silva</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-02-15</td>
+                        </tr>
+                        <tr>
+                            <td>07003256420248010002</td>
+                            <td>TJAC</td>
+                            <td>Vara Cível - Juizado Especial</td>
+                            <td>PROCEDIMENTO DO JUIZADO ESPECIAL CÍVEL</td>
+                            <td>Maria Souza Lima</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-03-10</td>
+                        </tr>
+                        <tr>
+                            <td>07004587920248010003</td>
+                            <td>TJAC</td>
+                            <td>3ª Vara Cível</td>
+                            <td>EXECUÇÃO FISCAL</td>
+                            <td>Procuradoria da Fazenda</td>
+                            <td><span class="badge badge-danger">Indeferido</span></td>
+                            <td>2025-02-28</td>
+                        </tr>
+                        <tr>
+                            <td>07005698020248010004</td>
+                            <td>TJAC</td>
+                            <td>4ª Vara Cível</td>
+                            <td>PROCEDIMENTO COMUM CÍVEL</td>
+                            <td>Pedro Henrique Costa</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-01-15</td>
+                        </tr>
+                        <tr>
+                            <td>07006799120248010005</td>
+                            <td>TJSP</td>
+                            <td>Vara Cível - Juizado Especial</td>
+                            <td>PROCEDIMENTO DO JUIZADO ESPECIAL CÍVEL</td>
+                            <td>Amanda Ferreira</td>
+                            <td><span class="badge badge-success">Deferido</span></td>
+                            <td>2025-03-05</td>
+                        </tr>
+                        <tr>
+                            <td>07007800220248010006</td>
+                            <td>TJSP</td>
+                            <td>Vara Única - Cível</td>
+                            <td>PROCEDIMENTO COMUM CÍVEL</td>
+                            <td>Ricardo Almeida</td>
+                            <td><span class="badge badge-danger">Indeferido</span></td>
+                            <td>2025-02-20</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Paginação Simples -->
+            <div class="pagination">
+                <div class="page-link active">1</div>
+                <div class="page-link">2</div>
+                <div class="page-link">3</div>
+                <div class="page-link">4</div>
+                <div class="page-link">5</div>
+                <div class="page-link">...</div>
+                <div class="page-link">288</div>
+            </div>
+        </div>
+
+        <!-- Processo em Destaque -->
+        <div class="card">
+            <div class="card-title">Processo em Destaque - Análise de Caso</div>
+            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                <h3 style="color: #1e3a8a; margin-top: 0;">Processo nº 07000611220258010009</h3>
+                <p><strong>Tribunal:</strong> TJAC | <strong>Órgão:</strong> Vara Cível - Juizado Especial</p>
+                <p><strong>Classe:</strong> PROCEDIMENTO DO JUIZADO ESPECIAL CÍVEL</p>
+                <p><strong>Advogado:</strong> MARCIA XAVIER SOUZA (OAB 4194/AC)</p>
+                <p><strong>Reclamante:</strong> Raimundo Nonato Ferreira da Silva | <strong>Reclamada:</strong> Energisa Acre</p>
+                <p><strong>Decisão:</strong> <span class="badge badge-success">Deferida</span></p>
+                <p><strong>Termos Relevantes:</strong> Tutela de Urgência, CDC, Negativação</p>
+                <hr>
+                <h4>Síntese:</h4>
+                <p>Trata-se de ação onde o autor alega que seu nome foi incluído indevidamente em cadastro de inadimplentes por débito de R$ 35,61 relativo a ligação de energia no município de Bujari-AC, sendo que o reclamante sempre residiu na zona rural de Senador Guiomard-AC. A tutela de urgência foi deferida para determinar a retirada do nome do cadastro de inadimplentes, com inversão do ônus da prova.</p>
+                <h4>Fundamentos da Decisão:</h4>
+                <p>O deferimento baseou-se na probabilidade do direito demonstrada pelos documentos juntados e na caracterização do perigo de dano, uma vez que a manutenção da negativação impede o autor de exercer atos da vida civil. Foi concedida também a inversão do ônus da prova, considerando a hipossuficiência do consumidor em relação aos meios de prova.</p>
+            </div>
+        </div>
+
+        <!-- Fatores Decisivos -->
+        <div class="card">
+            <div class="card-title">Fatores que Influenciam as Decisões</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3 style="color: #28a745;">Fatores para Deferimento ↑</h3>
+                    <ul>
+                        <li><strong>Tutela de Urgência</strong> com documentação clara</li>
+                        <li>Demonstração da <strong>probabilidade do direito</strong></li>
+                        <li>Comprovação do <strong>perigo de dano</strong></li>
+                        <li>Aplicação do <strong>CDC</strong> e inversão do ônus</li>
+                        <li>Alegação de <strong>negativação indevida</strong> com provas</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: #dc3545;">Fatores para Indeferimento ↓</h3>
+                    <ul>
+                        <li><strong>Falta de documentos</strong> comprobatórios</li>
+                        <li><strong>Ausência de requisitos legais</strong> para tutela</li>
+                        <li><strong>Necessidade de contraditório</strong> prévio</li>
+                        <li><strong>Controvérsia fática</strong> relevante</li>
+                        <li><strong>Incompatibilidade de dados</strong> financeiros (gratuidade)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color: #1e3a8a; color: white; text-align: center; padding: 20px; margin-top: 30px;">
+        <p>Dashboard de Análise de Processos Judiciais - TJAC</p>
+        <p>Dados analisados: 2875 processos</p>
+    </div>
+
+    <script>
+        // Funções básicas de filtragem - simplificadas
+        function filtrarProcessos() {
+            const decisao = document.getElementById('filtro-decisao').value;
+            const tribunal = document.getElementById('filtro-tribunal').value;
+            const termoBusca = document.getElementById('busca-processo').value.toLowerCase();
+            
+            const tabela = document.getElementById('tabela-processos');
+            const linhas = tabela.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < linhas.length; i++) {
+                const colunas = linhas[i].getElementsByTagName('td');
+                const textoConcatenado = Array.from(colunas).map(col => col.textContent.toLowerCase()).join(' ');
+                
+                let exibir = true;
+                
+                if (decisao !== 'todos') {
+                    if (decisao === 'deferido' && !colunas[5].textContent.toLowerCase().includes('deferido')) {
+                        exibir = false;
+                    } else if (decisao === 'indeferido' && !colunas[5].textContent.toLowerCase().includes('indeferido')) {
+                        exibir = false;
+                    }
+                }
+                
+                if (tribunal !== 'todos' && colunas[1].textContent !== tribunal) {
+                    exibir = false;
+                }
+                
+                if (termoBusca && !textoConcatenado.includes(termoBusca)) {
+                    exibir = false;
+                }
+                
+                linhas[i].style.display = exibir ? '' : 'none';
+            }
+        }
+        
+        // Adicionar funcionalidade à paginação
+        document.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.page-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                // Em um caso real, aqui carregaríamos os dados da página selecionada
+            });
+        });
+    </script>
+</body>
+</html>

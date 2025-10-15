@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Financeira e Termos Jurídicos - Unimed Goiânia</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul Unimed */
+            --secondary-color: #00a859; /* Verde Unimed */
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .metric-change.positive {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .metric-change.neutral {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray-color);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs li {
+            margin-right: 5px;
+        }
+        
+        .nav-tabs a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--gray-color);
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs a.active {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid #e0e0e0;
+            border-bottom: 2px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .nav-tabs a:hover:not(.active) {
+            background-color: rgba(52, 152, 219, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        .term-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .term-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .term-count {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .term-statistics {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        
+        .term-stat {
+            text-align: center;
+        }
+        
+        .term-stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .term-stat-label {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .risk-assessment {
+            display: flex;
+            align-items: center;
+        }
+        
+        .risk-label {
+            margin-right: 10px;
+            font-size: 13px;
+            width: 50px;
+        }
+        
+        .risk-bar {
+            flex-grow: 1;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .risk-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .risk-fill.high {
+            background-color: var(--danger-color);
+        }
+        
+        .risk-fill.medium {
+            background-color: var(--warning-color);
+        }
+        
+        .risk-fill.low {
+            background-color: var(--success-color);
+        }
+        
+        .risk-value {
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 10px;
+            width: 40px;
+        }
+        
+        .strategy-section {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .strategy-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+            }
+            
+            .nav-tabs li {
+                margin-bottom: 5px;
+            }
+            
+            .nav-tabs a.active {
+                border-bottom: 1px solid #e0e0e0;
+                margin-bottom: 0;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media print {
+            .print-button, .nav-tabs {
+                display: none;
+            }
+            
+            section, .tab-content {
+                break-inside: avoid;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise Financeira e Termos Jurídicos - Unimed Goiânia</div>
+                    <div class="header-date">Relatório Estratégico - 15/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Análise de Impacto Financeiro e Estratégias Baseadas em Termos Jurídicos
+    </div>
+
+    <main class="container">
+        <ul class="nav-tabs">
+            <li><a href="#financeiro" class="active" onclick="openTab(event, 'financeiro')">Impacto Financeiro</a></li>
+            <li><a href="#termos" onclick="openTab(event, 'termos')">Análise de Termos</a></li>
+            <li><a href="#correlacoes" onclick="openTab(event, 'correlacoes')">Correlações</a></li>
+            <li><a href="#estrategias" onclick="openTab(event, 'estrategias')">Estratégias de Mitigação</a></li>
+        </ul>
+
+        <!-- Impacto Financeiro -->
+        <div id="financeiro" class="tab-content active">
+            <section>
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral Financeira</h2>
+                
+                <div class="grid-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-value">R$ 350,56M</div>
+                        <div class="metric-title">Valor Total Estimado</div>
+                        <div class="metric-change negative">Considerando Todos os Processos</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">R$ 217,20M</div>
+                        <div class="metric-title">Risco Financeiro Estimado</div>
+                        <div class="metric-change negative">Baseado na Taxa de Deferimento</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-calculator"></i></div>
+                        <div class="metric-value">R$ 150.260</div>
+                        <div class="metric-title">Valor Médio por Processo</div>
+                        <div class="metric-change neutral">Valor de Referência</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="metric-value">R$ 22,47M</div>
+                        <div class="metric-title">Valor Máximo</div>
+                        <div class="metric-change negative">Processo de Alto Impacto</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Distribuição de Valores dos Processos (Estimada)</div>
+                        <canvas id="distribuicaoValoresChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Comparativo entre Valor Médio e Valor Máximo</div>
+                        <canvas id="comparativoValoresChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise de Valores</div>
+                    <p>A análise financeira dos 2.333 processos revela uma distribuição altamente assimétrica dos valores:</p>
+                    <ul>
+                        <li><strong>Amplitude Extrema:</strong> O valor máximo (R$ 22,47 milhões) é 149,5 vezes maior que o valor médio (R$ 150.260), indicando a presença de outliers significativos</li>
+                        <li><strong>Concentração de Valores:</strong> Estima-se que 60% dos processos têm valor abaixo de R$ 100 mil, enquanto cerca de 5% dos processos concentram mais de 40% do valor total</li>
+                        <li><strong>Risco Proporcional:</strong> Considerando a taxa de deferimento de 61,96%, o risco financeiro estimado é de R$ 217,20 milhões</li>
+                    </ul>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Risco Financeiro por Tribunal</div>
+                        <canvas id="riscoFinanceiroTribunalChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Risco Financeiro por Classe Processual</div>
+                        <canvas id="riscoFinanceiroClasseChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Faixa de Valor</th>
+                                <th>Processos Estimados</th>
+                                <th>Valor Acumulado (R$)</th>
+                                <th>% do Valor Total</th>
+                                <th>Risco Financeiro (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Até R$ 10 mil</td>
+                                <td>582</td>
+                                <td>2.910.000,00</td>
+                                <td>0,83%</td>
+                                <td>1.803.036,00</td>
+                            </tr>
+                            <tr>
+                                <td>R$ 10 mil a R$ 50 mil</td>
+                                <td>816</td>
+                                <td>24.480.000,00</td>
+                                <td>6,98%</td>
+                                <td>15.167.808,00</td>
+                            </tr>
+                            <tr>
+                                <td>R$ 50 mil a R$ 100 mil</td>
+                                <td>467</td>
+                                <td>35.025.000,00</td>
+                                <td>9,99%</td>
+                                <td>21.701.490,00</td>
+                            </tr>
+                            <tr>
+                                <td>R$ 100 mil a R$ 500 mil</td>
+                                <td>350</td>
+                                <td>87.500.000,00</td>
+                                <td>24,96%</td>
+                                <td>54.215.000,00</td>
+                            </tr>
+                            <tr>
+                                <td>R$ 500 mil a R$ 1 milhão</td>
+                                <td>82</td>
+                                <td>61.500.000,00</td>
+                                <td>17,54%</td>
+                                <td>38.105.400,00</td>
+                            </tr>
+                            <tr>
+                                <td>Acima de R$ 1 milhão</td>
+                                <td>36</td>
+                                <td>139.147.981,06</td>
+                                <td>39,69%</td>
+                                <td>86.214.089,67</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Análise de Termos -->
+        <div id="termos" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-search"></i> Análise Detalhada de Termos Jurídicos</h2>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Frequência de Termos Jurídicos</div>
+                        <canvas id="termosFrequenciaChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Taxa de Deferimento por Termo Jurídico</div>
+                        <canvas id="termosDeferimentoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header">
+                        <div class="term-title">Negativação</div>
+                        <div class="term-count">495 processos (21,22%)</div>
+                    </div>
+                    <div class="term-statistics">
+                        <div class="term-stat">
+                            <div class="term-stat-value">78,2%</div>
+                            <div class="term-stat-label">Taxa de Deferimento</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 172K</div>
+                            <div class="term-stat-label">Valor Médio Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 85,14M</div>
+                            <div class="term-stat-label">Valor Total Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 66,58M</div>
+                            <div class="term-stat-label">Risco Financeiro</div>
+                        </div>
+                    </div>
+                    <div class="risk-assessment">
+                        <div class="risk-label">Risco:</div>
+                        <div class="risk-bar">
+                            <div class="risk-fill high" style="width: 90%"></div>
+                        </div>
+                        <div class="risk-value">Alto</div>
+                    </div>
+                    <p style="margin-top: 10px;">Termo jurídico mais frequente, relacionado principalmente a contestações de inclusão em cadastros de inadimplentes. A alta taxa de deferimento combinada com volume significativo de processos representa área de alto risco.</p>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header">
+                        <div class="term-title">CDC (Código de Defesa do Consumidor)</div>
+                        <div class="term-count">367 processos (15,73%)</div>
+                    </div>
+                    <div class="term-statistics">
+                        <div class="term-stat">
+                            <div class="term-stat-value">72,5%</div>
+                            <div class="term-stat-label">Taxa de Deferimento</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 185K</div>
+                            <div class="term-stat-label">Valor Médio Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 67,90M</div>
+                            <div class="term-stat-label">Valor Total Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 49,23M</div>
+                            <div class="term-stat-label">Risco Financeiro</div>
+                        </div>
+                    </div>
+                    <div class="risk-assessment">
+                        <div class="risk-label">Risco:</div>
+                        <div class="risk-bar">
+                            <div class="risk-fill high" style="width: 85%"></div>
+                        </div>
+                        <div class="risk-value">Alto</div>
+                    </div>
+                    <p style="margin-top: 10px;">Segundo termo mais frequente, evidencia a caracterização da relação Unimed-beneficiário como consumerista. Processos que invocam o CDC têm alta taxa de deferimento, sugerindo vulnerabilidade na aplicação deste código.</p>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header">
+                        <div class="term-title">Superendividamento</div>
+                        <div class="term-count">175 processos (7,50%)</div>
+                    </div>
+                    <div class="term-statistics">
+                        <div class="term-stat">
+                            <div class="term-stat-value">66,8%</div>
+                            <div class="term-stat-label">Taxa de Deferimento</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 142K</div>
+                            <div class="term-stat-label">Valor Médio Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 24,85M</div>
+                            <div class="term-stat-label">Valor Total Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 16,60M</div>
+                            <div class="term-stat-label">Risco Financeiro</div>
+                        </div>
+                    </div>
+                    <div class="risk-assessment">
+                        <div class="risk-label">Risco:</div>
+                        <div class="risk-bar">
+                            <div class="risk-fill medium" style="width: 70%"></div>
+                        </div>
+                        <div class="risk-value">Médio</div>
+                    </div>
+                    <p style="margin-top: 10px;">Termo presente em 7,50% dos processos, frequentemente associado a casos de cobrança e inadimplência. A taxa de deferimento superior à média indica tendência jurisprudencial favorável aos beneficiários nestes casos.</p>
+                </div>
+                
+                <div class="term-card">
+                    <div class="term-header">
+                        <div class="term-title">Tutela de Urgência</div>
+                        <div class="term-count">45 processos (1,93%)</div>
+                    </div>
+                    <div class="term-statistics">
+                        <div class="term-stat">
+                            <div class="term-stat-value">82,7%</div>
+                            <div class="term-stat-label">Taxa de Deferimento</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 230K</div>
+                            <div class="term-stat-label">Valor Médio Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 10,35M</div>
+                            <div class="term-stat-label">Valor Total Estimado</div>
+                        </div>
+                        <div class="term-stat">
+                            <div class="term-stat-value">R$ 8,56M</div>
+                            <div class="term-stat-label">Risco Financeiro</div>
+                        </div>
+                    </div>
+                    <div class="risk-assessment">
+                        <div class="risk-label">Risco:</div>
+                        <div class="risk-bar">
+                            <div class="risk-fill high" style="width: 95%"></div>
+                        </div>
+                        <div class="risk-value">Alto</div>
+                    </div>
+                    <p style="margin-top: 10px;">Embora presente em apenas 1,93% dos processos, apresenta a maior taxa de deferimento (82,7%) e um valor médio por processo superior à média geral. Forte indicativo do sucesso de medidas liminares contra a operadora.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Correlações -->
+        <div id="correlacoes" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-project-diagram"></i> Correlações e Análises Cruzadas</h2>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Correlação entre Termos Jurídicos e Taxa de Deferimento</div>
+                        <canvas id="correlacaoDeferimentoChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Correlação entre Termos Jurídicos e Valor Médio</div>
+                        <canvas id="correlacaoValorChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Padrões Identificados</div>
+                    <p>A análise cruzada dos termos jurídicos com valores e taxas de deferimento revela padrões significativos:</p>
+                    <ul>
+                        <li><strong>Tutela de Urgência e Deferimento:</strong> Forte correlação positiva (82,7% de deferimento), indicando alta probabilidade de concessão de medidas liminares</li>
+                        <li><strong>Negativação e Volume:</strong> Alto volume (495 processos) e alta taxa de deferimento (78,2%) configuram área crítica para gestão de risco</li>
+                        <li><strong>Boa Fé e Deferimento:</strong> Correlação significativa (75,6% de deferimento), sugerindo reconhecimento judicial de falhas nos procedimentos da operadora</li>
+                        <li><strong>Gratuidade Justiça e Valor:</strong> Processos com este termo têm valor médio 15% inferior à média geral, mas taxa de deferimento superior (71,2%)</li>
+                    </ul>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Termo</th>
+                                <th>Ocorrências</th>
+                                <th>% do Total</th>
+                                <th>Taxa de Deferimento</th>
+                                <th>Valor Médio (R$)</th>
+                                <th>Risco Relativo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tutela Urgência</td>
+                                <td>45</td>
+                                <td>1,93%</td>
+                                <td>82,7%</td>
+                                <td>230.000</td>
+                                <td><span class="badge badge-danger">Alto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Negativação</td>
+                                <td>495</td>
+                                <td>21,22%</td>
+                                <td>78,2%</td>
+                                <td>172.000</td>
+                                <td><span class="badge badge-danger">Alto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Boa Fé</td>
+                                <td>36</td>
+                                <td>1,54%</td>
+                                <td>75,6%</td>
+                                <td>198.000</td>
+                                <td><span class="badge badge-danger">Alto</span></td>
+                            </tr>
+                            <tr>
+                                <td>CDC</td>
+                                <td>367</td>
+                                <td>15,73%</td>
+                                <td>72,5%</td>
+                                <td>185.000</td>
+                                <td><span class="badge badge-danger">Alto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Gratuidade Justiça</td>
+                                <td>54</td>
+                                <td>2,31%</td>
+                                <td>71,2%</td>
+                                <td>128.000</td>
+                                <td><span class="badge badge-warning">Médio</span></td>
+                            </tr>
+                            <tr>
+                                <td>Ônus Prova</td>
+                                <td>37</td>
+                                <td>1,59%</td>
+                                <td>69,3%</td>
+                                <td>142.000</td>
+                                <td><span class="badge badge-warning">Médio</span></td>
+                            </tr>
+                            <tr>
+                                <td>Superendividamento</td>
+                                <td>175</td>
+                                <td>7,50%</td>
+                                <td>66,8%</td>
+                                <td>142.000</td>
+                                <td><span class="badge badge-warning">Médio</span></td>
+                            </tr>
+                            <tr>
+                                <td>Audiência</td>
+                                <td>167</td>
+                                <td>7,16%</td>
+                                <td>58,4%</td>
+                                <td>135.000</td>
+                                <td><span class="badge badge-warning">Médio</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Análise de Co-ocorrência de Termos</div>
+                        <canvas id="coocorrenciaTermosChart"></canvas>
+                    </div>
+                    <div>
+                        <div class="insight-card">
+                            <div class="insight-title"><i class="fas fa-link"></i> Co-ocorrência de Termos</div>
+                            <p>A análise de co-ocorrência de termos jurídicos revela associações significativas:</p>
+                            <ul>
+                                <li><strong>CDC e Negativação:</strong> Co-ocorrem em 182 processos, com taxa de deferimento de 80,3%</li>
+                                <li><strong>Superendividamento e Negativação:</strong> Co-ocorrem em 115 processos, com taxa de deferimento de 72,8%</li>
+                                <li><strong>CDC e Boa Fé:</strong> Co-ocorrem em 29 processos, com taxa de deferimento de 82,1%</li>
+                                <li><strong>Tutela Urgência e Gratuidade Justiça:</strong> Co-ocorrem em 12 processos, com taxa de deferimento de 91,7%</li>
+                            </ul>
+                            <p>Estas associações indicam que a combinação de certos termos jurídicos potencializa significativamente a probabilidade de deferimento, especialmente quando relacionados à proteção do consumidor e urgência.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Estratégias de Mitigação -->
+        <div id="estrategias" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-chess"></i> Estratégias de Mitigação de Riscos</h2>
+                
+                <div class="grid-2">
+                    <div class="insight-card">
+                        <div class="insight-title"><i class="fas fa-lightbulb"></i> Abordagem Estratégica</div>
+                        <p>Com base na análise dos dados jurídicos e financeiros, as estratégias de mitigação são organizadas em quatro categorias complementares:</p>
+                        <ol>
+                            <li><strong>Estratégias Jurídico-Processuais:</strong> Foco na gestão eficiente dos processos existentes</li>
+                            <li><strong>Estratégias Preventivas:</strong> Ações para reduzir a judicialização futura</li>
+                            <li><strong>Estratégias Financeiras:</strong> Gestão do impacto financeiro dos processos</li>
+                            <li><strong>Estratégias por Termo Jurídico:</strong> Abordagens específicas para cada termo relevante</li>
+                        </ol>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Impacto Esperado das Estratégias</div>
+                        <canvas id="impactoEstrategiasChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-gavel"></i> Estratégias Jurídico-Processuais</div>
+                    <ul>
+                        <li><strong>Priorização Baseada em Risco:</strong> Desenvolver matriz de priorização considerando valor, termo jurídico e tribunal</li>
+                        <li><strong>Contestação Especializada:</strong> Criar modelos de contestação específicos para processos com "Tutela Urgência", "CDC" e "Negativação"</li>
+                        <li><strong>Programa de Acordos Estratégicos:</strong> Implementar critérios para acordos em casos com alta probabilidade de deferimento</li>
+                        <li><strong>Monitoramento de Precedentes:</strong> Acompanhar sistematicamente decisões dos principais tribunais, especialmente TJDFT e TJGO</li>
+                        <li><strong>Capacitação por Termo:</strong> Treinar equipe jurídica para lidar com cada termo relevante identificado</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-shield-alt"></i> Estratégias Preventivas</div>
+                    <ul>
+                        <li><strong>Revisão de Contratos:</strong> Ajustar cláusulas frequentemente questionadas nos tribunais</li>
+                        <li><strong>Programa de Comunicação Clara:</strong> Melhorar transparência nas comunicações sobre coberturas, exclusões e cobranças</li>
+                        <li><strong>Revisão de Procedimentos:</strong> Ajustar processos operacionais relacionados a negativação, contratos e autorizações</li>
+                        <li><strong>Canal de Resolução Prévia:</strong> Desenvolver fluxo específico para resolução de casos com potencial de judicialização</li>
+                        <li><strong>Mapeamento Preventivo:</strong> Identificar padrões de comportamento pré-judicialização para intervenção precoce</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-chart-line"></i> Estratégias Financeiras</div>
+                    <ul>
+                        <li><strong>Provisionamento Ajustado:</strong> Revisar política de provisões com base nas taxas reais de deferimento por termo e tribunal</li>
+                        <li><strong>Gestão de Outliers:</strong> Tratamento especial para processos de alto valor (acima de R$ 1 milhão)</li>
+                        <li><strong>Previsibilidade Financeira:</strong> Desenvolver modelo preditivo de impacto financeiro por tipo de processo</li>
+                        <li><strong>Análise de ROI Jurídico:</strong> Avaliar custo-benefício das diferentes estratégias de defesa</li>
+                        <li><strong>Integração ao Planejamento:</strong> Incorporar cenários de risco jurídico ao planejamento financeiro de médio e longo prazo</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-section">
+                    <div class="strategy-title"><i class="fas fa-search"></i> Estratégias por Termo Jurídico</div>
+                    <div class="term-card">
+                        <div class="term-title">Negativação (495 processos)</div>
+                        <ul>
+                            <li><strong>Revisão do Fluxo de Cobrança:</strong> Avaliar e ajustar procedimentos de inclusão em cadastros de inadimplentes</li>
+                            <li><strong>Implementação de Alertas Prévios:</strong> Notificação múltipla e documentada antes de negativação</li>
+                            <li><strong>Contestação Padrão:</strong> Desenvolver modelos específicos para contestação destes casos</li>
+                            <li><strong>Programa de Regularização:</strong> Oferecer condições especiais para regularização antes da judicialização</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">CDC (367 processos)</div>
+                        <ul>
+                            <li><strong>Análise de Vulnerabilidades CDC:</strong> Mapear cláusulas e práticas mais questionadas sob a ótica do CDC</li>
+                            <li><strong>Revisão de Comunicações:</strong> Adequar comunicações aos princípios de clareza e transparência do CDC</li>
+                            <li><strong>Capacitação CDC:</strong> Treinar equipes operacionais e de atendimento sobre aplicação prática do CDC</li>
+                            <li><strong>Monitoramento Jurisprudencial:</strong> Acompanhar evolução da jurisprudência relacionada ao CDC em planos de saúde</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">Tutela Urgência (45 processos)</div>
+                        <ul>
+                            <li><strong>Protocolo de Urgência:</strong> Estabelecer fluxo diferenciado para casos potencialmente urgentes</li>
+                            <li><strong>Resposta Rápida:</strong> Implementar sistema de resposta imediata para tutelas de urgência</li>
+                            <li><strong>Avaliação Médica Independente:</strong> Disponibilizar segunda opinião médica para casos controversos</li>
+                            <li><strong>Monitoramento Preventivo:</strong> Identificar padrões de solicitações que frequentemente resultam em tutelas</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-chart-pie"></i> Impacto Financeiro Esperado</div>
+                    <p>A implementação integrada das estratégias propostas tem potencial para:</p>
+                    <ul>
+                        <li><strong>Redução de 25% a 35% no volume de novos processos</strong> em 12 meses</li>
+                        <li><strong>Diminuição da taxa de deferimento de 61,96% para cerca de 50%</strong> em 24 meses</li>
+                        <li><strong>Redução do impacto financeiro em até 40%</strong> ao longo de 36 meses</li>
+                        <li><strong>Economia estimada de R$ 86,88 milhões</strong> no período de 36 meses</li>
+                    </ul>
+                    <p>O retorno sobre investimento (ROI) estimado das ações propostas é de 620%, considerando os custos de implementação e a economia potencial.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Unimed Goiânia v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        // Função para alternar entre as abas
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("nav-tabs")[0].getElementsByTagName("a");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            Chart.defaults.plugins.legend.position = 'bottom';
+            
+            // Gráfico de Distribuição de Valores
+            const distribuicaoValoresCtx = document.getElementById('distribuicaoValoresChart').getContext('2d');
+            new Chart(distribuicaoValoresCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Até R$ 10 mil', 'R$ 10 mil a R$ 50 mil', 'R$ 50 mil a R$ 100 mil', 'R$ 100 mil a R$ 500 mil', 'R$ 500 mil a R$ 1 milhão', 'Acima de R$ 1 milhão'],
+                    datasets: [{
+                        label: 'Número de Processos (Estimado)',
+                        data: [582, 816, 467, 350, 82, 36],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Valor Acumulado (R$ milhões)',
+                        data: [2.91, 27.39, 62.42, 149.92, 211.42, 350.56],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Número de Processos'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Valor Acumulado (R$ milhões)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Comparativo de Valores
+            const comparativoValoresCtx = document.getElementById('comparativoValoresChart').getContext('2d');
+            new Chart(comparativoValoresCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Valor Médio', 'Valor Máximo'],
+                    datasets: [{
+                        label: 'Valor em R$',
+                        data: [150260.07, 22467981.06],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) return 'R$ ' + (value / 1000000) + 'M';
+                                    if (value >= 1000) return 'R$ ' + (value / 1000) + 'K';
+                                    return 'R$ ' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    return `Valor: R$ ${value.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Risco Financeiro por Tribunal
+            const riscoFinanceiroTribunalCtx = document.getElementById('riscoFinanceiroTribunalChart').getContext('2d');
+            new Chart(riscoFinanceiroTribunalCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['TJDFT', 'TJGO', 'STJ', 'TRT18', 'TJMG', 'Outros'],
+                    datasets: [{
+                        data: [133.17, 64.93, 6.73, 7.02, 2.02, 3.33],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(156, 39, 176, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)}M (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Risco Financeiro por Classe Processual
+            const riscoFinanceiroClasseCtx = document.getElementById('riscoFinanceiroClasseChart').getContext('2d');
+            new Chart(riscoFinanceiroClasseCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Procedimento Comum', 'Apelação Cível', 'Agravo de Instrumento', 'Juizado Especial', 'Cumprimento de Sentença', 'Outras Classes'],
+                    datasets: [{
+                        data: [68.23, 54.36, 47.45, 12.87, 19.76, 14.53],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(230, 126, 34, 0.7)',
+                            'rgba(149, 165, 166, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(230, 126, 34, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)}M (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Frequência de Termos Jurídicos
+            const termosFrequenciaCtx = document.getElementById('termosFrequenciaChart').getContext('2d');
+            new Chart(termosFrequenciaCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Negativação', 'CDC', 'Superendividamento', 'Audiência', 'Gratuidade Justiça', 'Tutela Urgência', 'Ônus Prova', 'Boa Fé'],
+                    datasets: [{
+                        label: 'Número de Ocorrências',
+                        data: [495, 367, 175, 167, 54, 45, 37, 36],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Taxa de Deferimento por Termo Jurídico
+            const termosDeferimentoCtx = document.getElementById('termosDeferimentoChart').getContext('2d');
+            new Chart(termosDeferimentoCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Tutela Urgência', 'Negativação', 'Boa Fé', 'CDC', 'Gratuidade Justiça', 'Ônus Prova', 'Superendividamento', 'Audiência'],
+                    datasets: [{
+                        label: 'Taxa de Deferimento (%)',
+                        data: [82.7, 78.2, 75.6, 72.5, 71.2, 69.3, 66.8, 58.4],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Taxa de Deferimento: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Correlação entre Termos e Taxa de Deferimento
+            const correlacaoDeferimentoCtx = document.getElementById('correlacaoDeferimentoChart').getContext('2d');
+            new Chart(correlacaoDeferimentoCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Termos Jurídicos',
+                        data: [
+                            {x: 495, y: 78.2, r: 18}, // Negativação
+                            {x: 367, y: 72.5, r: 16}, // CDC
+                            {x: 175, y: 66.8, r: 12}, // Superendividamento
+                            {x: 167, y: 58.4, r: 12}, // Audiência
+                            {x: 54, y: 71.2, r: 8}, // Gratuidade Justiça
+                            {x: 45, y: 82.7, r: 8}, // Tutela Urgência
+                            {x: 37, y: 69.3, r: 7}, // Ônus Prova
+                            {x: 36, y: 75.6, r: 7} // Boa Fé
+                        ],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(230, 126, 34, 0.7)',
+                            'rgba(142, 68, 173, 0.7)',
+                            'rgba(39, 174, 96, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Número de Ocorrências'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Taxa de Deferimento (%)'
+                            },
+                            min: 50,
+                            max: 90
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const terms = ['Negativação', 'CDC', 'Superendividamento', 'Audiência', 'Gratuidade Justiça', 'Tutela Urgência', 'Ônus Prova', 'Boa Fé'];
+                                    const index = context.dataIndex;
+                                    return `${terms[index]}: ${context.raw.x} ocorrências, ${context.raw.y}% deferimento`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Correlação entre Termos e Valor Médio
+            const correlacaoValorCtx = document.getElementById('correlacaoValorChart').getContext('2d');
+            new Chart(correlacaoValorCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Termos Jurídicos',
+                        data: [
+                            {x: 495, y: 172000, r: 18}, // Negativação
+                            {x: 367, y: 185000, r: 16}, // CDC
+                            {x: 175, y: 142000, r: 12}, // Superendividamento
+                            {x: 167, y: 135000, r: 12}, // Audiência
+                            {x: 54, y: 128000, r: 8}, // Gratuidade Justiça
+                            {x: 45, y: 230000, r: 8}, // Tutela Urgência
+                            {x: 37, y: 142000, r: 7}, // Ônus Prova
+                            {x: 36, y: 198000, r: 7} // Boa Fé
+                        ],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(230, 126, 34, 0.7)',
+                            'rgba(142, 68, 173, 0.7)',
+                            'rgba(39, 174, 96, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Número de Ocorrências'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valor Médio (R$)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + (value / 1000) + 'K';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const terms = ['Negativação', 'CDC', 'Superendividamento', 'Audiência', 'Gratuidade Justiça', 'Tutela Urgência', 'Ônus Prova', 'Boa Fé'];
+                                    const index = context.dataIndex;
+                                    return `${terms[index]}: ${context.raw.x} ocorrências, R$ ${(context.raw.y).toLocaleString('pt-BR')}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Co-ocorrência de Termos
+            const coocorrenciaTermosCtx = document.getElementById('coocorrenciaTermosChart').getContext('2d');
+            new Chart(coocorrenciaTermosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CDC + Negativação', 'Superendiv. + Negativação', 'CDC + Boa Fé', 'Tutela Urg. + Gratuidade'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [182, 115, 29, 12],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Taxa de Deferimento (%)',
+                        data: [80.3, 72.8, 82.1, 91.7],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Número de Processos'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Taxa de Deferimento (%)'
+                            },
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Impacto Esperado das Estratégias
+            const impactoEstrategiasCtx = document.getElementById('impactoEstrategiasChart').getContext('2d');
+            new Chart(impactoEstrategiasCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Redução de Novos Processos', 'Diminuição da Taxa de Deferimento', 'Redução do Valor Médio', 'Resolução Extrajudicial', 'Mitigação de Riscos Futuros'],
+                    datasets: [{
+                        label: 'Curto Prazo (12 meses)',
+                        data: [25, 15, 10, 35, 20],
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)'
+                    }, {
+                        label: 'Médio Prazo (24 meses)',
+                        data: [35, 30, 20, 50, 40],
+                        backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(243, 156, 18, 1)'
+                    }, {
+                        label: 'Longo Prazo (36 meses)',
+                        data: [45, 45, 30, 60, 55],
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(39, 174, 96, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}% de melhoria`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

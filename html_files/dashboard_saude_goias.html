@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Judicialização da Saúde - Goiás</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --light-color: #f8fafc;
+            --dark-color: #1f2937;
+            --gray-color: #6b7280;
+            --goias-green: #228b22;
+            --goias-gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #334155;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--goias-green) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="15" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="25" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .brasao-goias {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--goias-gold) 0%, #fff 50%, var(--goias-green) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 20px 0;
+            background: white;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 4px solid var(--goias-green);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .organization-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--goias-gold), var(--goias-green), var(--primary-color));
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--goias-green), var(--primary-color));
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            color: var(--goias-green);
+            font-size: 32px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--goias-green), var(--primary-color));
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .metric-title {
+            font-size: 16px;
+            color: var(--gray-color);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+        
+        .metric-change.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .metric-change.warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(180, 83, 9, 0.1));
+            color: var(--warning-color);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+        
+        .metric-change.danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(185, 28, 28, 0.1));
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        
+        .metric-change.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+            color: var(--secondary-color);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .chart-container {
+            margin: 30px 0;
+            position: relative;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, var(--goias-green) 0%, var(--primary-color) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 12px 35px rgba(34, 139, 34, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: shimmer 10s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .highlight-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight-title i {
+            margin-right: 15px;
+            font-size: 28px;
+        }
+        
+        .highlight-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 18px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--goias-green) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(34, 139, 34, 0.05));
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(180, 83, 9, 0.2));
+            color: var(--warning-color);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2));
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2));
+            color: var(--secondary-color);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--goias-green) 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--goias-green) 0%, var(--primary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 12px 35px rgba(34, 139, 34, 0.4);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            font-size: 24px;
+        }
+        
+        .print-button:hover {
+            transform: scale(1.15);
+            box-shadow: 0 15px 45px rgba(34, 139, 34, 0.6);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-info {
+                margin-top: 20px;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .metric-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="brasao-goias">GO</div>
+                    <div class="logo-text">SES-GO</div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Dashboard de Judicialização da Saúde</div>
+                    <div class="header-subtitle">Secretaria de Estado da Saúde de Goiás</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Análise Estratégica da Judicialização da Saúde no Estado de Goiás - Dados atualizados em 25/05/2025
+    </div>
+
+    <main class="container">
+        <!-- Visão Geral -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral dos Processos</h2>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-folder-open"></i></div>
+                    <div class="metric-value">113.787</div>
+                    <div class="metric-title">Total de Processos</div>
+                    <div class="metric-change info">Base completa</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-heartbeat"></i></div>
+                    <div class="metric-value">54.989</div>
+                    <div class="metric-title">Processos de Saúde</div>
+                    <div class="metric-change success">48,3% do total</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="metric-value">65,4%</div>
+                    <div class="metric-title">Taxa de Sucesso Médico</div>
+                    <div class="metric-change success">Acima da média geral</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="metric-value">61,8%</div>
+                    <div class="metric-title">Taxa de Sucesso Geral</div>
+                    <div class="metric-change warning">Comparativo</div>
+                </div>
+            </div>
+            
+            <div class="highlight-card">
+                <div class="highlight-title"><i class="fas fa-star"></i> Insight Principal</div>
+                <div class="highlight-content">
+                    <p><strong>Processos de saúde têm maior taxa de sucesso!</strong> Enquanto a taxa geral de deferimento é de 61,8%, os processos relacionados à saúde alcançam 65,4% de sucesso, indicando que o Judiciário reconhece a urgência e necessidade dos tratamentos médicos.</p>
+                    <br>
+                    <p><strong>Volume significativo:</strong> Quase metade de todos os processos (48,3%) está relacionada à saúde, demonstrando a importância estratégica deste setor na judicialização.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Análise de Status -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Distribuição de Status dos Processos</h2>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Processos Gerais por Status</div>
+                    <canvas id="statusGeralChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Processos de Saúde por Status</div>
+                    <canvas id="statusSaudeChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Comparativo de Taxa de Sucesso: Geral vs Saúde</div>
+                <canvas id="comparativoChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Análise de Tratamentos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-stethoscope"></i> Especialidades Médicas Mais Demandadas</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Especialidade</th>
+                            <th>Número de Processos</th>
+                            <th>Percentual</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cardiologia</strong></td>
+                            <td>1.277</td>
+                            <td>39,5%</td>
+                            <td><span class="badge badge-danger">Crítica</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Oncologia</strong></td>
+                            <td>739</td>
+                            <td>22,8%</td>
+                            <td><span class="badge badge-danger">Crítica</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Endocrinologia</strong></td>
+                            <td>444</td>
+                            <td>13,7%</td>
+                            <td><span class="badge badge-warning">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pneumologia</strong></td>
+                            <td>334</td>
+                            <td>10,3%</td>
+                            <td><span class="badge badge-warning">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reumatologia</strong></td>
+                            <td>149</td>
+                            <td>4,6%</td>
+                            <td><span class="badge badge-info">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dermatologia</strong></td>
+                            <td>120</td>
+                            <td>3,7%</td>
+                            <td><span class="badge badge-info">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Neurologia</strong></td>
+                            <td>99</td>
+                            <td>3,1%</td>
+                            <td><span class="badge badge-info">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hepatologia</strong></td>
+                            <td>52</td>
+                            <td>1,6%</td>
+                            <td><span class="badge badge-success">Baixa</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Tratamentos por Especialidade</div>
+                <canvas id="tratamentosChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Medicamentos Oncológicos -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-pills"></i> Medicamentos Oncológicos Mais Solicitados</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicamento</th>
+                            <th>Princípio Ativo</th>
+                            <th>Processos</th>
+                            <th>Indicação Principal</th>
+                            <th>Classificação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pembrolizumab</strong></td>
+                            <td>Pembrolizumab</td>
+                            <td>10</td>
+                            <td>Melanoma, Câncer de Pulmão</td>
+                            <td><span class="badge badge-danger">Alto Custo</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rituximab</strong></td>
+                            <td>Rituximab</td>
+                            <td>10</td>
+                            <td>Linfoma, Leucemia</td>
+                            <td><span class="badge badge-danger">Alto Custo</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bevacizumab</strong></td>
+                            <td>Bevacizumab</td>
+                            <td>6</td>
+                            <td>Câncer Colorretal, Pulmão</td>
+                            <td><span class="badge badge-danger">Alto Custo</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cetuximab</strong></td>
+                            <td>Cetuximab</td>
+                            <td>3</td>
+                            <td>Câncer Colorretal</td>
+                            <td><span class="badge badge-warning">Médio Custo</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trastuzumab</strong></td>
+                            <td>Trastuzumab</td>
+                            <td>3</td>
+                            <td>Câncer de Mama</td>
+                            <td><span class="badge badge-warning">Médio Custo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Medicamentos Oncológicos por Frequência</div>
+                <canvas id="medicamentosChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Probabilidades de Sucesso -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-percentage"></i> Análise de Probabilidades de Sucesso</h2>
+            
+            <div class="grid-3">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="metric-value">95%</div>
+                    <div class="metric-title">Probabilidade Máxima</div>
+                    <div class="metric-change success">15.555 processos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="metric-value">80%</div>
+                    <div class="metric-title">Probabilidade Alta</div>
+                    <div class="metric-change success">20.405 processos</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="metric-value">50%</div>
+                    <div class="metric-title">Probabilidade Média</div>
+                    <div class="metric-change warning">5.869 processos</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Distribuição de Probabilidades de Êxito (Processos de Saúde)</div>
+                <canvas id="probabilidadesChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- Polo Passivo -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-university"></i> Quem é Demandado (Polo Passivo)</h2>
+            
+            <div class="grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição do Polo Passivo - Processos de Saúde</div>
+                    <canvas id="poloPassivoChart"></canvas>
+                </div>
+                <div class="metric-card" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="metric-icon"><i class="fas fa-landmark"></i></div>
+                    <div class="metric-value">96,1%</div>
+                    <div class="metric-title">Demandas contra o Estado</div>
+                    <div class="metric-change info">52.812 de 54.989 processos</div>
+                    <br>
+                    <p style="font-size: 14px; color: var(--gray-color); text-align: center;">
+                        A grande maioria das demandas de saúde é dirigida contra o Estado de Goiás, 
+                        demonstrando a responsabilidade estadual na prestação dos serviços de saúde.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Secretaria de Estado da Saúde de Goiás</p>
+            <p>Dashboard de Inteligência - Judicialização da Saúde | Dados processados em 25/05/2025</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6b7280';
+            
+            // Cores padrão
+            const colors = {
+                primary: '#1e40af',
+                secondary: '#3b82f6',
+                success: '#10b981',
+                warning: '#f59e0b',
+                danger: '#ef4444',
+                goiasGreen: '#228b22',
+                info: '#06b6d4'
+            };
+            
+            // Status Geral
+            const statusGeralCtx = document.getElementById('statusGeralChart').getContext('2d');
+            new Chart(statusGeralCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deferidas', 'Indeferidas', 'Pendentes'],
+                    datasets: [{
+                        data: [70358, 23762, 19667],
+                        backgroundColor: [
+                            colors.success,
+                            colors.danger,
+                            colors.warning
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Status Saúde
+            const statusSaudeCtx = document.getElementById('statusSaudeChart').getContext('2d');
+            new Chart(statusSaudeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deferidas', 'Indeferidas', 'Pendentes'],
+                    datasets: [{
+                        data: [35983, 11599, 7407],
+                        backgroundColor: [
+                            colors.success,
+                            colors.danger,
+                            colors.warning
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Comparativo
+            const comparativoCtx = document.getElementById('comparativoChart').getContext('2d');
+            new Chart(comparativoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Taxa Geral', 'Taxa de Saúde'],
+                    datasets: [{
+                        label: 'Taxa de Deferimento (%)',
+                        data: [61.8, 65.4],
+                        backgroundColor: [
+                            colors.primary,
+                            colors.goiasGreen
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 2,
+                        borderColor: [
+                            colors.primary,
+                            colors.goiasGreen
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Tratamentos
+            const tratamentosCtx = document.getElementById('tratamentosChart').getContext('2d');
+            new Chart(tratamentosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cardiológico', 'Oncológico', 'Endocrinológico', 'Pneumológico', 'Reumatológico', 'Dermatológico', 'Neurológico', 'Hepatológico'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [1277, 739, 444, 334, 149, 120, 99, 52],
+                        backgroundColor: colors.primary,
+                        borderRadius: 6,
+                        borderWidth: 2,
+                        borderColor: colors.primary
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Medicamentos
+            const medicamentosCtx = document.getElementById('medicamentosChart').getContext('2d');
+            new Chart(medicamentosCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pembrolizumab', 'Rituximab', 'Bevacizumab', 'Cetuximab', 'Trastuzumab'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [10, 10, 6, 3, 3],
+                        backgroundColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.primary,
+                            colors.success,
+                            colors.info
+                        ],
+                        borderRadius: 6,
+                        borderWidth: 2,
+                        borderColor: [
+                            colors.danger,
+                            colors.warning,
+                            colors.primary,
+                            colors.success,
+                            colors.info
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Probabilidades
+            const probabilidadesCtx = document.getElementById('probabilidadesChart').getContext('2d');
+            new Chart(probabilidadesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['30%', '45%', '50%', '65%', '80%', '95%'],
+                    datasets: [{
+                        label: 'Número de Processos',
+                        data: [6744, 4760, 5869, 1517, 20405, 15555],
+                        borderColor: colors.goiasGreen,
+                        backgroundColor: 'rgba(34, 139, 34, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.goiasGreen,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 3,
+                        pointRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Polo Passivo
+            const poloPassivoCtx = document.getElementById('poloPassivoChart').getContext('2d');
+            new Chart(poloPassivoCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Estado', 'Município', 'União', 'Não informado'],
+                    datasets: [{
+                        data: [52812, 201, 108, 1868],
+                        backgroundColor: [
+                            colors.goiasGreen,
+                            colors.primary,
+                            colors.warning,
+                            colors.secondary
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,18 +1,15 @@
+import random
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import statsmodels.api as sm
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
-import re
-from collections import Counter
-from plotly.colors import n_colors
-import sklearn
 import os
-from fpdf import FPDF
-from io import BytesIO
-import base64
+import json
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
 
 st.set_page_config(layout="wide")
 
@@ -30,14 +27,37 @@ def load_data():
     
     # Convert 'pf_0' and 'pmc_0' to numeric
     pmc_df['pf_0'] = pd.to_numeric(pmc_df['pf_0'], errors='coerce')
-    pmc_df['pmc_0'] = pd.to_numeric(pmc_df['pmc_0'], errors='coerce')
+    pmc_df['pmc_0'] = pd.to_numeric(pmc_df['pmc_0'], errors='coerce')    
     return unimed_df, pmc_df
+
+# --- Data Loading and Caching ---
+@st.cache_data
+def load_natjus_data(file_path):
+    """Loads and parses the JSONL data."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = [json.loads(line) for line in f]
+    df = pd.json_normalize(data)
+    # Convert date column to datetime
+    df['par_data_emissao'] = pd.to_datetime(df['par_data_emissao'])
+    return df
+
+# Helper function for styled metric-like display
+def styled_metric(column, label, value, font_size="1.2rem", label_size="0.8rem"):
+    column.markdown(
+        f"""
+        <div style="text-align: center; padding: 5px; border: 1px solid #e0e0e0; border-radius: 5px; margin-bottom: 10px;">
+            <div style="font-size: {label_size}; color: #666;">{label}</div>
+            <div style="font-size: {font_size}; font-weight: bold;">{value}</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 unimed_df, pmc_df = load_data()
 
 # Navegação
 st.sidebar.title('Navegação')
-panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira', 'Relatórios'])
+panel = st.sidebar.radio('Ir para', ['Análise Geral', 'Análise Financeira', 'Relatórios', 'Análise Natjus'])
 
 
 if panel == 'Análise Geral':
@@ -913,558 +933,594 @@ if panel == 'Relatórios':
         html_content = f.read()
     st.components.v1.html(html_content, height=800, scrolling=True)
     
+if panel == 'Análise Natjus':
+        # --- Load Data ---
+    try:
+        df = load_natjus_data('public_natjus_silver_export_2025-10-14_162219.jsonl')
+    except FileNotFoundError:
+        st.error("The data file 'sample-2025-10-14_62926.json' was not found. Please make sure it's in the same directory as the app.")
 
-# if panel == 'Preços':    
-#     # CSS customizado com as cores da MEEDI
-#     st.markdown("""
-#     <style>
-#         /* Cores da marca MEEDI */
-#         :root {
-#             --ocean-main: #1C09D3;
-#             --ocean-dark: #020619;
-#             --ocean-medium: #130E75;
-#             --ocean-light: #4264F4;
-#             --ocean-lighter: #44B8F2;
-#             --glacial-main: #5EEAE6;
-#             --glacial-light: #ABF3F1;
-#             --glacial-lighter: #E7FAFA;
-#             --sprout-main: #70F977;
-#             --sprout-dark: #18771C;
-#             --sprout-medium: #35BE3C;
-#             --sprout-light: #A1FCAC;
-#             --sprout-lighter: #CEFFDE;
-#             --gravity-dark: #3F4254;
-#             --gravity-medium: #7D7E8D;
-#             --gravity-light: #BBBCC4;
-#             --gravity-lighter: #FAFCFC;
-#         }
-        
-#         /* Estilização geral */
-#         .main .block-container {
-#             padding-top: 2rem;
-#             padding-bottom: 2rem;
-#         }
-        
-#         /* Header customizado */
-#         .main-header {
-#             background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
-#             padding: 2rem;
-#             border-radius: 15px;
-#             margin-bottom: 2rem;
-#             text-align: center;
-#             color: white;
-#             box-shadow: 0 4px 15px rgba(28, 9, 211, 0.3);
-#         }
-        
-#         /* Cards dos módulos */
-#         .module-card {
-#             background: white;
-#             padding: 1.5rem;
-#             border-radius: 10px;
-#             border-left: 4px solid var(--ocean-main);
-#             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-#             margin-bottom: 1rem;
-#             transition: transform 0.2s ease;
-#         }
-        
-#         .module-card:hover {
-#             transform: translateY(-2px);
-#             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-#         }
-        
-#         /* Card de resultado */
-#         .result-card {
-#             background: linear-gradient(135deg, var(--glacial-lighter) 0%, white 100%);
-#             padding: 2rem;
-#             border-radius: 15px;
-#             border: 2px solid var(--glacial-main);
-#             margin: 1rem 0;
-#             box-shadow: 0 4px 15px rgba(94, 234, 230, 0.2);
-#         }
-        
-#         /* Métricas customizadas */
-#         .metric-container {
-#             background: var(--sprout-lighter);
-#             padding: 1rem;
-#             border-radius: 10px;
-#             text-align: center;
-#             border: 2px solid var(--sprout-light);
-#         }
-        
-#         .metric-value {
-#             font-size: 2rem;
-#             font-weight: bold;
-#             color: var(--sprout-dark);
-#         }
-        
-#         .metric-label {
-#             color: var(--gravity-dark);
-#             font-size: 0.9rem;
-#             margin-top: 0.5rem;
-#         }
-        
-#         /* Botões customizados */
-#         .stButton > button {
-#             background: linear-gradient(135deg, var(--ocean-main) 0%, var(--ocean-light) 100%);
-#             color: white;
-#             border: none;
-#             border-radius: 8px;
-#             padding: 0.5rem 1.5rem;
-#             font-weight: 600;
-#             transition: all 0.3s ease;
-#             box-shadow: 0 2px 10px rgba(28, 9, 211, 0.3);
-#         }
-        
-#         .stButton > button:hover {
-#             transform: translateY(-2px);
-#             box-shadow: 0 4px 20px rgba(28, 9, 211, 0.4);
-#         }
-        
-#         /* Sidebar */
-#         .sidebar .sidebar-content {
-#             background: var(--gravity-lighter);
-#         }
-        
-#         /* Tabelas */
-#         .dataframe {
-#             border-radius: 10px;
-#             overflow: hidden;
-#             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-#         }
-        
-#         /* Alert boxes */
-#         .success-box {
-#             background: var(--sprout-lighter);
-#             border: 2px solid var(--sprout-main);
-#             border-radius: 10px;
-#             padding: 1rem;
-#             color: var(--sprout-dark);
-#         }
-        
-#         .info-box {
-#             background: var(--glacial-lighter);
-#             border: 2px solid var(--glacial-main);
-#             border-radius: 10px;
-#             padding: 1rem;
-#             color: var(--ocean-dark);
-#         }
-#     </style>
-#     """, unsafe_allow_html=True)
+    # --- Sidebar Filters ---
+    st.sidebar.header("Filters")
+    selected_state = st.sidebar.multiselect(
+        "Filter by State",
+        options=sorted(df['par_estado'].unique()),
+        default=sorted(df['par_estado'].unique())
+    )
+    selected_conclusion = st.sidebar.multiselect(
+        "Filter by Conclusion",
+        options=df['par_conclusao'].unique(),
+        default=df['par_conclusao'].unique()
+    )
 
-#     # Header principal
-#     st.markdown("""
-#     <div class="main-header">
-#         <h1>🧮 Simulador Interativo de Contratos</h1>
-#         <h3>Plataforma MEEDI</h3>
-#         <p>Configure seus módulos e obtenha estimativas precisas de contratos</p>
-#     </div>
-#     """, unsafe_allow_html=True)
+    # Apply filters
+    filtered_df = df[
+        (df['par_estado'].isin(selected_state)) &
+        (df['par_conclusao'].isin(selected_conclusion))
+    ]
 
-#     def calcular_simulacao(
-#         tipo, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto_selfservice,
-#         incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
-#         incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
-#         suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
-#     ):
-#         total = 0
-#         breakdown = {}
+    # --- Dashboard Tabs ---
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Resumo", "Visão de Pacientes", "Visão de Medicamentos", "Relatório NATJUS", "Análise Temporal", "Análise por CID","Amostra de Dados"])
 
-#         # Regras base
-#         pacientes = processos // 6 if tipo not in ["Tribunal", "Distribuidora"] else 0
-#         uso_ia = processos < 7500 and incluir_ia
+    with tab1:
+        # --- Overview Section ---
+        st.header("Dashboard Overview")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric(label="Total Cases", value=len(filtered_df))
+        with col2:
+            st.metric(label="Favorable Conclusions", value=len(filtered_df[filtered_df['par_conclusao'] == 'FAVORAVEL']))
+        with col3:
+            st.metric(label="Unfavorable Conclusions", value=len(filtered_df[filtered_df['par_conclusao'] == 'DESFAVORAVEL']))
 
-#         # Módulos opcionais
-#         if incluir_judicializacao:
-#             valor = 75000 if tipo != "Distribuidora" else 10000
-#             breakdown["Judicialização"] = valor
-#             total += valor
+        # --- Charts ---
+        col1, col2 = st.columns(2)
+        with col1:
+            # Conclusion Distribution
+            conclusion_counts = filtered_df['par_conclusao'].value_counts()
+            fig = px.pie(
+                values=conclusion_counts.values,
+                names=conclusion_counts.index,
+                title="Conclusion Distribution",
+                color_discrete_sequence=px.colors.qualitative.Set2
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        with col2:
+            # Cases by State
+            state_counts = filtered_df['par_estado'].value_counts()
+            fig = px.bar(
+                x=state_counts.index,
+                y=state_counts.values,
+                title="Cases by State",
+                labels={'x': 'State', 'y': 'Number of Cases'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-#         if incluir_leilao:
-#             valor = 10000
-#             breakdown["Leilão"] = valor
-#             total += valor
+    with tab2:
+        # --- Patient Analysis Section ---
+        st.header("Patient Analysis")
+        # Slider to set maximum allowed age
+        max_age_default = min(120, int(np.nanpercentile(filtered_df['pac_idade'], 99)))  # sensible default
+        max_age = st.sidebar.slider(
+            "Maximum Patient Age to Include",
+            min_value=1,
+            max_value=130,
+            value=max_age_default,
+            step=1,
+            help="Use this to exclude outliers or incorrect ages."
+        )
 
-#         if incluir_orcamento:
-#             valor = 10000
-#             breakdown["Orçamento"] = valor
-#             total += valor
+        # Apply max age filter (keep NaNs if you want to show them elsewhere)
+        age_filtered_df = filtered_df[(filtered_df['pac_idade'] >= 1) & (filtered_df['pac_idade'] <= max_age)].copy()
 
-#         if incluir_portal:
-#             valor = qtd_pacientes_portal * 10
-#             breakdown["Portal do Paciente"] = valor
-#             total += valor
+        col1, col2 = st.columns(2)
+        with col1:
+            # Age Distribution with cap
+            age_counts = (
+                age_filtered_df
+                .assign(pac_idade=lambda d: d['pac_idade'].round().astype(int))
+                .groupby('pac_idade', as_index=False)
+                .size()
+                .rename(columns={'size': 'count'})
+                .sort_values('pac_idade')
+            )
 
-#         if incluir_rcpj:
-#             valor = qtd_pacientes_rcpj * 10
-#             breakdown["RCPJ"] = valor
-#             total += valor
-
-#         if uso_ia:
-#             valor = processos * 100
-#             breakdown["IA Preditiva"] = valor
-#             total += valor
-
-#         if incluir_farmacia:
-#             valor = 20000
-#             breakdown["Farmácia Alto Custo"] = valor
-#             total += valor
-
-#         if incluir_homecare:
-#             valor = qtd_pacientes_homecare * 50
-#             breakdown["Home Care"] = valor
-#             total += valor
-
-#         if incluir_auditoria:
-#             valor = 45000
-#             breakdown["Auditoria"] = valor
-#             total += valor
-
-#         if incluir_cadastro:
-#             valor = 15000
-#             breakdown["Cadastro de Produtos"] = valor
-#             total += valor
-
-#         # Suporte
-#         modulos_suporte = ["Judicialização", "Leilão", "Orçamento", "Farmácia Alto Custo", "Auditoria", "Cadastro de Produtos"]
-#         base_suporte = sum(breakdown.get(k, 0) for k in modulos_suporte)
-
-#         if suporte_tipo == "5x8":
-#             suporte_valor = 0.125 * base_suporte
-#             breakdown["Suporte 5x8"] = suporte_valor
-#             total += suporte_valor
-#         elif suporte_tipo == "24x7":
-#             suporte_valor = 0.25 * base_suporte
-#             breakdown["Suporte 24x7"] = suporte_valor
-#             total += suporte_valor
-
-#         if desconto_selfservice:
-#             desconto_valor = total * 0.3
-#             breakdown["Desconto Self-service"] = -desconto_valor
-#             total *= 0.7
-
-#         breakdown["Total"] = round(total, 2)
-#         return breakdown
-
-#     def criar_pdf_melhorado(clientes_data):
-#         """Cria PDF com melhor formatação e gráficos"""
-#         pdf = FPDF()
-#         pdf.add_page()
-        
-#         # Header
-#         pdf.set_font("Arial", "B", 20)
-#         pdf.set_text_color(28, 9, 211)  # Ocean main color
-#         pdf.cell(0, 15, "SIMULADOR DE CONTRATOS MEEDI", ln=True, align="C")
-        
-#         pdf.set_font("Arial", "", 12)
-#         pdf.set_text_color(63, 66, 84)  # Gravity dark
-#         pdf.cell(0, 10, "Relatorio Comparativo de Estimativas", ln=True, align="C")
-#         pdf.ln(10)
-        
-#         # Dados dos clientes
-#         for i, (nome, simulacao) in enumerate(clientes_data):
-#             if i > 0:
-#                 pdf.add_page()
+            fig = px.bar(
+                age_counts,
+                x='pac_idade',
+                y='count',
+                title='Patient Age Distribution',
+                labels={'pac_idade': 'Age', 'count': 'Count'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
             
-#             # Nome do cliente
-#             pdf.set_font("Arial", "B", 16)
-#             pdf.set_text_color(28, 9, 211)
-#             pdf.cell(0, 12, nome.encode('latin-1', 'replace').decode('latin-1'), ln=True)
-#             pdf.ln(5)
-            
-#             # Total em destaque
-#             pdf.set_font("Arial", "B", 14)
-#             pdf.set_text_color(24, 119, 28)  # Sprout dark
-#             total = simulacao.get("Total", 0)
-#             pdf.cell(0, 10, f"Total Mensal: R$ {total:,.2f}".replace(',', '.'), ln=True)
-#             pdf.ln(5)
-            
-#             # Detalhamento
-#             pdf.set_font("Arial", "", 11)
-#             pdf.set_text_color(63, 66, 84)
-            
-#             for modulo, valor in simulacao.items():
-#                 if modulo != "Total":
-#                     if isinstance(valor, (int, float)):
-#                         texto = f"- {modulo}: R$ {valor:,.2f}".replace(',', '.')
-#                         pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
-#                     else:
-#                         texto = f"- {modulo}: {valor}"
-#                         pdf.cell(0, 8, texto.encode('latin-1', 'replace').decode('latin-1'), ln=True)
-            
-#             pdf.ln(10)
-        
-#         # Footer do PDF
-#         pdf.ln(5)
-#         pdf.set_font("Arial", "I", 10)
-#         pdf.set_text_color(125, 126, 141)  # Gravity medium
-#         pdf.cell(0, 10, "Desenvolvido pela Ray Inteligencia Artificial", ln=True, align="C")
-        
-#         return pdf
-
-#     def download_pdf(pdf_buffer, filename):
-#         """Cria link de download para o PDF"""
-#         b64 = base64.b64encode(pdf_buffer.getvalue()).decode()
-#         href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}">📥 Baixar PDF</a>'
-#         return href
-
-#     # Inicializar session state
-#     if 'clientes' not in st.session_state:
-#         st.session_state.clientes = {}
-
-#     # Sidebar para navegação
-#     with st.sidebar:
-#         st.markdown("### 🎯 Opções")
-#         tab_selected = st.radio("Selecione:", ["Configurar Clientes", "Comparativo", "Exportar"])
-        
-#         st.markdown("### 📊 Resumo Rápido")
-#         if st.session_state.clientes:
-#             total_geral = sum([sim["Total"] for _, sim in st.session_state.clientes])
-#             st.metric("Total Geral Mensal", f"R$ {total_geral:,.2f}")
-#             st.metric("Clientes Configurados", len(st.session_state.clientes))
-
-#     if tab_selected == "Configurar Clientes":
-#         # Seletor de cliente
-#         col1, col2 = st.columns([3, 1])
-#         with col1:
-#             cliente_num = st.selectbox("Selecione o cliente para configurar:", [1, 2, 3, 4, 5])
-#         with col2:
-#             if st.button("🗑️ Limpar Todos"):
-#                 st.session_state.clientes = []
-#                 st.rerun()
-
-#         st.markdown(f"### 🧾 Configuração do Cliente {cliente_num}")
-        
-#         # Tipo de cliente com cards visuais
-#         st.markdown("#### 🏢 Tipo de Cliente")
-#         cols = st.columns(4)
-#         tipos = ["Tribunal", "Plano de Saúde", "Secretaria de Saúde", "Distribuidora"]
-#         tipo_icons = ["⚖️", "🏥", "🏛️", "📦"]
-        
-#         tipo_selecionado = st.selectbox("Tipo:", tipos, key=f"tipo_{cliente_num}")
-        
-#         # Parâmetros baseados no tipo
-#         col1, col2 = st.columns(2)
-        
-#         with col1:
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("#### 📊 Parâmetros Principais")
-            
-#             if tipo_selecionado == "Tribunal":
-#                 processos = st.number_input("Processos por Ano", min_value=0, value=10000, key=f"proc_{cliente_num}")
-#                 varas = st.number_input("Quantidade de Varas", min_value=0, value=20, key=f"varas_{cliente_num}")
-#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=50000000.0, key=f"valor_{cliente_num}")
-#                 beneficiarios = habitantes = 0
+            excluded = len(filtered_df) - len(age_filtered_df)
+            if excluded > 0:
+                st.caption(f"{excluded} record(s) excluded with pac_idade > {max_age}.")
                 
-#             elif tipo_selecionado == "Plano de Saúde":
-#                 beneficiarios = st.number_input("Número de Beneficiários", min_value=0, value=100000, key=f"benef_{cliente_num}")
-#                 processos = beneficiarios // 10
-#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=80000000.0, key=f"valor_{cliente_num}")
-#                 varas = habitantes = 0
-#                 st.info(f"Processos estimados: {processos:,}")
-                
-#             elif tipo_selecionado == "Secretaria de Saúde":
-#                 habitantes = st.number_input("Número de Habitantes", min_value=0, value=2000000, key=f"hab_{cliente_num}")
-#                 processos = habitantes // 50
-#                 valor_judicializado = st.number_input("Valor Judicializado (R$)", min_value=0.0, value=60000000.0, key=f"valor_{cliente_num}")
-#                 varas = beneficiarios = 0
-#                 st.info(f"Processos estimados: {processos:,}")
-                
-#             elif tipo_selecionado == "Distribuidora":
-#                 processos = st.number_input("Processos Participados", min_value=0, value=1000, key=f"proc_dist_{cliente_num}")
-#                 varas = valor_judicializado = beneficiarios = habitantes = 0
-            
-#             st.markdown('</div>', unsafe_allow_html=True)
-        
-#         with col2:
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("#### 💰 Configurações Gerais")
-#             desconto = st.checkbox("Desconto Self-service (30%)", key=f"desc_{cliente_num}")
-#             suporte_tipo = st.radio("Tipo de Suporte", ["Nenhum", "5x8", "24x7"], key=f"sup_{cliente_num}")
-#             suporte_tipo = suporte_tipo if suporte_tipo != "Nenhum" else None
-#             st.markdown('</div>', unsafe_allow_html=True)
+        with col2:
+            # Gender Distribution
+            gender_counts = filtered_df['pac_sexo'].value_counts()
+            fig = px.pie(
+                values=gender_counts.values,
+                names=gender_counts.index,
+                title="Patient Gender Distribution"
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-#         # Módulos organizados em cards
-#         st.markdown("#### 🧩 Módulos Disponíveis")
-        
-#         # Módulos principais
-#         col1, col2 = st.columns(2)
-        
-#         with col1:
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("**⚖️ Módulos Jurídicos**")
-#             incluir_judicializacao = st.checkbox("Judicialização", value=True, key=f"mod_jud_{cliente_num}")
-#             incluir_leilao = st.checkbox("Leilão", key=f"mod_leilao_{cliente_num}")
-#             incluir_orcamento = st.checkbox("Orçamento", key=f"mod_orc_{cliente_num}")
-#             incluir_auditoria = st.checkbox("Auditoria", key=f"mod_aud_{cliente_num}")
-#             st.markdown('</div>', unsafe_allow_html=True)
-            
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("**🔬 Módulos Técnicos**")
-#             incluir_ia = st.checkbox("IA Preditiva", value=True, key=f"mod_ia_{cliente_num}")
-#             incluir_cadastro = st.checkbox("Cadastro de Produtos", key=f"mod_cadastro_{cliente_num}")
-#             st.markdown('</div>', unsafe_allow_html=True)
-        
-#         with col2:
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("**👥 Módulos de Pacientes**")
-#             incluir_portal = st.checkbox("Portal do Paciente", key=f"mod_portal_{cliente_num}")
-#             qtd_pacientes_portal = st.number_input("Nº Pacientes Portal", min_value=0, value=100, key=f"pac_portal_{cliente_num}") if incluir_portal else 0
-            
-#             incluir_rcpj = st.checkbox("RCPJ", key=f"mod_rcpj_{cliente_num}")
-#             qtd_pacientes_rcpj = st.number_input("Nº Usuários RCPJ", min_value=0, value=100, key=f"pac_rcpj_{cliente_num}") if incluir_rcpj else 0
-#             st.markdown('</div>', unsafe_allow_html=True)
-            
-#             st.markdown('<div class="module-card">', unsafe_allow_html=True)
-#             st.markdown("**🏥 Módulos de Saúde**")
-#             incluir_farmacia = st.checkbox("Farmácia Alto Custo", key=f"mod_farmacia_{cliente_num}")
-#             incluir_homecare = st.checkbox("Home Care", key=f"mod_homecare_{cliente_num}")
-#             qtd_pacientes_homecare = st.number_input("Nº Pacientes Home Care", min_value=0, value=10, key=f"pac_home_{cliente_num}") if incluir_homecare else 0
-#             st.markdown('</div>', unsafe_allow_html=True)
 
-#         # Botão de cálculo
-#         if st.button(f"💡 Calcular Preço - Cliente {cliente_num}", type="primary"):
-#             simulacao = calcular_simulacao(
-#                 tipo_selecionado, processos, varas, valor_judicializado, beneficiarios, habitantes, desconto,
-#                 incluir_judicializacao, incluir_leilao, incluir_orcamento, incluir_portal, incluir_rcpj,
-#                 incluir_ia, incluir_farmacia, incluir_homecare, incluir_auditoria, incluir_cadastro,
-#                 suporte_tipo, qtd_pacientes_portal, qtd_pacientes_rcpj, qtd_pacientes_homecare
-#             )
-            
-#             # Atualizar lista de clientes
-#             nome_cliente = f"Cliente {cliente_num} - {tipo_selecionado}"
-            
-#             # Remove cliente anterior se existir
-#             # st.session_state.clientes = [(n, s) for n, s in st.session_state.clientes if not n.startswith(f"Cliente {cliente_num}")]
-#             # st.session_state.clientes.append((nome_cliente, simulacao))
-#             if cliente_num in st.session_state.clientes:
-#                 del st.session_state.clientes[cliente_num]
-            
-#             st.session_state.clientes[cliente_num] = {
-#                 "nome": nome_cliente,
-#                 "simulacao": simulacao
-#             }
-            
-#             # Mostrar resultado
-#             st.markdown('<div class="result-card">', unsafe_allow_html=True)
-#             st.markdown("### 💼 Resultado da Simulação")
-            
-#             col1, col2 = st.columns(2)
-#             with col1:
-#                 st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {simulacao["Total"]:,.2f}</div><div class="metric-label">Total Mensal</div></div>', unsafe_allow_html=True)
-            
-#             with col2:
-#                 total_anual = simulacao["Total"] * 12
-#                 st.markdown(f'<div class="metric-container"><div class="metric-value">R$ {total_anual:,.2f}</div><div class="metric-label">Total Anual</div></div>', unsafe_allow_html=True)
-            
-#             # Breakdown detalhado
-#             st.markdown("#### 📋 Detalhamento por Módulo")
-#             df_breakdown = pd.DataFrame([
-#                 {"Módulo": k, "Valor Mensal": f"R$ {v:,.2f}" if isinstance(v, (int, float)) else str(v)}
-#                 for k, v in simulacao.items() if k != "Total"
-#             ])
-#             st.dataframe(df_breakdown, use_container_width=True)
-            
-#             st.markdown('</div>', unsafe_allow_html=True)
-#             st.success("✅ Simulação calculada e salva com sucesso!")
+        # Clinical Descriptions Word Cloud
+        st.subheader("Most Common Clinical Descriptions")
+        text = ' '.join(filtered_df['pac_desc_clinica'].dropna())
+        if text:
+            wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+            fig, ax = plt.subplots()
+            ax.imshow(wordcloud, interpolation='bilinear')
+            ax.axis('off')
+            st.pyplot(fig)
+        else:
+            st.write("No clinical descriptions to display for the current selection.")
 
-#     elif tab_selected == "Comparativo":
-#         st.markdown("### 📊 Comparativo de Clientes")
+    with tab3:
+        # --- Medication Analysis Section ---
+        st.header("Medication Analysis")
+        # Top 10 Medications
+        medication_counts = filtered_df['med_principio_ativo'].value_counts().nlargest(20)
+        fig = px.bar(
+            x=medication_counts.index,
+            y=medication_counts.values,
+            title="Top 20 Most Requested Medications",
+            labels={'x': 'Medication', 'y': 'Number of Requests'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
         
-#         if not st.session_state.clientes:
-#             st.info("Nenhum cliente configurado ainda. Vá para 'Configurar Clientes' para começar.")
-#         else:
-#             # Tabela comparativa
-#             df_comparativo = pd.DataFrame([
-#                 {
-#                     "Cliente": data["nome"].replace("Cliente ", "").replace(" - ", "\n"),
-#                     "Total Mensal": data["simulacao"]["Total"],
-#                     "Total Anual": data["simulacao"]["Total"] * 12,
-#                     "Módulos Ativos": len([k for k, v in data["simulacao"].items() 
-#                                         if k != "Total" and isinstance(v, (int, float)) and v > 0])
-#                 }
-#                 for client_id, data in st.session_state.clientes.items()
-#             ])
-            
-#             st.dataframe(df_comparativo, use_container_width=True)
-            
-#             # Gráfico comparativo
-#             if len(st.session_state.clientes) > 1:
-#                 fig = px.bar(
-#                     df_comparativo, 
-#                     x="Cliente", 
-#                     y="Total Mensal",
-#                     title="Comparativo de Valores Mensais",
-#                     color="Total Mensal",
-#                     color_continuous_scale=["#E7FAFA", "#1C09D3"]
-#                 )
-#                 fig.update_layout(
-#                     plot_bgcolor="rgba(0,0,0,0)",
-#                     paper_bgcolor="rgba(0,0,0,0)"
-#                 )
-#                 st.plotly_chart(fig, use_container_width=True)
+        # --- Treemap for Medication Distribution ---
+        st.subheader("Medication Distribution Treemap")
+        # To avoid clutter, let's use the top 30 medications for the treemap
+        medication_counts_treemap = filtered_df['med_principio_ativo'].value_counts().nlargest(30).reset_index()
+        medication_counts_treemap.columns = ['Medication', 'Count']
 
-#     elif tab_selected == "Exportar":
-#         st.markdown("### 📥 Exportar Relatórios")
-        
-#         if not st.session_state.clientes:
-#             st.info("Nenhum cliente configurado para exportar.")
-#         else:
-#             col1, col2 = st.columns(2)
-            
-#             with col1:
-#                 st.markdown("#### 📄 Relatório PDF")
-#                 st.write("Gere um relatório completo em PDF com todos os clientes configurados.")
-                
-#                 if st.button("📥 Gerar PDF", type="primary"):
-#                     try:
-#                         # pdf = criar_pdf_melhorado(st.session_state.clientes)
-#                         pdf = criar_pdf_melhorado([
-#                             (data["nome"], data["simulacao"])
-#                             for data in st.session_state.clientes.values()
-#                         ])
-                        
-#                         # Criar buffer para o PDF
-#                         pdf_buffer = BytesIO()
-#                         pdf_string = pdf.output(dest='S')
-#                         pdf_buffer.write(pdf_string.encode('latin-1', 'replace'))
-#                         pdf_buffer.seek(0)
-                        
-#                         # Criar link de download
-#                         st.download_button(
-#                             label="📥 Baixar Relatório PDF",
-#                             data=pdf_buffer.getvalue(),
-#                             file_name="relatorio_contratos_meedi.pdf",
-#                             mime="application/pdf"
-#                         )
-                        
-#                         st.success("✅ PDF gerado com sucesso!")
-                        
-#                     except Exception as e:
-#                         st.error(f"Erro ao gerar PDF: {str(e)}")
-            
-#             with col2:
-#                 st.markdown("#### 📊 Dados CSV")
-#                 st.write("Exporte os dados em formato CSV para análises externas.")
-                
-#                 if st.button("📊 Gerar CSV"):
-#                     # Criar DataFrame para export
-#                     data_export = []
-#                     for nome, sim in st.session_state.clientes:
-#                         for modulo, valor in sim.items():
-#                             data_export.append({
-#                                 "Cliente": nome,
-#                                 "Módulo": modulo,
-#                                 "Valor": valor if isinstance(valor, (int, float)) else str(valor)
-#                             })
+        fig_treemap = px.treemap(
+            medication_counts_treemap,
+            path=['Medication'],
+            values='Count',
+            title='Proportional Distribution of Top 30 Medications',
+            color_discrete_sequence=px.colors.qualitative.Pastel
+        )
+        st.plotly_chart(fig_treemap, use_container_width=True)
+
+    with tab4:
+        # --- NATJUS Report Section ---
+        st.header("NATJUS Report Details")
+
+        if not filtered_df.empty:
+            # Dropdown to select a case
+            case_options = filtered_df['par_numero'].tolist()
+            selected_case = st.selectbox("Select a Case Number to view the report:", options=case_options)
+
+            if selected_case:
+                case_details = filtered_df.loc[filtered_df['par_numero'] == selected_case].iloc[0]
+
+                st.subheader(f"Resumo do Caso: {case_details['par_numero']}")
+
+                # Top badges/metrics row
+                c1, c2, c3, c4 = st.columns(4)
+
+                # Apply styled_metric to each column
+                styled_metric(c1, "Conclusão", case_details['par_conclusao'])
+                styled_metric(c2, "Idade", int(case_details['pac_idade']) if pd.notna(case_details['pac_idade']) else "—")
+                styled_metric(c3, "Sexo", case_details['pac_sexo'] if pd.notna(case_details['pac_sexo']) else "—")
+                styled_metric(c4, "Data", case_details['par_data_emissao'].strftime('%d/%m/%Y'))
+
+                # Three info sections with nice layout cards
+                with st.container():
+                    st.markdown("#### Parecer")
+                    p1, p2, p3, p4 = st.columns(4)
+                    styled_metric(p1, "Tribunal", case_details['par_tribunal'])
+                    styled_metric(p2, "Esfera", case_details['par_esfera'])
+                    styled_metric(p3, "Estado", case_details['par_estado'])
+                    styled_metric(p4, "Município", case_details['par_municipio'])
+
+                with st.container():
+                    st.markdown("#### Paciente")
+                    pa1, pa2, pa3 = st.columns(3)
+                    styled_metric(pa1, "Idade", int(case_details['pac_idade']) if pd.notna(case_details['pac_idade']) else '—')
+                    styled_metric(pa2, "Sexo", case_details['pac_sexo'] if pd.notna(case_details['pac_sexo']) else '—')
+                    styled_metric(pa3, "CID-10", case_details['pac_cid10'] if pd.notna(case_details['pac_cid10']) else '—')
                     
-#                     df_export = pd.DataFrame(data_export)
-#                     csv = df_export.to_csv(index=False)
-                    
-#                     st.download_button(
-#                         label="📊 Baixar Dados CSV",
-#                         data=csv,
-#                         file_name="dados_contratos_meedi.csv",
-#                         mime="text/csv"
-#                     )
-                    
-#                     st.success("✅ CSV preparado para download!")
+                    with st.expander("Descrição Clínica", expanded=False):
+                        st.write(case_details['pac_desc_clinica'] if pd.notna(case_details['pac_desc_clinica']) else "—")
+
+                with st.container():
+                    st.markdown("#### Medicamento")
+                    med1, med2, med3 = st.columns(3)
+                    styled_metric(med1, "Princípio Ativo", case_details['med_principio_ativo'] if pd.notna(case_details['med_principio_ativo']) else '—')
+                    styled_metric(med2, "Nome Comercial", case_details['med_nome_comercial'] if pd.notna(case_details['med_nome_comercial']) else '—')
+                    styled_metric(med3, "Fabricante", case_details['med_fabricante'] if pd.notna(case_details['med_fabricante']) else '—')
+
+                    med4, med5, med6 = st.columns(3)
+                    styled_metric(med4, "Dosagem", case_details['med_dosagem'] if pd.notna(case_details['med_dosagem']) else "Não Informado")
+                    styled_metric(med5, "Via Admin.", case_details['med_via_admin'] if pd.notna(case_details['med_via_admin']) else '—')
+                    styled_metric(med6, "Registrado na ANVISA", 'Sim' if bool(case_details.get('med_registro_anvisa', False)) else 'Não')
+
+                    with st.expander("Posologia", expanded=False):
+                        st.write(case_details['med_posologia'] if pd.notna(case_details['med_posologia']) else '—')
+
+                # Display the justification in an expander
+                with st.expander("Leia toda a justificativa", expanded=True):
+                    st.write(case_details['par_justificativa'])
+
+                # Display PDF link
+                st.markdown(f"**PDF Link:** [Clique para Ver]({case_details['par_pdf_url']})")
+        else:
+            st.warning("No cases match the current filter selection.")
+
+    with tab5:
+        st.header("Análise de Séries Temporais de Medicamentos")
+
+        # Build options for convenience (exact choices), but also offer free-text search
+        medication_options = sorted(
+            filtered_df['med_principio_ativo'].dropna().unique()
+        )
+
+        c1, c2 = st.columns([2, 3])
+        with c1:
+            selected_medication = st.selectbox(
+                "Selecione um medicamento (exatamente):",
+                options=["—"] + medication_options,
+                index=0
+            )
+        with c2:
+            query_text = st.text_input(
+                "Ou pesquise por substring (contém):",
+                placeholder="Digite parte do nome do princípio ativo, e.g., 'imatinib'"
+            )
+
+        # Decide which filter to apply: substring search takes priority if provided
+        if query_text:
+            # Case-insensitive contains
+            mask = filtered_df['med_principio_ativo'].fillna("").str.contains(query_text, case=False, regex=False)
+            selection_df = filtered_df[mask].copy()  # ← Keep all columns here
+            search_label = query_text
+        elif selected_medication != "—":
+            selection_df = filtered_df[filtered_df['med_principio_ativo'] == selected_medication].copy()
+            search_label = selected_medication
+        else:
+            selection_df = pd.DataFrame()
+            search_label = None
+
+        if selection_df.empty:
+            st.info("Nenhuma linha encontrada. Tente um termo diferente ou escolha uma opção exata.")
+        else:
+            # Create time series for plotting (separate variable)
+            monthly_counts = (selection_df
+                            .set_index('par_data_emissao')
+                            .resample('M')
+                            .size()
+                            .reset_index(name='count')
+                            .rename(columns={'par_data_emissao': 'Month'}))
+
+            fig = px.line(
+                monthly_counts,
+                x='Month',
+                y='count',
+                title=f"Solicitações de Medicamentos por Mês — {search_label}",
+                labels={'Month': 'Data', 'count': 'Número de Solicitações'}
+            )
+            fig.update_xaxes(rangeslider_visible=True)
+            st.plotly_chart(fig, use_container_width=True)
+
+            # KPIs
+            monthly_counts['Year'] = monthly_counts['Month'].dt.year
+            k1, k2, k3, k4 = st.columns(4)
+            styled_metric(k1, "Total de Solicitações", int(monthly_counts['count'].sum()))
+            styled_metric(k2, "Meses Ativos", int((monthly_counts['count'] > 0).sum()))
+            styled_metric(k3, "Média por Mês", f"{monthly_counts['count'].mean():.1f}")
+            styled_metric(k4, "Mês de Pico", int(monthly_counts['count'].max()))
+
+            # Seasonality
+            mo = monthly_counts.copy()
+            mo['month_name'] = mo['Month'].dt.month_name(locale='pt_BR')
+            mo['month_num'] = mo['Month'].dt.month
+            by_moy = mo.groupby(['month_num','month_name'], as_index=False)['count'].sum().sort_values('month_num')
+            fig = px.bar(by_moy, x='month_name', y='count', title=f"Distribuição por Mês do Ano — {search_label}")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Year-over-year
+            yoy = monthly_counts.copy()
+            yoy['month'] = yoy['Month'].dt.month
+            yoy['year'] = yoy['Month'].dt.year
+            yoy_pivot = yoy.pivot_table(index='month', columns='year', values='count', aggfunc='sum').fillna(0)
+            fig = px.line(yoy_pivot, x=yoy_pivot.index, y=yoy_pivot.columns, markers=True,
+                        labels={'index':'Mês', 'value':'Solicitações', 'variable':'Ano'},
+                        title=f"Análise por Mês e Ano — {search_label}")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Top states/tribunals (use selection_df, not time_series_df)
+            geo1, geo2 = st.columns(2)
+            with geo1:
+                top_states = selection_df['par_estado'].value_counts().head(10)
+                st.bar_chart(top_states, use_container_width=True)
+            with geo2:
+                top_trib = selection_df['par_tribunal'].value_counts().head(10)
+                st.bar_chart(top_trib, use_container_width=True)
+
+            # Co-occurring actives
+            sep = ';'
+            co = (selection_df['med_principio_ativo']
+                .dropna().str.split(sep)
+                .explode().str.strip().str.lower()
+                .value_counts().head(15))
+            st.subheader("Substâncias co-ocorrentes")
+            st.write(co)
+
+            # Demographics over time
+            demo = selection_df.copy()
+            demo['Month'] = demo['par_data_emissao'].dt.to_period('M').dt.to_timestamp()
+            demo_age = demo.groupby('Month')['pac_idade'].median().reset_index()
+            fig = px.line(demo_age, x='Month', y='pac_idade', title='Média de Idade ao Longo do Tempo')
+            st.plotly_chart(fig, use_container_width=True)
+
+            gender_share = (demo.groupby(['Month','pac_sexo']).size()
+                            .reset_index(name='count'))
+            gender_share['share'] = gender_share.groupby('Month')['count'].transform(lambda s: s / s.sum())
+            fig = px.area(gender_share, x='Month', y='share', color='pac_sexo',
+                        title='Participação por Gênero ao Longo do Tempo', groupnorm='fraction')
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Share of total requests
+            all_monthly = filtered_df.set_index('par_data_emissao').resample('M').size().rename('all_count')
+            sel_monthly = selection_df.set_index('par_data_emissao').resample('M').size().rename('sel_count')
+            share = pd.concat([all_monthly, sel_monthly], axis=1).fillna(0).reset_index().rename(columns={'par_data_emissao':'Month'})
+            share['share'] = (share['sel_count'] / share['all_count']).replace([np.inf, np.nan], 0)
+            fig = px.line(share, x='Month', y='share', title=f"Participação no Total de Solicitações — {search_label}",
+                        labels={'share':'Participação', 'Month':'Mês'})
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Top municipalities comparison
+            left, right = st.columns(2)
+            with left:
+                top_mun_sel = selection_df['par_municipio'].value_counts().head(10).reset_index()
+                top_mun_sel.columns = ['Município', 'count']
+                st.subheader("Top Municípios (Selecionado)")
+                st.bar_chart(top_mun_sel.set_index('Município')['count'], use_container_width=True)
+            with right:
+                top_mun_all = filtered_df['par_municipio'].value_counts().head(10).reset_index()
+                top_mun_all.columns = ['Município', 'count']
+                st.subheader("Top Municípios (Geral)")
+                st.bar_chart(top_mun_all.set_index('Município')['count'], use_container_width=True)
+
+            # Anomaly detection
+            mc = monthly_counts.copy()
+            mc['roll_mean'] = mc['count'].rolling(6, min_periods=3).mean()
+            mc['roll_std']  = mc['count'].rolling(6, min_periods=3).std()
+            mc['z'] = (mc['count'] - mc['roll_mean']) / mc['roll_std']
+            spikes = mc[(mc['z'] > 2) | (mc['z'] < -2)].dropna()
+            if not spikes.empty:
+                st.subheader("Meses Anômalos (|z| > 2)")
+                st.dataframe(spikes[['Month','count','z']].round(2), use_container_width=True)
+
+            # Data completeness heatmap
+            heat = monthly_counts.copy()
+            heat['year'] = heat['Month'].dt.year
+            heat['month'] = heat['Month'].dt.month
+            pivot = heat.pivot(index='year', columns='month', values='count').fillna(0)
+            fig = px.imshow(pivot, text_auto=True, aspect='auto',
+                            labels=dict(x="Mês", y="Ano", color="Contagem"),
+                            title=f"Integridade de Dados — {search_label}")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Conclusions over time
+            conc_by_month = (selection_df
+                            .groupby([pd.Grouper(key='par_data_emissao', freq='M'),'par_conclusao'])
+                            .size().reset_index(name='count'))
+            fig = px.area(conc_by_month, x='par_data_emissao', y='count', color='par_conclusao',
+                        title='Conclusões ao Longo do Tempo para Ativos Selecionados', groupnorm='fraction')
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Show matched unique med_principio_ativo values
+            with st.expander("Mostrar valores únicos de med_principio_ativo coincidentes"):
+                st.dataframe(
+                    selection_df[['med_principio_ativo']].drop_duplicates().sort_values('med_principio_ativo'),
+                    use_container_width=True
+                )
+            
+    with tab6:
+        st.header("Análise baseada em CID")
+
+        # Build CID options from the filtered set
+        cid_options = (
+            filtered_df['pac_cid10']
+            .dropna()
+            .astype(str)
+            .str.strip()
+            .replace({'': np.nan})
+            .dropna()
+            .unique()
+        )
+        cid_options = sorted(cid_options)
+
+        left, right = st.columns([2, 3])
+        with left:
+            selected_cid = st.selectbox(
+                "Selecione um CID-10",
+                options=["—"] + cid_options,
+                index=0,
+                help="Analise conclusões, substâncias ativas, posologia, etc. para este CID"
+            )
+
+        # Opcional: filtro de texto livre para corresponder a padrões de CID mais amplos (ex: C50, E11, M54.5)
+        with right:
+            cid_query = st.text_input(
+                "Ou pesquise por substring de CID (contém):",
+                placeholder="Ex: C50, E11, M54.5"
+            )
+
+        # Decide filtering strategy
+        if cid_query:
+            cid_mask = filtered_df['pac_cid10'].astype(str).str.contains(cid_query, case=False, regex=False)
+            cid_df = filtered_df[cid_mask].copy()
+            cid_label = cid_query
+        elif selected_cid != "—":
+            cid_df = filtered_df[filtered_df['pac_cid10'].astype(str).str.strip() == selected_cid].copy()
+            cid_label = selected_cid
+        else:
+            cid_df = pd.DataFrame()
+            cid_label = None
+
+        if cid_df.empty:
+            st.info("Nenhum caso encontrado para o CID selecionado. Tente um CID diferente ou um padr o de pesquisa diferente.")
+        else:
+            st.subheader(f"Resumo para o CID: {cid_label}")
+
+            # KPIs
+            k1, k2, k3, k4 = st.columns(4)
+            styled_metric(k1, "Total de Casos", int(len(cid_df)))
+            styled_metric(k2, "Ativos Únicos", int(cid_df['med_principio_ativo'].dropna().nunique()))
+            styled_metric(k3, "Posologias Únicas", int(cid_df['med_posologia'].dropna().nunique()))
+            styled_metric(k4, "Intervalo de Tempo",
+                    cid_df['par_data_emissao'].min().strftime('%d/%m/%Y') + " – " + cid_df['par_data_emissao'].max().strftime('%d/%m/%Y')
+                    if pd.api.types.is_datetime64_any_dtype(cid_df['par_data_emissao'])
+                    else "—")
+
+            st.divider()
+
+            # 1) Conclusion distribution
+            col1, col2 = st.columns(2)
+            with col1:
+                concl_counts = cid_df['par_conclusao'].value_counts(dropna=False).reset_index()
+                concl_counts.columns = ['Conclusão', 'count']
+                fig = px.pie(concl_counts, values='count', names='Conclusão',
+                            title="Conclusões para o CID selecionado",
+                            color_discrete_sequence=px.colors.qualitative.Set2)
+                st.plotly_chart(fig, use_container_width=True)
+
+            # 2) Time trend of requests for this CID
+            with col2:
+                ts = cid_df.set_index('par_data_emissao').resample('M').size().reset_index(name='count')
+                ts.rename(columns={'par_data_emissao': 'Month'}, inplace=True)
+                fig = px.line(ts, x='Month', y='count',
+                            title="Solicitações por Mês (CID selecionado)",
+                            labels={'Month': 'Mês', 'count': 'Solicitações'})
+                fig.update_xaxes(rangeslider_visible=True)
+                st.plotly_chart(fig, use_container_width=True)
+
+            st.divider()
+
+            # 3) Top active ingredients (handles multi-active strings if needed)
+            st.markdown("#### Principais Princípios Ativos")
+            # If multi-actives are separated by ';' (adjust separator if needed)
+            sep = ';'
+            actives = (cid_df['med_principio_ativo'].dropna()
+                    .astype(str).str.split(sep).explode()
+                    .str.strip().str.lower())
+            top_actives = actives.value_counts().head(15).reset_index()
+            top_actives.columns = ['Princípio Ativo', 'count']
+            fig = px.bar(top_actives, x='Princípio Ativo', y='count',
+                        title="Top 15 Princípios Ativos",
+                        labels={'count': 'Solicitações'})
+            fig.update_layout(xaxis_tickangle=-30)
+            st.plotly_chart(fig, use_container_width=True)
+
+            # 4) Posologia highlights
+            st.markdown("#### Posologia (3 mais recentes)")
+
+            # Frases a excluir
+            excluir = {"conforme prescrição médica", "padrão", "vide nt em anexo"}
+
+            # Garantir que temos a coluna de data como datetime
+            cid_df = cid_df.copy()
+            cid_df['par_data_emissao'] = pd.to_datetime(cid_df['par_data_emissao'], errors='coerce')
+
+            # Filtrar posologia válida
+            poso_df = cid_df[['par_data_emissao', 'med_posologia', 'med_principio_ativo', 'pac_sexo', 'pac_idade']].copy()
+            poso_df['med_posologia'] = poso_df['med_posologia'].astype(str).str.strip()
+
+            # Remover vazios/NaN e genéricos (case-insensitive)
+            poso_df = poso_df[poso_df['med_posologia'].str.len() > 0]
+            poso_df = poso_df[~poso_df['med_posologia'].str.lower().isin(excluir)]
+
+            # Ordenar por data (recente primeiro)
+            poso_df = poso_df.sort_values('par_data_emissao', ascending=False)
+
+            # Pegar as 3 mais recentes
+            poso_recent = poso_df.head(3)
+
+            if not poso_recent.empty:
+                cols = st.columns(min(3, len(poso_recent)))
+                for (idx, row), col in zip(poso_recent.iterrows(), cols):
+                    with col:
+                        st.markdown("##### ")  # pequeno espaçamento
+                        st.markdown(f"**{row['par_data_emissao'].strftime('%d/%m/%Y') if pd.notna(row['par_data_emissao']) else '—'}**")
+                        st.caption(f"{row['med_principio_ativo'] if pd.notna(row['med_principio_ativo']) else '—'}")
+                        idade = int(row['pac_idade']) if pd.notna(row['pac_idade']) else "—"
+                        sexo = row['pac_sexo'] if pd.notna(row['pac_sexo']) else "—"
+                        st.caption(f"Sexo: {sexo} | Idade: {idade}")
+                        st.write(f"Posologia: {row['med_posologia']}")
+            else:
+                st.caption("Sem posologia recente válida (não genérica) para este CID.")
+            
+            st.divider()
+
+            # 5) Cross breakdowns
+            st.markdown("#### Que conclusões para cada princípio ativo?")
+            cross1 = (cid_df.assign(med_principio_ativo=cid_df['med_principio_ativo'].fillna('—'))
+                    .groupby(['med_principio_ativo', 'par_conclusao']).size()
+                    .reset_index(name='count'))
+            if not cross1.empty:
+                fig = px.bar(cross1, x='med_principio_ativo', y='count', color='par_conclusao',
+                            barmode='group',
+                            title="Conclusão por Princípio Ativo",
+                            labels={'med_principio_ativo':'Princípio Ativo', 'count':'Solicitações'})
+                fig.update_layout(xaxis_tickangle=-30)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.caption("Sem distribuição de conclusões por princípio ativo para este CID.")
+
+            st.markdown("#### Conclusões por Via Administrativa (se disponível)")
+            cross2 = (cid_df.assign(med_via_admin=cid_df['med_via_admin'].fillna('—'))
+                    .groupby(['med_via_admin', 'par_conclusao']).size()
+                    .reset_index(name='count'))
+            if not cross2.empty:
+                fig = px.bar(cross2, x='med_via_admin', y='count', color='par_conclusao',
+                            barmode='group',
+                            title="Conclusão por Via Administrativa",
+                            labels={'med_via_admin':'Via Administrativa', 'count':'Solicitações'})
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.caption("Sem dados suficientes por via administrativa.")
+
+            st.divider()
+
+            # 6) Geography for this CID
+            geo1, geo2 = st.columns(2)
+            with geo1:
+                top_states = cid_df['par_estado'].value_counts().head(10).reset_index()
+                top_states.columns = ['Estado', 'count']
+                fig = px.bar(top_states, x='Estado', y='count', title="Top Estados")
+                st.plotly_chart(fig, use_container_width=True)
+            with geo2:
+                top_muns = cid_df['par_municipio'].value_counts().head(10).reset_index()
+                top_muns.columns = ['Município', 'count']
+                fig = px.bar(top_muns, x='Município', y='count', title="Top Municípios")
+                st.plotly_chart(fig, use_container_width=True)
+
+            # Optional: table of matched cases and download
+            with st.expander("Ver casos correspondentes (amostra)"):
+                show_cols = ['par_numero', 'par_data_emissao', 'par_estado', 'par_municipio',
+                            'par_conclusao', 'med_principio_ativo', 'med_posologia', 'med_via_admin']
+                st.dataframe(cid_df[show_cols].sort_values('par_data_emissao', ascending=False).head(200),
+                            use_container_width=True)
+
+            st.download_button(
+                "Baixar linhas filtradas (CSV)",
+                cid_df.to_csv(index=False).encode('utf-8'),
+                file_name=f"natjus_cid_{str(cid_label).replace(' ','_')}.csv",
+                mime="text/csv"
+            )
+
+    with tab7:
+        # --- Case Details Section ---
+        st.header("Amostra de Dados")
+        start = random.randint(0, len(filtered_df) - 50)
+        st.dataframe(filtered_df[start:start+50])

@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Aprofundado - Classes Processuais e Impacto Financeiro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #005cb9; /* Azul MEEDI */
+            --secondary-color: #00a859; /* Verde MEEDI */
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --info-color: #3498db;
+            --gray-color: #95a5a6;
+            --scenario1-color: #1abc9c;
+            --scenario2-color: #9b59b6;
+            --scenario3-color: #f1c40f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        /* Cores para o logo MEEDI */
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .organization-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .insight-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        .metric-change.positive {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .metric-change.neutral {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray-color);
+        }
+        
+        .strategy-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .strategy-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 26px;
+            color: white;
+        }
+        
+        .strategy-content {
+            flex: 1;
+        }
+        
+        .strategy-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .strategy-description {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .strategy-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .strategy-row {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .strategy-metric {
+            background-color: var(--light-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strategy-metric i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            height: 100%;
+            left: 0;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .class-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .class-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .class-details {
+            flex: 1;
+        }
+        
+        .class-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        
+        .class-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .class-metric {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .class-metric i {
+            margin-right: 5px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        
+        .financial-impact-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .impact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .impact-details {
+            flex: 1;
+        }
+        
+        .impact-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        
+        .impact-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success-color);
+            margin: 10px 0;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs li {
+            margin-right: 5px;
+        }
+        
+        .nav-tabs a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--gray-color);
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs a.active {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid #e0e0e0;
+            border-bottom: 2px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .nav-tabs a:hover:not(.active) {
+            background-color: rgba(52, 152, 219, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .insights-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .insight-box {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .insight-box-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .insight-box-content {
+            font-size: 14px;
+            color: var(--dark-color);
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .print-button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-info {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .strategy-row {
+                flex-direction: column;
+            }
+            
+            .strategy-icon {
+                margin-bottom: 15px;
+            }
+            
+            .class-card, .financial-impact-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .class-icon, .impact-icon {
+                margin: 0 auto 15px;
+            }
+            
+            .class-metrics {
+                justify-content: center;
+            }
+        }
+        
+        @media print {
+            .print-button, .nav-tabs {
+                display: none;
+            }
+            
+            section, .tab-content {
+                break-inside: avoid;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="meedi-logo">
+                            <div class="meedi-logo-cell cell-1"></div>
+                            <div class="meedi-logo-cell cell-2"></div>
+                            <div class="meedi-logo-cell cell-3"></div>
+                            <div class="meedi-logo-cell cell-4"></div>
+                            <div class="meedi-logo-cell cell-5"></div>
+                            <div class="meedi-logo-cell cell-6"></div>
+                            <div class="meedi-logo-cell cell-7"></div>
+                            <div class="meedi-logo-cell cell-8"></div>
+                            <div class="meedi-logo-cell cell-9"></div>
+                        </div>
+                        <span>MEEDI</span>
+                    </div>
+                </div>
+                <div class="header-info">
+                    <div class="header-title">Análise Detalhada por Classe Processual e Impacto Financeiro</div>
+                    <div class="header-date">Secretaria de Saúde da Bahia - 15/05/2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="organization-info">
+        Detalhamento das Estratégias de Economia por Classe Processual
+    </div>
+
+    <main class="container">
+        <ul class="nav-tabs">
+            <li><a href="#classes" class="active" onclick="openTab(event, 'classes')">Classes Processuais</a></li>
+            <li><a href="#strategies" onclick="openTab(event, 'strategies')">Formação das Estratégias</a></li>
+            <li><a href="#impact" onclick="openTab(event, 'impact')">Impacto Financeiro</a></li>
+        </ul>
+
+        <!-- Classes Processuais -->
+        <div id="classes" class="tab-content active">
+            <section>
+                <h2 class="section-title"><i class="fas fa-file-alt"></i> Distribuição da Economia por Classe Processual</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-file-contract"></i></div>
+                        <div class="metric-value">R$ 15,24M</div>
+                        <div class="metric-title">Potencial de Economia</div>
+                        <div class="metric-change positive">65% do valor total</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-percent"></i></div>
+                        <div class="metric-value">64,7%</div>
+                        <div class="metric-title">Economia/Valor Original</div>
+                        <div class="metric-change positive">Média de todas as classes</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="metric-value">PROC. COMUM</div>
+                        <div class="metric-title">Classe com Maior Economia</div>
+                        <div class="metric-change positive">R$ 8,07 milhões</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição da Economia por Classe Processual</div>
+                    <canvas id="economiaClassesChart"></canvas>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise de Eficiência por Classe</div>
+                    <p>A análise da distribuição da economia por classe processual revela importantes oportunidades estratégicas:</p>
+                    <ul>
+                        <li><strong>Concentração de Valor:</strong> Procedimentos Comuns representam 52,9% da economia total potencial (R$ 8,07 milhões), seguidos por Mandados de Segurança com 15,0% (R$ 2,29 milhões)</li>
+                        <li><strong>Maior Eficiência:</strong> Mandados de Segurança apresentam a maior relação economia/valor original (80,0%), evidenciando alto retorno sobre o investimento nas estratégias</li>
+                        <li><strong>Volume vs. Impacto:</strong> Embora Ações Civis Públicas representem apenas 4,7% dos processos, oferecem 10,7% da economia total, demonstrando impacto financeiro significativo</li>
+                        <li><strong>Abordagem Diferenciada:</strong> Juizados Especiais da Fazenda, com R$ 1,64 milhões de economia potencial, exigem estratégias específicas devido ao seu rito processual diferenciado</li>
+                    </ul>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe Processual</th>
+                                <th>Valor Original</th>
+                                <th>Economia Estimada</th>
+                                <th>% Economia/Original</th>
+                                <th>% da Economia Total</th>
+                                <th>Nº Processos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PROCEDIMENTO COMUM</td>
+                                <td>R$ 12,42 milhões</td>
+                                <td>R$ 8,07 milhões</td>
+                                <td>65,0%</td>
+                                <td>52,9%</td>
+                                <td>67</td>
+                            </tr>
+                            <tr>
+                                <td>MANDADO DE SEGURANÇA</td>
+                                <td>R$ 2,86 milhões</td>
+                                <td>R$ 2,29 milhões</td>
+                                <td>80,0%</td>
+                                <td>15,0%</td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>AÇÃO CIVIL PÚBLICA</td>
+                                <td>R$ 2,72 milhões</td>
+                                <td>R$ 1,63 milhões</td>
+                                <td>60,0%</td>
+                                <td>10,7%</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>JUIZADO ESPECIAL</td>
+                                <td>R$ 2,34 milhões</td>
+                                <td>R$ 1,64 milhões</td>
+                                <td>70,0%</td>
+                                <td>10,8%</td>
+                                <td>24</td>
+                            </tr>
+                            <tr>
+                                <td>OUTRAS CLASSES</td>
+                                <td>R$ 3,23 milhões</td>
+                                <td>R$ 1,61 milhões</td>
+                                <td>50,0%</td>
+                                <td>10,6%</td>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>R$ 23,57 milhões</strong></td>
+                                <td><strong>R$ 15,24 milhões</strong></td>
+                                <td><strong>64,7%</strong></td>
+                                <td><strong>100,0%</strong></td>
+                                <td><strong>148</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="section-title"><i class="fas fa-sitemap"></i> Detalhamento por Classe Processual</h2>
+                
+                <div class="class-card">
+                    <div class="class-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="class-details">
+                        <div class="class-title">PROCEDIMENTO COMUM CÍVEL (67 processos)</div>
+                        <p>Representa 45,27% dos processos e 52,9% da economia potencial total.</p>
+                        
+                        <div class="class-metrics">
+                            <div class="class-metric">
+                                <i class="fas fa-money-bill-wave"></i> <strong>Valor Original:</strong> R$ 12,42 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-hand-holding-usd"></i> <strong>Economia Potencial:</strong> R$ 8,07 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-percent"></i> <strong>Taxa de Deferimento:</strong> 85,7%
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-calculator"></i> <strong>Valor Médio:</strong> R$ 185.432
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 65%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 65,0% do valor original</span>
+                            <span>R$ 8,07M</span>
+                        </div>
+                        
+                        <p><strong>Estratégias Recomendadas:</strong></p>
+                        <ul>
+                            <li>Programa de Descontos Escalonados (até 70% do valor original)</li>
+                            <li>Priorização de casos de alto valor com tutela de urgência</li>
+                            <li>Protocolos de Acordo Judicial imediato para casos com gratuidade</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="class-card">
+                    <div class="class-icon" style="background-color: #3498db;">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div class="class-details">
+                        <div class="class-title">MANDADO DE SEGURANÇA CÍVEL (20 processos)</div>
+                        <p>Representa 13,51% dos processos e 15,0% da economia potencial total.</p>
+                        
+                        <div class="class-metrics">
+                            <div class="class-metric">
+                                <i class="fas fa-money-bill-wave"></i> <strong>Valor Original:</strong> R$ 2,86 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-hand-holding-usd"></i> <strong>Economia Potencial:</strong> R$ 2,29 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-percent"></i> <strong>Taxa de Deferimento:</strong> 90,0%
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-calculator"></i> <strong>Valor Médio:</strong> R$ 142.871
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 80%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 80,0% do valor original</span>
+                            <span>R$ 2,29M</span>
+                        </div>
+                        
+                        <p><strong>Estratégias Recomendadas:</strong></p>
+                        <ul>
+                            <li>Resolução administrativa prévia (prioridade muito alta)</li>
+                            <li>Banco de pareceres técnicos padronizados</li>
+                            <li>Treinamento específico para procuradores sobre esta classe</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="class-card">
+                    <div class="class-icon" style="background-color: #e74c3c;">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="class-details">
+                        <div class="class-title">AÇÃO CIVIL PÚBLICA CÍVEL (7 processos)</div>
+                        <p>Representa 4,73% dos processos e 10,7% da economia potencial total.</p>
+                        
+                        <div class="class-metrics">
+                            <div class="class-metric">
+                                <i class="fas fa-money-bill-wave"></i> <strong>Valor Original:</strong> R$ 2,72 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-hand-holding-usd"></i> <strong>Economia Potencial:</strong> R$ 1,63 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-percent"></i> <strong>Taxa de Deferimento:</strong> 71,4%
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-calculator"></i> <strong>Valor Médio:</strong> R$ 387.912
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 60%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 60,0% do valor original</span>
+                            <span>R$ 1,63M</span>
+                        </div>
+                        
+                        <p><strong>Estratégias Recomendadas:</strong></p>
+                        <ul>
+                            <li>Parceria estratégica com Ministério Público</li>
+                            <li>Incorporação proativa de medicamentos frequentemente judicializados</li>
+                            <li>Monitoramento de precedentes judiciais</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="class-card">
+                    <div class="class-icon" style="background-color: #f39c12;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="class-details">
+                        <div class="class-title">JUIZADO ESPECIAL DA FAZENDA PÚBLICA (24 processos)</div>
+                        <p>Representa 16,22% dos processos e 10,8% da economia potencial total.</p>
+                        
+                        <div class="class-metrics">
+                            <div class="class-metric">
+                                <i class="fas fa-money-bill-wave"></i> <strong>Valor Original:</strong> R$ 2,34 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-hand-holding-usd"></i> <strong>Economia Potencial:</strong> R$ 1,64 milhões
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-percent"></i> <strong>Taxa de Deferimento:</strong> 78,6%
+                            </div>
+                            <div class="class-metric">
+                                <i class="fas fa-calculator"></i> <strong>Valor Médio:</strong> R$ 97.654
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 70%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 70,0% do valor original</span>
+                            <span>R$ 1,64M</span>
+                        </div>
+                        
+                        <p><strong>Estratégias Recomendadas:</strong></p>
+                        <ul>
+                            <li>Protocolos específicos para conciliação pré-processual</li>
+                            <li>Capacitação de conciliadores</li>
+                            <li>Divulgação de alternativas terapêuticas disponíveis no SUS</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Formação das Estratégias -->
+        <div id="strategies" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-chess"></i> Formação Detalhada das Estratégias</h2>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Metodologia de Formação das Estratégias</div>
+                    <p>As estratégias para economia na judicialização foram desenvolvidas seguindo um processo estruturado de análise baseado em evidências:</p>
+                    <ol>
+                        <li><strong>Análise de Dados:</strong> Estudo detalhado dos 148 processos, identificando padrões, tendências e oportunidades</li>
+                        <li><strong>Categorização:</strong> Agrupamento por cenários de intervenção (pré-judicial, durante judicialização, pós-judicial)</li>
+                        <li><strong>Avaliação de Impacto:</strong> Cálculo do potencial de economia de cada estratégia baseado em dados reais</li>
+                        <li><strong>Análise de Viabilidade:</strong> Consideração de aspectos práticos de implementação, custos e complexidade</li>
+                        <li><strong>Priorização:</strong> Classificação das estratégias por ROI, prazo de retorno e alinhamento com objetivos</li>
+                    </ol>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Distribuição das Estratégias por Cenário</div>
+                        <canvas id="distribuicaoEstrategiasChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Análise Custo-Benefício das Estratégias</div>
+                        <canvas id="custoBeneficioEstrategiasChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="strategy-card" style="border-left: 4px solid #1abc9c;">
+                    <div class="strategy-row">
+                        <div class="strategy-icon" style="background-color: #1abc9c;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">Câmara de Resolução Administrativa</div>
+                            <div class="strategy-description">
+                                <p><strong>Objetivo:</strong> Criar instância administrativa para análise rápida (máximo 15 dias) de solicitações, evitando a judicialização.</p>
+                                <p><strong>Componentes Essenciais:</strong></p>
+                                <ul>
+                                    <li><strong>Comitê Multidisciplinar:</strong> Médicos especialistas, farmacêuticos, procuradores e gestores</li>
+                                    <li><strong>Fluxo Processual:</strong> Recebimento, triagem, análise técnica, decisão, fornecimento ou encaminhamento</li>
+                                    <li><strong>Sistema Informatizado:</strong> Plataforma para gestão dos pedidos, com indicadores de desempenho</li>
+                                    <li><strong>Integração com Assistência Farmacêutica:</strong> Verificação de alternativas disponíveis no SUS</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="strategy-metrics">
+                                <div class="strategy-metric">
+                                    <i class="fas fa-money-bill-wave"></i> R$ 5,83 milhões
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-chart-line"></i> ROI: 1.195%
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-hourglass-half"></i> 3 meses p/ implantação
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-dollar-sign"></i> Custo: R$ 450 mil
+                                </div>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 25%;"></div>
+                            </div>
+                            <div class="progress-label">
+                                <span>Economia: 25% do valor total</span>
+                                <span>Alto Impacto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="strategy-card" style="border-left: 4px solid #1abc9c;">
+                    <div class="strategy-row">
+                        <div class="strategy-icon" style="background-color: #1abc9c;">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">Programa de Descontos Escalonados para Negociação Direta</div>
+                            <div class="strategy-description">
+                                <p><strong>Objetivo:</strong> Estabelecer protocolo de negociação com descontos predefinidos para resolver solicitações antes da judicialização.</p>
+                                <p><strong>Estrutura de Descontos:</strong></p>
+                                <ul>
+                                    <li><strong>Medicamentos com alternativas no SUS:</strong> 60% do valor solicitado</li>
+                                    <li><strong>Medicamentos sem alternativas, com eficácia comprovada:</strong> 75% do valor</li>
+                                    <li><strong>Medicamentos de alto custo com registro ANVISA:</strong> 85% do valor</li>
+                                </ul>
+                                <p><strong>Critérios Adicionais:</strong> Urgência clínica, prognóstico, impacto orçamentário, precedentes judiciais.</p>
+                            </div>
+                            
+                            <div class="strategy-metrics">
+                                <div class="strategy-metric">
+                                    <i class="fas fa-money-bill-wave"></i> R$ 3,54 milhões
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-chart-line"></i> ROI: 780%
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-hourglass-half"></i> 2 meses p/ implantação
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-dollar-sign"></i> Custo: R$ 180 mil
+                                </div>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 15%;"></div>
+                            </div>
+                            <div class="progress-label">
+                                <span>Economia: 15% do valor total</span>
+                                <span>Médio Impacto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="strategy-card" style="border-left: 4px solid #9b59b6;">
+                    <div class="strategy-row">
+                        <div class="strategy-icon" style="background-color: #9b59b6;">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">Sistema de Triagem e Priorização de Processos</div>
+                            <div class="strategy-description">
+                                <p><strong>Objetivo:</strong> Identificar e priorizar processos com maior impacto financeiro e probabilidade de deferimento para atuação estratégica.</p>
+                                <p><strong>Matriz de Priorização:</strong></p>
+                                <ul>
+                                    <li><strong>Valor do processo:</strong> Peso 3 (foco nos 8,11% que representam 39,3% do valor)</li>
+                                    <li><strong>Probabilidade de deferimento:</strong> Peso 3 (baseada em classe, termos e precedentes)</li>
+                                    <li><strong>Urgência clínica:</strong> Peso 2 (risco à vida/saúde do paciente)</li>
+                                    <li><strong>Existência de precedentes:</strong> Peso 2 (jurisprudência consolidada)</li>
+                                </ul>
+                                <p><strong>Implementação:</strong> Sistema informatizado integrado ao PJe com alertas automáticos de prioridade.</p>
+                            </div>
+                            
+                            <div class="strategy-metrics">
+                                <div class="strategy-metric">
+                                    <i class="fas fa-money-bill-wave"></i> R$ 2,12 milhões
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-chart-line"></i> ROI: 1.060%
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-hourglass-half"></i> 1 mês p/ implantação
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-dollar-sign"></i> Custo: R$ 120 mil
+                                </div>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 9%;"></div>
+                            </div>
+                            <div class="progress-label">
+                                <span>Economia: 9% do valor total</span>
+                                <span>Alto Impacto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="strategy-card" style="border-left: 4px solid #f1c40f;">
+                    <div class="strategy-row">
+                        <div class="strategy-icon" style="background-color: #f1c40f;">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="strategy-title">Incorporação Proativa de Medicamentos Frequentemente Judicializados</div>
+                            <div class="strategy-description">
+                                <p><strong>Objetivo:</strong> Analisar medicamentos com maior taxa de judicialização e deferimento para incorporação prévia, evitando custos processuais e permitindo compras em escala.</p>
+                                <p><strong>Metodologia de Priorização:</strong></p>
+                                <ul>
+                                    <li><strong>Frequência de judicialização:</strong> Peso 3</li>
+                                    <li><strong>Taxa de deferimento:</strong> Peso 3</li>
+                                    <li><strong>Relação custo-efetividade:</strong> Peso 2</li>
+                                    <li><strong>Disponibilidade de compra em escala:</strong> Peso 2</li>
+                                </ul>
+                                <p><strong>Medicamentos Prioritários:</strong> Insulinas análogas, anticorpos monoclonais específicos, alguns imunobiológicos.</p>
+                            </div>
+                            
+                            <div class="strategy-metrics">
+                                <div class="strategy-metric">
+                                    <i class="fas fa-money-bill-wave"></i> R$ 3,77 milhões
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-chart-line"></i> ROI: 840%
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-hourglass-half"></i> 12 meses p/ implantação
+                                </div>
+                                <div class="strategy-metric">
+                                    <i class="fas fa-dollar-sign"></i> Custo: R$ 350 mil
+                                </div>
+                            </div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 16%;"></div>
+                            </div>
+                            <div class="progress-label">
+                                <span>Economia: 16% do valor total</span>
+                                <span>Alto Impacto</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="section-title"><i class="fas fa-layer-group"></i> Integração das Estratégias</h2>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Economia Acumulada por Fase de Implementação</div>
+                        <canvas id="economiaAcumuladaFaseChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">ROI Combinado por Cenário</div>
+                        <canvas id="roiCombinadoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-puzzle-piece"></i> Sinergias Entre Estratégias</div>
+                    <p>A implementação combinada das estratégias gera sinergias significativas que potencializam os resultados:</p>
+                    <ul>
+                        <li><strong>Efeito Cascata:</strong> Cada estratégia implementada com sucesso reduz o volume de processos, facilitando a ação das demais</li>
+                        <li><strong>Compartilhamento de Recursos:</strong> Várias estratégias utilizam a mesma infraestrutura tecnológica e recursos humanos</li>
+                        <li><strong>Retroalimentação:</strong> Dados gerados por uma estratégia (ex: banco de pareceres) subsidiam outras (ex: incorporação proativa)</li>
+                        <li><strong>Complementaridade:</strong> Abordagem nos três cenários cria uma "rede de proteção" que amplia o impacto individual</li>
+                    </ul>
+                </div>
+                
+                <div class="insights-container">
+                    <div class="insight-box">
+                        <div class="insight-box-title">Curto Prazo (0-90 dias)</div>
+                        <div class="insight-box-content">
+                            <p>Implementação imediata de estratégias de alto ROI e baixa complexidade: Sistema de Triagem e Priorização (ROI: 1.060%) e Banco de Pareceres Padronizados (ROI: 680%).</p>
+                            <p><strong>Economia Estimada:</strong> R$ 3,06 milhões</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <div class="insight-box-title">Médio Prazo (91-180 dias)</div>
+                        <div class="insight-box-content">
+                            <p>Foco em estratégias pré-judiciais: Câmara de Resolução Administrativa (ROI: 1.195%) e Programa de Descontos Escalonados (ROI: 780%).</p>
+                            <p><strong>Economia Acumulada:</strong> R$ 12,43 milhões</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <div class="insight-box-title">Longo Prazo (181-365 dias)</div>
+                        <div class="insight-box-content">
+                            <p>Consolidação com estratégias preventivas: Incorporação Proativa de Medicamentos (ROI: 840%) e Capacitação de Prescritores (ROI: 420%).</p>
+                            <p><strong>Economia Total:</strong> R$ 22,20 milhões</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Fluxo de Implementação das Estratégias</div>
+                    <canvas id="fluxoImplementacaoChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- Impacto Financeiro -->
+        <div id="impact" class="tab-content">
+            <section>
+                <h2 class="section-title"><i class="fas fa-dollar-sign"></i> Análise Detalhada do Impacto Financeiro</h2>
+                
+                <div class="grid-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="metric-value">R$ 22,20M</div>
+                        <div class="metric-title">Economia Líquida Total</div>
+                        <div class="metric-change positive">1.432% de ROI</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="metric-value">R$ 1,55M</div>
+                        <div class="metric-title">Investimento Total</div>
+                        <div class="metric-change neutral">Nas 3 fases</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="metric-value">4-8 meses</div>
+                        <div class="metric-title">Prazo de Retorno</div>
+                        <div class="metric-change positive">Payback médio</div>
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-title">Composição do Valor em Disputa</div>
+                        <canvas id="composicaoValorDisputaChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Economia Projetada em 24 Meses</div>
+                        <canvas id="economiaProjetadaChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title"><i class="fas fa-lightbulb"></i> Análise de Custos Adicionais</div>
+                    <p>Além do valor principal dos medicamentos, cada processo gera aproximadamente 29,4% de custos adicionais que podem ser economizados com resolução administrativa:</p>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Custo Médio por Processo</th>
+                                <th>Total Estimado (148 processos)</th>
+                                <th>% do Valor Principal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Honorários Sucumbenciais</td>
+                                <td>R$ 15.924,36</td>
+                                <td>R$ 2,36 milhões</td>
+                                <td>10,0%</td>
+                            </tr>
+                            <tr>
+                                <td>Custas Processuais</td>
+                                <td>R$ 2.000,00</td>
+                                <td>R$ 296 mil</td>
+                                <td>1,3%</td>
+                            </tr>
+                            <tr>
+                                <td>Correção Monetária/Juros</td>
+                                <td>R$ 23.886,54</td>
+                                <td>R$ 3,54 milhões</td>
+                                <td>15,0%</td>
+                            </tr>
+                            <tr>
+                                <td>Recursos Humanos</td>
+                                <td>R$ 5.000,00</td>
+                                <td>R$ 740 mil</td>
+                                <td>3,1%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>R$ 46.810,90</strong></td>
+                                <td><strong>R$ 6,93 milhões</strong></td>
+                                <td><strong>29,4%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section>
+                <h2 class="section-title"><i class="fas fa-chart-area"></i> Impacto por Cenário e Projeção</h2>
+                
+                <div class="financial-impact-card">
+                    <div class="impact-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="impact-details">
+                        <div class="impact-title">Cenário 1: Negociação Pré-Judicial</div>
+                        <div class="impact-value">R$ 11,52 milhões (economia líquida)</div>
+                        <p>Representa 51,9% da economia total com ROI de 1.694% - o mais alto entre os cenários. Foco em resolução administrativa antes da judicialização para evitar custos com honorários, juros e recursos humanos.</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 51.9%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 51,9% do total</span>
+                            <span>R$ 11,52M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="financial-impact-card" style="border-left: 4px solid #9b59b6;">
+                    <div class="impact-icon" style="background-color: #9b59b6;">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div class="impact-details">
+                        <div class="impact-title">Cenário 2: Durante Judicialização</div>
+                        <div class="impact-value">R$ 4,39 milhões (economia líquida)</div>
+                        <p>Representa 19,8% da economia total com ROI de 1.372%. Foco em otimização de processos já em andamento, priorizando casos de alto valor (acima de R$ 250 mil) e facilitando acordos judiciais.</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 19.8%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 19,8% do total</span>
+                            <span>R$ 4,39M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="financial-impact-card" style="border-left: 4px solid #f1c40f;">
+                    <div class="impact-icon" style="background-color: #f1c40f;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="impact-details">
+                        <div class="impact-title">Cenário 3: Pós-Judicialização</div>
+                        <div class="impact-value">R$ 6,29 milhões (economia líquida)</div>
+                        <p>Representa 28,3% da economia total com ROI de 1.143%. Foco em prevenção de novos casos similares, com impacto de longo prazo através de incorporação proativa de medicamentos e monitoramento de precedentes.</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 28.3%;"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Economia: 28,3% do total</span>
+                            <span>R$ 6,29M</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-container" style="margin-top: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cenário</th>
+                                <th>Economia Bruta</th>
+                                <th>Investimento</th>
+                                <th>Economia Líquida</th>
+                                <th>ROI</th>
+                                <th>Prazo Retorno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Negociação Pré-Judicial</td>
+                                <td>R$ 12,20 milhões</td>
+                                <td>R$ 680 mil</td>
+                                <td>R$ 11,52 milhões</td>
+                                <td>1.694%</td>
+                                <td>3-6 meses</td>
+                            </tr>
+                            <tr>
+                                <td>Durante Judicialização</td>
+                                <td>R$ 4,71 milhões</td>
+                                <td>R$ 320 mil</td>
+                                <td>R$ 4,39 milhões</td>
+                                <td>1.372%</td>
+                                <td>2-3 meses</td>
+                            </tr>
+                            <tr>
+                                <td>Pós-Judicialização</td>
+                                <td>R$ 6,84 milhões</td>
+                                <td>R$ 550 mil</td>
+                                <td>R$ 6,29 milhões</td>
+                                <td>1.143%</td>
+                                <td>6-12 meses</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TOTAL COMBINADO</strong></td>
+                                <td><strong>R$ 23,75 milhões</strong></td>
+                                <td><strong>R$ 1,55 milhões</strong></td>
+                                <td><strong>R$ 22,20 milhões</strong></td>
+                                <td><strong>1.432%</strong></td>
+                                <td><strong>4-8 meses</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="chart-container" style="margin-top: 30px;">
+                    <div class="chart-title">Projeção Financeira Comparativa: 24 Meses</div>
+                    <canvas id="projecaoComparativaChart"></canvas>
+                </div>
+                
+                <div class="insights-container">
+                    <div class="insight-box">
+                        <div class="insight-box-title">Cenário Conservador</div>
+                        <div class="insight-box-content">
+                            <p>Implementação parcial das estratégias, com adesão de 60% dos stakeholders e resultados abaixo do esperado.</p>
+                            <p><strong>Economia em 24 meses:</strong> R$ 9,45 milhões (40% do valor total)</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <div class="insight-box-title">Cenário Moderado</div>
+                        <div class="insight-box-content">
+                            <p>Implementação majoritária das estratégias, com adesão de 80% dos stakeholders e resultados alinhados às expectativas.</p>
+                            <p><strong>Economia em 24 meses:</strong> R$ 14,18 milhões (60% do valor total)</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <div class="insight-box-title">Cenário Otimista</div>
+                        <div class="insight-box-content">
+                            <p>Implementação completa das estratégias, com adesão de 95% dos stakeholders e resultados acima das expectativas.</p>
+                            <p><strong>Economia em 24 meses:</strong> R$ 17,72 milhões (75% do valor total)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 MEEDI - Monitoramento Estratégico e Estatístico de Demandas e Insumos</p>
+            <p>Relatório Confidencial - Secretaria de Saúde da Bahia v1.0</p>
+        </div>
+    </footer>
+
+    <button class="print-button" onclick="window.print()">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <script>
+        // Função para alternar entre as abas
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("nav-tabs")[0].getElementsByTagName("a");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações globais do Chart.js
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#6c757d';
+            Chart.defaults.plugins.legend.position = 'bottom';
+            
+            // Gráfico de Economia por Classes
+            const economiaClassesCtx = document.getElementById('economiaClassesChart').getContext('2d');
+            new Chart(economiaClassesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['PROCEDIMENTO COMUM', 'MANDADO DE SEGURANÇA', 'AÇÃO CIVIL PÚBLICA', 'JUIZADO ESPECIAL', 'OUTRAS CLASSES'],
+                    datasets: [{
+                        label: 'Valor Original (R$ milhões)',
+                        data: [12.42, 2.86, 2.72, 2.34, 3.23],
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1,
+                        stack: 'Stack 0'
+                    }, {
+                        label: 'Economia Estimada (R$ milhões)',
+                        data: [8.07, 2.29, 1.63, 1.64, 1.61],
+                        backgroundColor: 'rgba(39, 174, 96, 0.6)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1,
+                        stack: 'Stack 0'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Valor (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(2) + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            stacked: true
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: R$ ${value.toFixed(2)}M`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Distribuição das Estratégias por Cenário
+            const distribuicaoEstrategiasCtx = document.getElementById('distribuicaoEstrategiasChart').getContext('2d');
+            new Chart(distribuicaoEstrategiasCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pré-Judicial', 'Durante Judicialização', 'Pós-Judicial'],
+                    datasets: [{
+                        data: [12.20, 4.71, 6.84],
+                        backgroundColor: [
+                            'rgba(26, 188, 156, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(241, 196, 15, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(26, 188, 156, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(241, 196, 15, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)}M (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Custo-Benefício das Estratégias
+            const custoBeneficioEstrategiasCtx = document.getElementById('custoBeneficioEstrategiasChart').getContext('2d');
+            new Chart(custoBeneficioEstrategiasCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Pré-Judicial',
+                            data: [
+                                {x: 450, y: 5.83},
+                                {x: 180, y: 3.54},
+                                {x: 50, y: 2.83}
+                            ],
+                            backgroundColor: 'rgba(26, 188, 156, 0.7)',
+                            borderColor: 'rgba(26, 188, 156, 1)',
+                            pointRadius: 10,
+                            pointHoverRadius: 12
+                        },
+                        {
+                            label: 'Durante Judicialização',
+                            data: [
+                                {x: 120, y: 2.12},
+                                {x: 100, y: 1.65},
+                                {x: 100, y: 0.94}
+                            ],
+                            backgroundColor: 'rgba(155, 89, 182, 0.7)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            pointRadius: 10,
+                            pointHoverRadius: 12
+                        },
+                        {
+                            label: 'Pós-Judicial',
+                            data: [
+                                {x: 350, y: 3.77},
+                                {x: 120, y: 1.89},
+                                {x: 80, y: 1.18}
+                            ],
+                            backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                            borderColor: 'rgba(241, 196, 15, 1)',
+                            pointRadius: 10,
+                            pointHoverRadius: 12
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Investimento (R$ Mil)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value + 'K';
+                                }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Economia (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(2) + 'M';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const x = context.parsed.x;
+                                    const y = context.parsed.y.toFixed(2);
+                                    return `${context.dataset.label}: Investimento R$ ${x}K, Economia R$ ${y}M`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Economia Acumulada por Fase
+            const economiaAcumuladaFaseCtx = document.getElementById('economiaAcumuladaFaseChart').getContext('2d');
+            new Chart(economiaAcumuladaFaseCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                    datasets: [{
+                        label: 'Economia Acumulada (R$ Milhões)',
+                        data: [0, 0.7, 1.5, 3.06, 5.2, 7.9, 12.43, 14.8, 16.5, 18.3, 19.7, 21.1, 22.2],
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Economia (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(1) + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de ROI Combinado por Cenário
+            const roiCombinadoCtx = document.getElementById('roiCombinadoChart').getContext('2d');
+            new Chart(roiCombinadoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pré-Judicial', 'Durante Judicialização', 'Pós-Judicial', 'Combinado Total'],
+                    datasets: [{
+                        label: 'ROI (%)',
+                        data: [1694, 1372, 1143, 1432],
+                        backgroundColor: [
+                            'rgba(26, 188, 156, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(52, 152, 219, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(26, 188, 156, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(52, 152, 219, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'ROI (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `ROI: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Fluxo de Implementação das Estratégias
+            const fluxoImplementacaoCtx = document.getElementById('fluxoImplementacaoChart').getContext('2d');
+            new Chart(fluxoImplementacaoCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fase 1 (0-90 dias)', 'Fase 2 (91-180 dias)', 'Fase 3 (181-365 dias)'],
+                    datasets: [
+                        {
+                            label: 'Pré-Judicial',
+                            data: [0.93, 11.27, 0],
+                            backgroundColor: 'rgba(26, 188, 156, 0.7)',
+                            borderColor: 'rgba(26, 188, 156, 1)',
+                            borderWidth: 1,
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Durante Judicialização',
+                            data: [2.13, 1.65, 0.93],
+                            backgroundColor: 'rgba(155, 89, 182, 0.7)',
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            borderWidth: 1,
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Pós-Judicial',
+                            data: [0, 0, 6.84],
+                            backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                            borderColor: 'rgba(241, 196, 15, 1)',
+                            borderWidth: 1,
+                            stack: 'Stack 0'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Economia (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(2) + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            stacked: true
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Composição do Valor em Disputa
+            const composicaoValorDisputaCtx = document.getElementById('composicaoValorDisputaChart').getContext('2d');
+            new Chart(composicaoValorDisputaCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Valor Principal', 'Honorários Sucumbenciais', 'Custas Processuais', 'Correção Monetária/Juros', 'Recursos Humanos'],
+                    datasets: [{
+                        data: [23.57, 2.36, 0.30, 3.54, 0.74],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(243, 156, 18, 0.7)',
+                            'rgba(39, 174, 96, 0.7)',
+                            'rgba(156, 39, 176, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)',
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(156, 39, 176, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)}M (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Economia Projetada em 24 Meses
+            const economiaProjetadaCtx = document.getElementById('economiaProjetadaChart').getContext('2d');
+            new Chart(economiaProjetadaCtx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '3', '6', '9', '12', '15', '18', '21', '24'],
+                    datasets: [
+                        {
+                            label: 'Cenário Conservador',
+                            data: [0, 1.5, 3.0, 4.5, 6.3, 7.1, 7.9, 8.7, 9.45],
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Cenário Moderado',
+                            data: [0, 2.3, 4.6, 7.1, 9.5, 11.0, 12.5, 13.7, 14.18],
+                            borderColor: 'rgba(155, 89, 182, 1)',
+                            backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'Cenário Otimista',
+                            data: [0, 2.9, 5.8, 8.9, 11.8, 13.9, 15.8, 16.9, 17.72],
+                            borderColor: 'rgba(39, 174, 96, 1)',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Economia (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(1) + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Projeção Comparativa
+            const projecaoComparativaCtx = document.getElementById('projecaoComparativaChart').getContext('2d');
+            new Chart(projecaoComparativaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Atual', '6 meses', '12 meses', '18 meses', '24 meses'],
+                    datasets: [
+                        {
+                            label: 'Valor em Disputa (Sem Estratégias)',
+                            data: [30.51, 36.2, 42.8, 50.1, 59.2],
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Valor em Disputa (Com Estratégias)',
+                            data: [30.51, 28.9, 19.3, 14.7, 12.5],
+                            backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                            borderColor: 'rgba(39, 174, 96, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Valor (R$ Milhões)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

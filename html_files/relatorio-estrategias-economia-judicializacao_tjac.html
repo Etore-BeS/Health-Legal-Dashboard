@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estratégias para Economia de Recursos na Judicialização de Medicamentos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #152d6b;
+            --accent-color: #dc2626;
+            --light-color: #e6f0ff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --gray-color: #6c757d;
+            --light-gray-color: #f8f9fa;
+            --dark-gray-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .gov-logo {
+            height: 50px;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            padding-left: 20px;
+        }
+        
+        .header-info {
+            text-align: right;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header-date {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .government-info {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-title {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-description {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+        
+        .chart-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .process-highlight {
+            background: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .process-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .process-detail {
+            margin-bottom: 10px;
+        }
+        
+        .process-label {
+            font-weight: 600;
+            color: var(--dark-gray-color);
+        }
+        
+        .process-value {
+            color: var(--gray-color);
+        }
+        
+        .status-chip {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .status-chip.deferido {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-chip.indeferido {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .status-chip.pendente {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .status-chip.parcial {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+        
+        .status-chip.info {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+        
+        .status-chip.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-chip.warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+        }
+        
+        .recommendation-item {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .recommendation-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .metadata {
+            background-color: var(--light-gray-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-top: 40px;
+        }
+        
+        .metadata-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .metadata-item {
+            margin-bottom: 3px;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .footer-links {
+            margin-top: 10px;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .spacer {
+            height: 40px;
+            width: 100%;
+        }
+        
+        .chart-bar-container {
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .chart-bar {
+            height: 100%;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .chart-bar.tjac {
+            background-color: var(--primary-color);
+        }
+        
+        .chart-bar.tjmg {
+            background-color: var(--accent-color);
+        }
+        
+        .meedi-logo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .meedi-logo-cell {
+            border-radius: 50%;
+            margin: 1px;
+        }
+        
+        .cell-1 { background: #4682fe; }
+        .cell-2 { background: #41cbdb; }
+        .cell-3 { background: #41db65; }
+        .cell-4 { background: #4056db; }
+        .cell-5 { background: #40b8fe; }
+        .cell-6 { background: #40dbdb; }
+        .cell-7 { background: #2a25aa; }
+        .cell-8 { background: #4071fe; }
+        .cell-9 { background: #40a8fe; }
+        
+        /* Estilos para interatividade */
+        .collapse-section {
+            margin: 15px 0;
+            border: 1px solid var(--light-color);
+            border-radius: 8px;
+        }
+        
+        .collapse-header {
+            padding: 15px;
+            background-color: var(--light-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .collapse-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .icon-rotate {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .analysis-highlight {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+            margin: 15px 0;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+        
+        .data-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .data-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .data-table td, .data-table th {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .highlight-box {
+            background-color: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .step-container {
+            margin: 20px 0;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+        }
+        
+        .kpi-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .kpi-item {
+            flex-basis: 23%;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .kpi-label {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-item {
+                flex-basis: 48%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .kpi-item {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <!-- Logo MEEDI -->
+                    <div class="meedi-logo">
+                        <div class="meedi-logo-cell cell-1"></div>
+                        <div class="meedi-logo-cell cell-2"></div>
+                        <div class="meedi-logo-cell cell-3"></div>
+                        <div class="meedi-logo-cell cell-4"></div>
+                        <div class="meedi-logo-cell cell-5"></div>
+                        <div class="meedi-logo-cell cell-6"></div>
+                        <div class="meedi-logo-cell cell-7"></div>
+                        <div class="meedi-logo-cell cell-8"></div>
+                        <div class="meedi-logo-cell cell-9"></div>
+                    </div>
+                    <span>MEEDI</span>
+                </div>
+                <!-- Logo do TJAC -->
+                <svg class="gov-logo" width="150" height="50" viewBox="0 0 150 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="5" width="150" height="40" rx="3" fill="none"/>
+                    <text x="5" y="25" font-family="Arial" font-size="12" fill="white" font-weight="bold">TRIBUNAL DE JUSTIÇA</text>
+                    <text x="5" y="40" font-family="Arial" font-size="12" fill="white">ACRE</text>
+                    <path d="M135 15 L145 25 L135 35 L125 25 Z" fill="#ffffff" />
+                </svg>
+            </div>
+            <div class="header-info">
+                <div class="header-title">Estratégias para Economia de Recursos na Judicialização de Medicamentos</div>
+                <div class="header-date">Emitido em: 14/05/2025</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="government-info">
+    Tribunal de Justiça do Estado do Acre - TJAC
+</div>
+
+<main class="container">
+    <!-- Visão Geral e KPIs -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-chart-pie"></i> Potencial de Economia na Judicialização</h2>
+        
+        <div class="kpi-container">
+            <div class="kpi-item">
+                <div class="kpi-value">25-35%</div>
+                <div class="kpi-label">Economia Pré-Judicialização</div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-value">15-25%</div>
+                <div class="kpi-label">Economia Durante Processo</div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-value">20-30%</div>
+                <div class="kpi-label">Economia Pós-Decisão</div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-value">80%+</div>
+                <div class="kpi-label">Taxa de Sucesso Judicial</div>
+            </div>
+        </div>
+        
+        <div class="highlight-box">
+            <h3 style="margin-top: 0;">Análise de Cenários para Medicamentos com Alta Probabilidade de Deferimento</h3>
+            <p>Para medicamentos com mais de 80% de chance de deferimento judicial, identificamos três cenários de atuação que podem gerar economias significativas, mantendo o acesso à saúde e reduzindo a litigiosidade.</p>
+        </div>
+    </section>
+
+    <!-- Análise Detalhada de Medicamentos -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-prescription-bottle-alt"></i> Análise Detalhada de Medicamentos</h2>
+        
+        <div class="grid-2">
+            <div class="process-highlight">
+                <h3 class="process-title">Bevacizumabe (Avastin/Abevmy)</h3>
+                <div class="process-detail"><span class="process-label">Indicação:</span> <span class="process-value">Câncer colorretal, pulmão, mama</span></div>
+                <div class="process-detail"><span class="process-label">Custo Anual Estimado:</span> <span class="process-value">R$ 72.000,00</span></div>
+                <div class="process-detail"><span class="process-label">Custo com Judicialização:</span> <span class="process-value">R$ 93.600,00 (+30%)</span></div>
+                <div class="process-detail"><span class="process-label">Economia Potencial:</span> <span class="process-value">R$ 21.600,00 por paciente/ano</span></div>
+                <div class="status-chip deferido">Taxa de Deferimento: 66,7% TJAC | 84% TJMG</div>
+            </div>
+
+            <div class="process-highlight">
+                <h3 class="process-title">Omalizumabe (Xolair)</h3>
+                <div class="process-detail"><span class="process-label">Indicação:</span> <span class="process-value">Asma alérgica grave</span></div>
+                <div class="process-detail"><span class="process-label">Custo Anual Estimado:</span> <span class="process-value">R$ 30.000,00</span></div>
+                <div class="process-detail"><span class="process-label">Economia Anual (20 pacientes):</span> <span class="process-value">R$ 180.000,00</span></div>
+                <div class="process-detail"><span class="process-label">Economia por Incorporação:</span> <span class="process-value">30% do custo total</span></div>
+                <div class="status-chip deferido">Taxa de Deferimento: 100% TJAC | 76% TJMG</div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info" style="margin-top: 20px;">
+            <strong>Medicamentos com Alta Taxa de Deferimento:</strong> Focalizando nos medicamentos que apresentam taxa de deferimento acima de 80% em pelo menos um dos tribunais analisados, é possível identificar oportunidades estratégicas para negociação e redução de custos.
+        </div>
+    </section>
+    
+    <!-- Análise das Discrepâncias -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-search"></i> Análise das Discrepâncias e Oportunidades</h2>
+        
+        <div class="collapse-section">
+            <div class="collapse-header" onclick="toggleCollapse(this)">
+                <h3>Cenário 1: Prevenção da Judicialização (25-35% de economia)</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="collapse-content">
+                <div class="analysis-highlight">
+                    <div class="step-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">Identificação Proativa</div>
+                                <ul>
+                                    <li>Sistema de alerta para solicitações administrativas com alta probabilidade de judicialização</li>
+                                    <li>Monitoramento de solicitações de medicamentos com histórico de alto índice de deferimento (>80%)</li>
+                                    <li>Criação de fluxo específico para intercepção prévia de casos</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Análise Técnica Acelerada</div>
+                                <ul>
+                                    <li>Equipe multidisciplinar (médicos, farmacêuticos, advogados)</li>
+                                    <li>Avaliação em 48h de solicitações de medicamentos historicamente deferidos</li>
+                                    <li>Documentação de evidências científicas e alternativas terapêuticas</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Protocolo de Negociação Direta</div>
+                                <ul>
+                                    <li>Contato com solicitante em até 72h após pedido administrativo</li>
+                                    <li>Oferta de alternativas terapêuticas ou fornecimento parcial/condicional</li>
+                                    <li>Escalonamento terapêutico com critérios objetivos</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-highlight">
+                        <h3 class="process-title">Economia Potencial - Bevacizumabe</h3>
+                        <div class="process-detail"><span class="process-label">Custo anual estimado:</span> <span class="process-value">R$ 72.000,00</span></div>
+                        <div class="process-detail"><span class="process-label">Custo com judicialização:</span> <span class="process-value">R$ 93.600,00</span></div>
+                        <div class="process-detail"><span class="process-label">Economia por caso:</span> <span class="process-value">R$ 21.600,00 (30%)</span></div>
+                        <div class="process-detail"><span class="process-label">Economia estimada (5 casos/ano):</span> <span class="process-value">R$ 108.000,00</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse-section">
+            <div class="collapse-header" onclick="toggleCollapse(this)">
+                <h3>Cenário 2: Atuação Durante o Processo Judicial (15-25% de economia)</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="collapse-content">
+                <div class="grid-2">
+                    <div>
+                        <h4>Estratégias de Otimização:</h4>
+                        <ul>
+                            <li><strong>Contestação Estratégica Seletiva</strong>
+                                <ul>
+                                    <li>Identificação imediata de processos com >80% de chance de deferimento</li>
+                                    <li>Acordos judiciais antes da decisão liminar</li>
+                                    <li>Ajuste de posologia e duração do tratamento</li>
+                                </ul>
+                            </li>
+                            <li><strong>Gestão Ativa de Liminares</strong>
+                                <ul>
+                                    <li>Cronograma factível de cumprimento</li>
+                                    <li>Negociação de prazos adequados</li>
+                                    <li>Alternativas terapêuticas com eficácia similar</li>
+                                </ul>
+                            </li>
+                            <li><strong>Compras Emergenciais Otimizadas</strong>
+                                <ul>
+                                    <li>Consolidação de demandas similares</li>
+                                    <li>Negociação de descontos por volume</li>
+                                    <li>Parcerias interinstitucionais</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="process-highlight">
+                            <h4>Caso Prático - Economia Potencial</h4>
+                            <p>Para um processo com valor estimado de R$ 50.000,00 e alta probabilidade de deferimento:</p>
+                            
+                            <div class="chart-container">
+                                <div class="chart-title">Economia por Estratégia</div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar tjac" style="width: 15%">Acordo Judicial: 10-15% (R$ 5.000-7.500)</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar tjac" style="width: 10%">Compras Otimizadas: 5-10% (R$ 2.500-5.000)</div>
+                                </div>
+                                <div class="chart-bar-container">
+                                    <div class="chart-bar tjmg" style="width: 25%">Economia Total: R$ 7.500-12.500</div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info" style="margin-top: 15px; margin-bottom: 0;">
+                                <strong>Nota:</strong> A economia gerada através destas estratégias pode ser aplicada em até 80% dos processos com alta probabilidade de deferimento.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="collapse-section">
+            <div class="collapse-header" onclick="toggleCollapse(this)">
+                <h3>Cenário 3: Medidas Pós-Decisão (20-30% de economia)</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="collapse-content">
+                <div class="analysis-highlight">
+                    <div class="grid-3">
+                        <div class="recommendation-card">
+                            <h3 class="recommendation-title">Mapeamento e Incorporação</h3>
+                            <ul class="recommendation-list">
+                                <li class="recommendation-item">Identificar medicamentos com múltiplas decisões favoráveis</li>
+                                <li class="recommendation-item">Análise de custo-benefício para incorporação ao formulário estadual</li>
+                                <li class="recommendation-item">Protocolo estadual para acesso administrativo</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h3 class="recommendation-title">Monitoramento Preditivo</h3>
+                            <ul class="recommendation-list">
+                                <li class="recommendation-item">Banco de dados de decisões categorizadas</li>
+                                <li class="recommendation-item">Indicadores de tendência por região</li>
+                                <li class="recommendation-item">Alertas automáticos para gestores</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="recommendation-card">
+                            <h3 class="recommendation-title">Programa de Atualização</h3>
+                            <ul class="recommendation-list">
+                                <li class="recommendation-item">Capacitação de prescritores do SUS</li>
+                                <li class="recommendation-item">Consultoria farmacêutica para médicos</li>
+                                <li class="recommendation-item">Fluxos simplificados para medicamentos frequentes</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-title">Caso Prático - Omalizumabe (Xolair)</div>
+                    <div class="process-highlight">
+                        <div class="process-detail"><span class="process-label">Custo médio anual por paciente:</span> <span class="process-value">R$ 30.000,00</span></div>
+                        <div class="process-detail"><span class="process-label">Número de pacientes potenciais anuais:</span> <span class="process-value">20 (estimativa)</span></div>
+                        <div class="process-detail"><span class="process-label">Economia por incorporação de protocolo:</span> <span class="process-value">30% (R$ 9.000 por paciente)</span></div>
+                        <div class="process-detail"><span class="process-label">Economia total anual projetada:</span> <span class="process-value">R$ 180.000,00</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Análise Comparativa dos Cenários -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-balance-scale"></i> Análise Comparativa dos Cenários</h2>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Estratégia</th>
+                        <th>Potencial de Economia</th>
+                        <th>Tempo de Implementação</th>
+                        <th>Complexidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Prevenção da Judicialização</td>
+                        <td>25-35%</td>
+                        <td>Médio (3-6 meses)</td>
+                        <td>Alta</td>
+                    </tr>
+                    <tr>
+                        <td>Atuação Durante o Processo</td>
+                        <td>15-25%</td>
+                        <td>Imediato (1-3 meses)</td>
+                        <td>Média</td>
+                    </tr>
+                    <tr>
+                        <td>Medidas Pós-Decisão</td>
+                        <td>20-30%</td>
+                        <td>Longo (6-12 meses)</td>
+                        <td>Média-Alta</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="chart-title">Estimativa de Economia por Estratégia (5 anos)</div>
+        <div class="chart-container">
+            <div class="chart-bar-container">
+                <div class="chart-bar tjac" style="width: 35%">Prevenção: R$ 2,5 milhões</div>
+            </div>
+            <div class="chart-bar-container">
+                <div class="chart-bar tjac" style="width: 25%">Durante Processo: R$ 1,8 milhão</div>
+            </div>
+            <div class="chart-bar-container">
+                <div class="chart-bar tjac" style="width: 30%">Pós-Decisão: R$ 2,2 milhões</div>
+            </div>
+            <div class="chart-bar-container">
+                <div class="chart-bar tjmg" style="width: 90%">Estratégia Combinada: R$ 6,5 milhões</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plano de Ação Estratégico -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-chart-network"></i> Plano de Ação Estratégico</h2>
+        
+        <div class="grid-3">
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">🛠️ Priorização de Medicamentos</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Foco em Bevacizumabe, Omalizumabe e outros biológicos</li>
+                    <li class="recommendation-item">Atenção especial a medicamentos oncológicos (28%)</li>
+                    <li class="recommendation-item">Monitoramento de prescrições na rede pública</li>
+                </ul>
+            </div>
+
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">📚 Estruturação Imediata</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Núcleo de análise prévia multidisciplinar</li>
+                    <li class="recommendation-item">Fluxos rápidos para demandas administrativas</li>
+                    <li class="recommendation-item">Protocolos padronizados por classe de medicamentos</li>
+                </ul>
+            </div>
+
+            <div class="recommendation-card">
+                <h3 class="recommendation-title">📈 Monitoramento de Resultados</h3>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">Indicadores de redução de judicialização</li>
+                    <li class="recommendation-item">Medição de economia efetiva por medicamento</li>
+                    <li class="recommendation-item">Avaliação de satisfação dos pacientes</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert alert-info" style="margin-top: 20px;">
+            <h3 style="margin-top: 0;">Economia Estimada</h3>
+            <p>A implementação combinada destas estratégias pode gerar uma economia estimada de 20-25% do orçamento atual destinado a medicamentos judicializados, permitindo melhor planejamento e maior eficiência na alocação de recursos para saúde.</p>
+        </div>
+    </section>
+
+    <!-- Limitações e Próximos Passos -->
+    <section>
+        <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Limitações e Evolução</h2>
+        
+        <div class="alert alert-warning">
+            <h3>Limitações Atuais:</h3>
+            <ul>
+                <li>Amostra reduzida de processos sobre medicamentos específicos no TJAC (3 processos)</li>
+                <li>Ausência de informação de valor em 64,1% dos processos</li>
+                <li>Diversidade de formatos de registro nos sistemas judiciais</li>
+                <li>Falta de padronização na identificação de medicamentos nos processos</li>
+            </ul>
+        </div>
+
+        <div class="grid-2">
+            <div class="process-highlight">
+                <h3>Próximas Etapas</h3>
+                <div class="process-detail">
+                    <span class="status-chip info">Fase 1:</span> Análise qualitativa aprofundada (180 dias)
+                </div>
+                <div class="process-detail">
+                    <span class="status-chip success">Fase 2:</span> Implementação de núcleo de negociação prévia (90 dias)
+                </div>
+                <div class="process-detail">
+                    <span class="status-chip warning">Fase 3:</span> Desenvolvimento de sistema de monitoramento (120 dias)
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 25%"></div>
+                </div>
+                <div style="font-size: 12px; text-align: right;">Progresso da implementação: 25%</div>
+            </div>
+
+            <div class="process-highlight">
+                <h3>Indicadores de Sucesso</h3>
+                <div class="chart-container">
+                    <div class="chart-title">Metas para 2025-2026</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar tjac" style="width: 30%">Redução de 30% nas novas judicializações</div>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar tjac" style="width: 25%">Economia de 25% nos custos totais</div>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar tjac" style="width: 85%">85% de resolução administrativa para casos prioritários</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Metadados -->
+    <section>
+        <div class="metadata">
+            <div class="metadata-title">Nota Técnica Metodológica:</div>
+            <div class="metadata-item">• Base de Dados: Análise comparativa de processos judiciais do TJAC e TJMG (2024-2025)</div>
+            <div class="metadata-item">• Análise Financeira: Projeções de custos e potencial de economia nos três cenários apresentados</div>
+            <div class="metadata-item">• Metodologia: Combinação de análise de dados quantitativos e qualitativos dos processos identificados</div>
+            <div class="metadata-item">• Relatório gerado em: 14/05/2025 | MEEDI/TJAC</div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2025 MEEDI/TJAC - Todos os direitos reservados</p>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Contato</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleCollapse(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('i');
+        
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('icon-rotate');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('icon-rotate');
+        }
+    }
+</script>
+</body>
+</html>
